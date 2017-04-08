@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
 
-        <title>CatsAction blog</title>
+        <title>CatsAction blog - python装饰器</title>
         <meta charset="utf-8" />
 
 
@@ -44,7 +44,7 @@
             </div>
 
 <section id="content">
-<h2>Articles in the git category</h2>
+
 
 
    <div class="row">
@@ -53,27 +53,41 @@
         <div class="eleven columns">
                  <ol id="post-list">
                         <li><article class="hentry">
-                                <header> <h2 class="entry-title"><a href="../git-gitignorebu-qi-zuo-yong-de-yuan-yin.html" rel="bookmark" title="Permalink to git .gitignore不起作用的原因">git .gitignore不起作用的原因</a></h2> </header>
+                                <header> <h2 class="entry-title"><a href="../pythonzhuang-shi-qi.html" rel="bookmark" title="Permalink to python装饰器">python装饰器</a></h2> </header>
                                 <footer class="post-info">
-                                    <abbr class="published" title="2014-12-25T00:00:00+08:00"> 2014-12-25  星期四 </abbr>
+                                    <abbr class="published" title="2017-04-05T17:50:00+08:00"> 2017-04-05  星期三 </abbr>
                                     <address class="vcard author">By 
                                     <a class="url fn" href="../author/catsaction.html"> CatsAction</a>
                                     </address>
                                 </footer><!-- /.post-info -->
-                                <div class="entry-content"> <p>最近在做一个个人系统测试小项目时，先提交了几次commit，并且推到了上游。可是类似pyc这样的文件总是显示在git status中，看起来挺不爽的，所有测试用.gitignore解决。但当我写好规则时，却发现git status仍然展示pyc文件。搜索了下，原来gitignore对已经跟踪的文件是没有效果的，我们需要先清空git index。解决方法如下:</p>
-<div class="highlight"><pre><span></span>git rm -r --cached .
+                                <div class="entry-content"> <p>装饰器的定义就不冗述了，它可以是函数，也可以是类。可以带参数。接下来分别介绍：
+<br></p>
+<h4>1：不带参数的装饰器（函数）</h4>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">decorate</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;this is a decorate&quot;</span><span class="p">)</span>
+        <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
+
+<span class="nd">@decorate</span>
+<span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;this is test&quot;</span><span class="p">)</span>
+
+<span class="n">test</span><span class="p">()</span>
 </pre></div>
 
 
-<p>这样再看的时候，.gitignore就生效了，重新提交一次就可以了。</p> </div><!-- /.entry-content -->
+<p><em>注意：调用方式是@decorate，后面不跟括号，加上括号就成调用带参数的生成器了。相当于<code>test = decorate(test)</code>。输出结果为：</em></p>
+<div class="highlight"><pre><span></span>this is a decorate
+this is test …</pre></div> </div><!-- /.entry-content -->
 
-                                <div class="medium primary btn"><a href="../git-gitignorebu-qi-zuo-yong-de-yuan-yin.html" rel="bookmark" title="Permalink to git .gitignore不起作用的原因">Read more <i class="icon-arrow-right"></i></a></div>
+                                <div class="medium primary btn"><a href="../pythonzhuang-shi-qi.html" rel="bookmark" title="Permalink to python装饰器">Read more <i class="icon-arrow-right"></i></a></div>
 
 
 
                                 <div class="row tag-row">
                                         <span>Tagged as : </span>
-                                            <a class="danger label" href="../tag/gitignore.html">.gitignore</a>
+                                            <a class="danger label" href="../tag/pythonzhuang-shi-qi.html">python装饰器</a>
                                 </div>
 
 

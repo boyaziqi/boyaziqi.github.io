@@ -122,6 +122,16 @@ python -m http.server
 
 
 <p>通过这个脚本启动，当你更新文章时，它会自动重新生成站点并加载。</p>
+<h4>6: 部署到github page</h4>
+<p>现在我们可以把生成的站点部署到github page或者结合Nginx部署到公有云。下面讲讲部署到github page   </p>
+<blockquote>
+<p>(1)  在github上创建自己的user page。比如我的是boyaziqi.github.io。  <br>
+(2)  <code>ghp-import output</code> 生成gh-pages分支。如果没有ghp-import命令，需要通过pip安装。<br>
+(3)  将ph-pages分支推送到自己的user page远端源：</p>
+</blockquote>
+<div class="highlight"><pre><span></span>git remote add user-page git@github.com:elemoine/elemoine.github.io.git
+git push user-page gh-pages:master
+</pre></div>
             </div><!-- /.entry-content -->
 
 
@@ -133,6 +143,7 @@ python -m http.server
 
  <ul>
       <li><a href="./archives.html">Archives</a></li>
+      <li><a href="./categories.html">Categories</a></li>
       <li><a href="./tags.html">Tags</a></li>
 </ul>
 
@@ -148,6 +159,7 @@ python -m http.server
 	<ul class="blank">
 	    <li class="tag-pelican"><a href="./tag/pelican.html">pelican</a></li>
 	    <li class="tag-group by"><a href="./tag/group-by.html">group by</a></li>
+	    <li class="tag-git page"><a href="./tag/git-page.html">git page</a></li>
 	    <li class="tag-blog"><a href="./tag/blog.html">blog</a></li>
 	    <li class="tag-sql"><a href="./tag/sql.html">sql</a></li>
 	    <li class="tag-python生成器"><a href="./tag/pythonsheng-cheng-qi.html">python生成器</a></li>

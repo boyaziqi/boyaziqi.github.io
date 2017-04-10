@@ -122,6 +122,43 @@ this is test …</pre></div> </div><!-- /.entry-content -->
 
                         </article></li>
                         <li><article class="hentry">
+                                <header> <h2 class="entry-title"><a href="./jin-zhi-inputshu-ru-kuang-hui-che-zi-dong-ti-jiao-biao-dan.html" rel="bookmark" title="Permalink to 禁止input输入框回车自动提交表单">禁止input输入框回车自动提交表单</a></h2> </header>
+                                <footer class="post-info">
+                                    <abbr class="published" title="2015-05-01T00:00:00+08:00"> 2015-05-01  星期五 </abbr>
+                                    <address class="vcard author">By 
+                                    <a class="url fn" href="./author/catsaction.html"> CatsAction</a>
+                                    </address>
+                                </footer><!-- /.post-info -->
+                                <div class="entry-content"> <p>最近在做项目的时候，发现一个小bug。input输入框回车直接提交表单，导致页面直接展示后端返回的json数据，而未执行相应的js跳转页面。</p>
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;xxxxx&quot;</span><span class="p">:</span> <span class="s2">&quot;xxxxxxx&quot;</span><span class="p">,</span> <span class="nt">&quot;yyyyyyy&quot;</span><span class="p">:</span> <span class="s2">&quot;yyyyyyyy&quot;</span><span class="p">},</span> <span class="nt">&quot;success&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span><span class="p">}</span>
+</pre></div>
+
+
+<p>解决方法是为keydown事件指定返回值。如下：</p>
+<div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">form</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;vehicle-selection&quot;</span> <span class="na">action</span><span class="o">=</span><span class="s">&quot;/selection&quot;</span> <span class="na">method</span><span class="o">=</span><span class="s">&quot;POST&quot;</span> <span class="na">onkeydown</span><span class="o">=</span><span class="s">&quot;if(event.keyCode==13){return false}&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;nature&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;211&quot;</span><span class="p">&gt;</span>
+......
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+</pre></div>
+
+
+<p>通过keyCode==13判断是否回车键</p> </div><!-- /.entry-content -->
+
+                                <div class="medium primary btn"><a href="./jin-zhi-inputshu-ru-kuang-hui-che-zi-dong-ti-jiao-biao-dan.html" rel="bookmark" title="Permalink to 禁止input输入框回车自动提交表单">Read more <i class="icon-arrow-right"></i></a></div>
+
+
+
+                                <div class="row tag-row">
+                                        <span>Tagged as : </span>
+                                            <a class="danger label" href="./tag/form.html">form</a>
+                                            <a class="danger label" href="./tag/js.html">js</a>
+                                            <a class="danger label" href="./tag/onkeydown.html">onkeydown</a>
+                                </div>
+
+
+
+                        </article></li>
+                        <li><article class="hentry">
                                 <header> <h2 class="entry-title"><a href="./guan-yu-pelican-zhu-ti-gum-bugde-chu-li.html" rel="bookmark" title="Permalink to 关于pelican 主题gum bug的处理">关于pelican 主题gum bug的处理</a></h2> </header>
                                 <footer class="post-info">
                                     <abbr class="published" title="2015-01-05T00:00:00+08:00"> 2015-01-05  星期一 </abbr>
@@ -129,7 +166,21 @@ this is test …</pre></div> </div><!-- /.entry-content -->
                                     <a class="url fn" href="./author/catsaction.html"> CatsAction</a>
                                     </address>
                                 </footer><!-- /.post-info -->
-                                <div class="entry-content"> <p>这是一篇gum bug处理文章，尚未完成。</p> </div><!-- /.entry-content -->
+                                <div class="entry-content"> <p>最近在用pelican搭建个人静态博客时，在安装主题时，发现官方提供的主题gum不能正常渲染出tags和pages，下面简单记录处理过程。想了解pelican的安装，可以查看我的<a href="./pelicanan-zhuang-yu-bu-shu.html">pelican安装与部署</a></p>
+<h4>1：安装pelican主题</h4>
+<p>下面以安装gum为例</p>
+<div class="highlight"><pre><span></span>git clone https://github.com/getpelican/pelican-themes.git
+cp -r ~/pelican-themes/gum /you-blog-directory
+</pre></div>
+
+
+<p>接下来在配置文件pelicanconf.py中指定主题<code>theme = gum</code>。其实可以不用把主题复制到你的博客目录，你只需在theme后指定主题所在目录，让pelican正确解析到就行。不过为了修改和git版本跟踪，这里把它复制到博客目录。</p>
+<h4>2：gum主题tags和pages的渲染问题。</h4>
+<p>找到gum模板文件sidebar.html。发现它把pages写成PAGES了，导致侧边栏Pages总未展示。官方主题有好几个都有这个问题，我估计是仿照一个主题写的缘故。</p>
+<div class="highlight"><pre><span></span><span class="nt">&lt;h4&gt;</span>Tags<span class="nt">&lt;/h4&gt;</span>
+<span class="cp">{%</span> <span class="k">if</span> <span class="nv">tags</span> <span class="cp">%}</span>
+    <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">&quot;blank&quot;</span><span class="nt">&gt;</span>
+    <span class="cp">{%</span> <span class="k">for</span> <span class="nv">tag …</span></pre></div> </div><!-- /.entry-content -->
 
                                 <div class="medium primary btn"><a href="./guan-yu-pelican-zhu-ti-gum-bugde-chu-li.html" rel="bookmark" title="Permalink to 关于pelican 主题gum bug的处理">Read more <i class="icon-arrow-right"></i></a></div>
 
@@ -139,6 +190,8 @@ this is test …</pre></div> </div><!-- /.entry-content -->
                                         <span>Tagged as : </span>
                                             <a class="danger label" href="./tag/pelican.html">pelican</a>
                                             <a class="danger label" href="./tag/blog.html">blog</a>
+                                            <a class="danger label" href="./tag/jinjia2.html">jinjia2</a>
+                                            <a class="danger label" href="./tag/html.html">html</a>
                                 </div>
 
 
@@ -193,33 +246,6 @@ python setup.py install
 
 
                         </article></li>
-                        <li><article class="hentry">
-                                <header> <h2 class="entry-title"><a href="./git-gitignorebu-qi-zuo-yong-de-yuan-yin.html" rel="bookmark" title="Permalink to git .gitignore不起作用的原因">git .gitignore不起作用的原因</a></h2> </header>
-                                <footer class="post-info">
-                                    <abbr class="published" title="2014-12-25T00:00:00+08:00"> 2014-12-25  星期四 </abbr>
-                                    <address class="vcard author">By 
-                                    <a class="url fn" href="./author/catsaction.html"> CatsAction</a>
-                                    </address>
-                                </footer><!-- /.post-info -->
-                                <div class="entry-content"> <p>最近在做一个个人系统测试小项目时，先提交了几次commit，并且推到了上游。可是类似pyc这样的文件总是显示在git status中，看起来挺不爽的，所有测试用.gitignore解决。但当我写好规则时，却发现git status仍然展示pyc文件。搜索了下，原来gitignore对已经跟踪的文件是没有效果的，我们需要先清空git index。解决方法如下:</p>
-<div class="highlight"><pre><span></span>git rm -r --cached .
-</pre></div>
-
-
-<p>这样再看的时候，.gitignore就生效了，重新提交一次就可以了。</p> </div><!-- /.entry-content -->
-
-                                <div class="medium primary btn"><a href="./git-gitignorebu-qi-zuo-yong-de-yuan-yin.html" rel="bookmark" title="Permalink to git .gitignore不起作用的原因">Read more <i class="icon-arrow-right"></i></a></div>
-
-
-
-                                <div class="row tag-row">
-                                        <span>Tagged as : </span>
-                                            <a class="danger label" href="./tag/gitignore.html">.gitignore</a>
-                                </div>
-
-
-
-                        </article></li>
                 </ol><!-- /#posts-list -->
 
         </div><!-- /.eleven.columns -->
@@ -237,6 +263,7 @@ python setup.py install
 <a href="./categories.html"><h4>Categories</h4></a>
 <ul class="blank">
 		<li><a href="./category/git.html">git</a></li>
+		<li><a href="./category/js.html">js</a></li>
 		<li><a href="./category/mysql.html">mysql</a></li>
 		<li><a href="./category/python.html">python</a></li>
 </ul>
@@ -245,11 +272,16 @@ python setup.py install
 <a href="./tags.html"><h4>Tags</h4></a>
 	<ul class="blank">
 	    <li class="tag-pelican"><a href="./tag/pelican.html">pelican</a></li>
+	    <li class="tag-form"><a href="./tag/form.html">form</a></li>
 	    <li class="tag-group by"><a href="./tag/group-by.html">group by</a></li>
 	    <li class="tag-git page"><a href="./tag/git-page.html">git page</a></li>
+	    <li class="tag-onkeydown"><a href="./tag/onkeydown.html">onkeydown</a></li>
 	    <li class="tag-python装饰器"><a href="./tag/pythonzhuang-shi-qi.html">python装饰器</a></li>
+	    <li class="tag-js"><a href="./tag/js.html">js</a></li>
 	    <li class="tag-blog"><a href="./tag/blog.html">blog</a></li>
+	    <li class="tag-html"><a href="./tag/html.html">html</a></li>
 	    <li class="tag-sql"><a href="./tag/sql.html">sql</a></li>
+	    <li class="tag-jinjia2"><a href="./tag/jinjia2.html">jinjia2</a></li>
 	    <li class="tag-.gitignore"><a href="./tag/gitignore.html">.gitignore</a></li>
 </ul>
 
@@ -264,7 +296,8 @@ python setup.py install
 </div> </div><!-- /.row -->
 
 <p class="paginator">
-    Page 1 / 1
+    Page 1 / 2
+        <a href="./index2.html"><i class="icon-arrow-right"></i></a>
 </p>
 </section><!-- /#content -->
 

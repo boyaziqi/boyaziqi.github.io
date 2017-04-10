@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
 
-        <title>pelican安装与部署</title>
+        <title>CatsAction blog</title>
         <meta charset="utf-8" />
 
 
@@ -43,28 +43,24 @@
               </ul>
             </div>
 
-<section id="content" class="body">
+<section id="content">
+
+
 
    <div class="row">
+
+
         <div class="eleven columns">
-
-
-            <header>
-              <h2 class="entry-title">
-                <a href="./pelicanan-zhuang-yu-bu-shu.html" rel="bookmark"
-                   title="Permalink to pelican安装与部署">pelican安装与部署</a></h2>
-           
-            </header>
-            <footer class="post-info">
-              <abbr class="published" title="2015-01-02T00:00:00+08:00">
-                2015-01-02  星期五
-              </abbr>
-              <address class="vcard author">By 
-                <a class="url fn" href="./author/catsaction.html"> CatsAction</a>
-              </address>
-            </footer><!-- /.post-info -->
-            <div class="entry-content">
-              <p>pelican是python编写的一个静态博客生成系统。如果有一定的python基础，部署起来很方便</p>
+                 <ol id="post-list">
+                        <li><article class="hentry">
+                                <header> <h2 class="entry-title"><a href="./pelicanan-zhuang-yu-bu-shu.html" rel="bookmark" title="Permalink to pelican安装与部署">pelican安装与部署</a></h2> </header>
+                                <footer class="post-info">
+                                    <abbr class="published" title="2015-01-02T00:00:00+08:00"> 2015-01-02  星期五 </abbr>
+                                    <address class="vcard author">By 
+                                    <a class="url fn" href="./author/catsaction.html"> CatsAction</a>
+                                    </address>
+                                </footer><!-- /.post-info -->
+                                <div class="entry-content"> <p>pelican是python编写的一个静态博客生成系统。如果有一定的python基础，部署起来很方便</p>
 <h4>1：安装</h4>
 <div class="highlight"><pre><span></span>virtualenv ~/virtualenvs/pelican
 <span class="nb">cd</span> ~/virtualenvs/pelican
@@ -89,54 +85,26 @@ python setup.py install
 <h4>3：写文章</h4>
 <p>在content目录下新建文件写自己的文章。我比较喜欢Markdown，下面是一个例子</p>
 <div class="highlight"><pre><span></span><span class="n">Title</span><span class="o">:</span> <span class="n">about</span> <span class="n">me</span>
-<span class="n">Date</span><span class="o">:</span> <span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">02</span>
-<span class="n">categoty</span><span class="o">:</span> <span class="n">me</span>
-<span class="n">tags</span><span class="o">:</span> <span class="n">introduction</span>
+<span class="n">Date</span><span class="o">:</span> <span class="mi">2015</span><span class="o">-</span><span class="mi">01 …</span></pre></div> </div><!-- /.entry-content -->
 
-<span class="n">Here</span> <span class="k">is</span> <span class="n">my</span> <span class="n">personal</span> <span class="n">introduction</span>
-</pre></div>
+                                <div class="medium primary btn"><a href="./pelicanan-zhuang-yu-bu-shu.html" rel="bookmark" title="Permalink to pelican安装与部署">Read more <i class="icon-arrow-right"></i></a></div>
 
 
-<p>完成之后保存为md后缀结尾的文件就行了，比如保存为About.md</p>
-<h4>4：生成博客站点</h4>
-<div class="highlight"><pre><span></span><span class="nb">cd</span> you-blog-path
-pelican content/ -s pelicanconf.py
-</pre></div>
+
+                                <div class="row tag-row">
+                                        <span>Tagged as : </span>
+                                            <a class="danger label" href="./tag/pelican.html">pelican</a>
+                                            <a class="danger label" href="./tag/blog.html">blog</a>
+                                            <a class="danger label" href="./tag/git-page.html">git page</a>
+                                </div>
 
 
-<p>content是文章所在目录，-s指定配置文件，不指定默认就为pelicanconf.py。也可以通过make生成：</p>
-<div class="highlight"><pre><span></span>make html
-</pre></div>
 
-
-<p><code>pelican-quickstart</code>已经为我们生成所需的Makefile文件，可以make help查看相关命令帮助</p>
-<h4>5：预览博客文章</h4>
-<div class="highlight"><pre><span></span><span class="nb">cd</span> output
-python -m http.server
-</pre></div>
-
-
-<p>output是第四步生成站点的默认目录，打开浏览器输入http://localhost:8000/就可以预览了。为了方便调试，可以通过自带脚本启动服务器预览：</p>
-<div class="highlight"><pre><span></span>./develop_server.sh
-</pre></div>
-
-
-<p>通过这个脚本启动，当你更新文章时，它会自动重新生成站点并加载。</p>
-<h4>6: 部署到github page</h4>
-<p>现在我们可以把生成的站点部署到github page或者结合Nginx部署到公有云。下面讲讲部署到github page   </p>
-<blockquote>
-<p>(1)  在github上创建自己的user page。比如我的是boyaziqi.github.io。  <br>
-(2)  <code>ghp-import output</code> 生成gh-pages分支。如果没有ghp-import命令，需要通过pip安装。<br>
-(3)  将ph-pages分支推送到自己的user page远端源：</p>
-</blockquote>
-<div class="highlight"><pre><span></span>git remote add user-page git@github.com:elemoine/elemoine.github.io.git
-git push user-page gh-pages:master
-</pre></div>
-            </div><!-- /.entry-content -->
-
+                        </article></li>
+                </ol><!-- /#posts-list -->
 
         </div><!-- /.eleven.columns -->
-
+        
 <div class="three columns">
 
 <h4>Site</h4>
@@ -166,7 +134,6 @@ git push user-page gh-pages:master
 	    <li class="tag-python装饰器"><a href="./tag/pythonzhuang-shi-qi.html">python装饰器</a></li>
 	    <li class="tag-js"><a href="./tag/js.html">js</a></li>
 	    <li class="tag-blog"><a href="./tag/blog.html">blog</a></li>
-	    <li class="tag-html"><a href="./tag/html.html">html</a></li>
 	    <li class="tag-sql"><a href="./tag/sql.html">sql</a></li>
 	    <li class="tag-jinjia2"><a href="./tag/jinjia2.html">jinjia2</a></li>
 	    <li class="tag-.gitignore"><a href="./tag/gitignore.html">.gitignore</a></li>
@@ -182,8 +149,12 @@ git push user-page gh-pages:master
 
 </div> </div><!-- /.row -->
 
-
-</section>
+<p class="paginator">
+            <a href="./index4.html"><i class="icon-arrow-left"></i></a>
+    Page 5 / 6
+        <a href="./index6.html"><i class="icon-arrow-right"></i></a>
+</p>
+</section><!-- /#content -->
 
        </div><!-- /.row -->
     </div><!-- /.container -->

@@ -64,7 +64,84 @@
               </address>
             </footer><!-- /.post-info -->
             <div class="entry-content">
-              <p>这是一篇gum bug处理文章，尚未完成。</p>
+              <p>最近在用pelican搭建个人静态博客时，在安装主题时，发现官方提供的主题gum不能正常渲染出tags和pages，下面简单记录处理过程。想了解pelican的安装，可以查看我的<a href="./pelicanan-zhuang-yu-bu-shu.html">pelican安装与部署</a></p>
+<h4>1：安装pelican主题</h4>
+<p>下面以安装gum为例</p>
+<div class="highlight"><pre><span></span>git clone https://github.com/getpelican/pelican-themes.git
+cp -r ~/pelican-themes/gum /you-blog-directory
+</pre></div>
+
+
+<p>接下来在配置文件pelicanconf.py中指定主题<code>theme = gum</code>。其实可以不用把主题复制到你的博客目录，你只需在theme后指定主题所在目录，让pelican正确解析到就行。不过为了修改和git版本跟踪，这里把它复制到博客目录。</p>
+<h4>2：gum主题tags和pages的渲染问题。</h4>
+<p>找到gum模板文件sidebar.html。发现它把pages写成PAGES了，导致侧边栏Pages总未展示。官方主题有好几个都有这个问题，我估计是仿照一个主题写的缘故。</p>
+<div class="highlight"><pre><span></span><span class="nt">&lt;h4&gt;</span>Tags<span class="nt">&lt;/h4&gt;</span>
+<span class="cp">{%</span> <span class="k">if</span> <span class="nv">tags</span> <span class="cp">%}</span>
+    <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">&quot;blank&quot;</span><span class="nt">&gt;</span>
+    <span class="cp">{%</span> <span class="k">for</span> <span class="nv">tag</span> <span class="k">in</span> <span class="nv">tag_cloud</span> <span class="cp">%}</span>
+        <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;tag-</span><span class="cp">{{</span> <span class="nv">tag.1</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">SITEURL</span> <span class="cp">}}</span><span class="s">/</span><span class="cp">{{</span> <span class="nv">tag.0.url</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="nt">&gt;</span><span class="cp">{{</span> <span class="nv">tag.0</span><span class="o">|</span><span class="nf">e</span> <span class="cp">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    <span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span>
+<span class="nt">&lt;/ul&gt;</span>
+<span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+</pre></div>
+
+
+<p>上面是gum对于tags的渲染，需要修改成如下</p>
+<div class="highlight"><pre><span></span><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">SITEURL</span> <span class="cp">}}</span><span class="s">/tags.html&quot;</span><span class="nt">&gt;&lt;h4&gt;</span>Tags<span class="nt">&lt;/h4&gt;&lt;/a&gt;</span>
+<span class="cp">{%</span> <span class="k">if</span> <span class="nv">tags</span> <span class="cp">%}</span>
+    <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">&quot;blank&quot;</span><span class="nt">&gt;</span>
+    <span class="cp">{%</span> <span class="k">for</span> <span class="nv">tag</span><span class="o">,</span> <span class="kp">_</span> <span class="k">in</span> <span class="nv">tags</span> <span class="cp">%}</span>
+        <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;tag-</span><span class="cp">{{</span> <span class="nv">tag</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">SITEURL</span> <span class="cp">}}</span><span class="s">/</span><span class="cp">{{</span> <span class="nv">tag.url</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="nt">&gt;</span><span class="cp">{{</span> <span class="nv">tag</span><span class="o">|</span><span class="nf">e</span> <span class="cp">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    <span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span>
+<span class="nt">&lt;/ul&gt;</span>
+<span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+</pre></div>
+
+
+<p>至于为何修改成这样，请参考官方文档<a href="http://docs.getpelican.com/en/stable/themes.html">Creating themes</a></p>
+<h4>3: 对tags和categories界面展示的优化</h4>
+<p>tags.html和categories.html模板展示博客的tags列表和分类列表。gum原来的模板并未展示每个tag或category对应的文章，于是我做了如下修改</p>
+<div class="highlight"><pre><span></span><span class="cp">{%</span> <span class="k">extends</span> <span class="s2">&quot;base.html&quot;</span> <span class="cp">%}</span>
+<span class="cp">{%</span> <span class="k">block</span> <span class="nv">title</span> <span class="cp">%}{{</span> <span class="nv">SITENAME</span> <span class="cp">}}</span> - Tags<span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span>
+<span class="cp">{%</span> <span class="k">block</span> <span class="nv">content</span> <span class="cp">%}</span>
+<span class="nt">&lt;h4&gt;&lt;i</span> <span class="na">class=</span><span class="s">&quot;icon-tags icon-large&quot;</span><span class="nt">&gt;&lt;/i&gt;</span>Tags for <span class="cp">{{</span> <span class="nv">SITENAME</span> <span class="cp">}}</span><span class="nt">&lt;/h4&gt;</span>
+<span class="nt">&lt;ul&gt;</span>
+<span class="cp">{%</span> <span class="k">for</span> <span class="nv">tag</span><span class="o">,</span> <span class="nv">articles</span> <span class="k">in</span> <span class="nv">tags</span> <span class="cp">%}</span>
+<span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;tag-</span><span class="cp">{{</span> <span class="nv">tag</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">SITEURL</span> <span class="cp">}}</span><span class="s">/</span><span class="cp">{{</span> <span class="nv">tag.url</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;i</span> <span class="na">class=</span><span class="s">&quot;icon-tag icon-large&quot;</span><span class="nt">&gt;&lt;/i&gt;</span><span class="cp">{{</span> <span class="nv">tag</span><span class="o">|</span><span class="nf">e</span> <span class="cp">}}</span>
+    <span class="nt">&lt;/a&gt;</span>
+    <span class="nt">&lt;ul&gt;</span>
+        <span class="cp">{%</span> <span class="k">for</span> <span class="nv">article</span> <span class="k">in</span> <span class="nv">articles</span> <span class="cp">%}</span>
+            <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">SITEURL</span> <span class="cp">}}</span><span class="s">/</span><span class="cp">{{</span> <span class="nv">article.url</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="nt">&gt;</span><span class="cp">{{</span> <span class="nv">article.title</span> <span class="cp">}}</span><span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+        <span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span>
+    <span class="nt">&lt;/ul&gt;</span>
+<span class="nt">&lt;/li&gt;</span>
+<span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span>
+<span class="nt">&lt;/ul&gt;</span>
+<span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span>
+</pre></div>
+
+
+<p>gum主题原来的模板</p>
+<div class="highlight"><pre><span></span><span class="cp">{%</span> <span class="k">extends</span> <span class="s2">&quot;base.html&quot;</span> <span class="cp">%}</span>
+<span class="cp">{%</span> <span class="k">block</span> <span class="nv">content</span> <span class="cp">%}</span>
+<span class="nt">&lt;ul&gt;</span>
+<span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;nav-header&quot;</span><span class="nt">&gt;&lt;h4&gt;&lt;i</span> <span class="na">class=</span><span class="s">&quot;icon-tags icon-large&quot;</span><span class="nt">&gt;&lt;/i&gt;</span>Tags<span class="nt">&lt;/h4&gt;&lt;/li&gt;</span>
+<span class="cp">{%</span> <span class="k">for</span> <span class="nv">tag</span> <span class="k">in</span> <span class="nv">tag_cloud</span> <span class="cp">%}</span>
+<span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;tag-</span><span class="cp">{{</span> <span class="nv">tag.1</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">SITEURL</span> <span class="cp">}}</span><span class="s">/</span><span class="cp">{{</span> <span class="nv">tag.0.url</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;i</span> <span class="na">class=</span><span class="s">&quot;icon-tag icon-large&quot;</span><span class="nt">&gt;&lt;/i&gt;</span><span class="cp">{{</span> <span class="nv">tag.0</span><span class="o">|</span><span class="nf">e</span> <span class="cp">}}</span>
+    <span class="nt">&lt;/a&gt;</span>
+<span class="nt">&lt;/li&gt;</span>
+<span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span>
+<span class="nt">&lt;/ul&gt;</span>
+<span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span>
+</pre></div>
+
+
+<p>categories.html我就不粘贴代码了，思路都一样。并且原模板对于categories.html也没有bug。</p>
+<p>由于附图不方便文章布局，对于上面修改后的页面效果，可以自行修改预览。</p>
             </div><!-- /.entry-content -->
 
 
@@ -83,6 +160,7 @@
 <a href="./categories.html"><h4>Categories</h4></a>
 <ul class="blank">
 		<li><a href="./category/git.html">git</a></li>
+		<li><a href="./category/js.html">js</a></li>
 		<li><a href="./category/mysql.html">mysql</a></li>
 		<li><a href="./category/python.html">python</a></li>
 </ul>
@@ -91,11 +169,16 @@
 <a href="./tags.html"><h4>Tags</h4></a>
 	<ul class="blank">
 	    <li class="tag-pelican"><a href="./tag/pelican.html">pelican</a></li>
+	    <li class="tag-form"><a href="./tag/form.html">form</a></li>
 	    <li class="tag-group by"><a href="./tag/group-by.html">group by</a></li>
 	    <li class="tag-git page"><a href="./tag/git-page.html">git page</a></li>
+	    <li class="tag-onkeydown"><a href="./tag/onkeydown.html">onkeydown</a></li>
 	    <li class="tag-python装饰器"><a href="./tag/pythonzhuang-shi-qi.html">python装饰器</a></li>
+	    <li class="tag-js"><a href="./tag/js.html">js</a></li>
 	    <li class="tag-blog"><a href="./tag/blog.html">blog</a></li>
+	    <li class="tag-html"><a href="./tag/html.html">html</a></li>
 	    <li class="tag-sql"><a href="./tag/sql.html">sql</a></li>
+	    <li class="tag-jinjia2"><a href="./tag/jinjia2.html">jinjia2</a></li>
 	    <li class="tag-.gitignore"><a href="./tag/gitignore.html">.gitignore</a></li>
 </ul>
 

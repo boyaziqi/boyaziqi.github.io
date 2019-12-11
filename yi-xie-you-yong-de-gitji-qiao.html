@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+
+        <link rel="icon" type="image/x-icon" href="./theme/image/logo.ico" />
+        <title>一些有用的git技巧</title>
+        <meta charset="utf-8" />
+
+
+        <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+        <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
+
+        <link rel="stylesheet" type="text/css" href="./theme/gumby.css" />
+        <link rel="stylesheet" type="text/css" href="./theme/style.css" />
+        <link rel="stylesheet" type="text/css" href="./theme/pygment.css" />
+
+        <script src="./theme/js/libs/modernizr-2.6.2.min.js"></script>
+
+
+
+
+</head>
+
+<body id="index" class="home">
+
+
+    <div class="container">
+
+        <div class="row">
+
+          <header id="banner" class="body">
+                  <h1><a href="./">CatsAction blog <strong>一些学习笔记</strong></a></h1>
+          </header><!-- /#banner -->
+
+            <div id="navigation" class="navbar row">
+              <a href="#" gumby-trigger="#navigation &gt; ul" class="toggle"><i class="icon-menu"></i></a>
+
+              <ul class="columns">
+                <li><a href="./">Home</a></li>
+
+
+              </ul>
+            </div>
+
+<section id="content" class="body">
+
+   <div class="row">
+        <div class="eleven columns">
+
+
+            <header>
+              <h2 class="entry-title">
+                <a href="./yi-xie-you-yong-de-gitji-qiao.html" rel="bookmark"
+                   title="Permalink to 一些有用的git技巧">一些有用的git技巧</a></h2>
+           
+            </header>
+            <footer class="post-info">
+              <abbr class="published" title="2017-09-25T22:50:00+08:00">
+                2017-09-25  星期一
+              </abbr>
+              <address class="vcard author">By 
+                <a class="url fn" href="./author/catsaction.html"> CatsAction</a>
+              </address>
+            </footer><!-- /.post-info -->
+            <div class="entry-content">
+              <h4>将同一个文件的修改分多次添加到index暂存区</h4>
+<div class="highlight"><pre><span></span><span class="c1"># 添加每个变化前，都会要求确认</span>
+<span class="c1"># 对于同一个文件的多处变化，可以实现分次提交</span>
+git add -p
+
+<span class="c1"># 停止追踪指定文件，但该文件会保留在工作区</span>
+$ git rm --cached <span class="o">[</span>file<span class="o">]</span>
+
+<span class="c1"># 改名文件，并且将这个改名放入暂存区</span>
+$ git mv <span class="o">[</span>file-original<span class="o">]</span> <span class="o">[</span>file-renamed<span class="o">]</span>
+</pre></div>
+
+
+<h3>git commit 提交指定文件和回退上次提交</h3>
+<div class="highlight"><pre><span></span><span class="c1"># 提交暂存区的指定文件到仓库区</span>
+$ git commit <span class="o">[</span>file1<span class="o">]</span> <span class="o">[</span>file2<span class="o">]</span> ... -m <span class="o">[</span>message<span class="o">]</span>
+
+<span class="c1"># 提交时显示所有diff信息</span>
+$ git commit -v
+
+<span class="c1"># 使用一次新的commit，替代上一次提交</span>
+<span class="c1"># 如果代码没有任何新变化，则用来改写上一次commit的提交信息</span>
+$ git commit --amend -m <span class="o">[</span>message<span class="o">]</span>
+
+<span class="c1"># 重做上一次commit，并包括指定文件的新变化</span>
+$ git commit --amend <span class="o">[</span>file1<span class="o">]</span> <span class="o">[</span>file2<span class="o">]</span> ...
+</pre></div>
+
+
+<h3>git branch建立和跟踪远程分支</h3>
+<div class="highlight"><pre><span></span><span class="c1"># 新建一个分支，指向指定commit</span>
+$ git branch <span class="o">[</span>branch<span class="o">]</span> <span class="o">[</span>commit<span class="o">]</span>
+
+<span class="c1"># 新建一个分支，与指定的远程分支建立追踪关系</span>
+$ git branch --track <span class="o">[</span>branch<span class="o">]</span> <span class="o">[</span>remote-branch<span class="o">]</span>
+
+<span class="c1"># 切换到上一个分支</span>
+$ git checkout -
+
+<span class="c1"># 建立追踪关系，在现有分支与指定的远程分支之间</span>
+$ git branch --set-upstream <span class="o">[</span>branch<span class="o">]</span> <span class="o">[</span>remote-branch<span class="o">]</span>
+
+<span class="c1"># 选择一个commit，合并进当前分支</span>
+$ git cherry-pick <span class="o">[</span>commit<span class="o">]</span>
+
+<span class="c1"># 删除远程分支</span>
+$ git push origin --delete <span class="o">[</span>branch-name<span class="o">]</span>
+$ git branch -dr <span class="o">[</span>remote/branch<span class="o">]</span>
+</pre></div>
+
+
+<h3>查看git变更信息</h3>
+<p>```shell</p>
+<h1>显示commit历史，以及每次commit发生变更的文件</h1>
+<p>$ git log --stat</p>
+<h1>搜索提交历史，根据关键词</h1>
+<p>$ git log -S [keyword]</p>
+<h1>显示指定文件是什么人在什么时间修改过</h1>
+<p>$ git blame [file]</p>
+<h1>显示某个文件的版本历史，包括文件改名</h1>
+<p>$ git log --follow [file]
+$ git whatchanged [file]</p>
+<h1>显示两次提交之间的差异</h1>
+<p>$ git diff [first-branch]...[second-branch]</p>
+<h1>显示今天你写了多少行代码</h1>
+<p>$ git diff --shortstat "@{0 day ago}"</p>
+            </div><!-- /.entry-content -->
+
+
+        </div><!-- /.eleven.columns -->
+
+<div class="three columns" id="sidebar">
+
+<h4>Site</h4>
+
+ <ul>
+      <li><a href="./archives.html">Archives</a></li>
+      <li><a href="./categories.html">Categories</a></li>
+      <li><a href="./tags.html">Tags</a></li>
+</ul>
+
+<a href="./categories.html"><h4>Categories</h4></a>
+<ul class="blank">
+		<li><a href="./category/git.html">git</a></li>
+		<li><a href="./category/golang.html">golang</a></li>
+		<li><a href="./category/http.html">http</a></li>
+		<li><a href="./category/js.html">js</a></li>
+		<li><a href="./category/linux.html">Linux</a></li>
+		<li><a href="./category/python.html">python</a></li>
+		<li><a href="./category/vim.html">vim</a></li>
+</ul>
+
+<nav class="widget">
+  <h4>Social</h4>
+  <ul class="blank">
+    <li><a href="https://github.com/boyaziqi">github</a></li>
+  </ul>
+</nav>
+
+</div> </div><!-- /.row -->
+
+
+</section>
+
+       </div><!-- /.row -->
+    </div><!-- /.container -->
+
+
+       <div class="container.nopad bg">
+
+
+        <footer id="credits" class="row">
+          <div class="seven columns">
+            <div class="row">
+              <ul class="socbtns">
+
+                <li><div class="btn primary"><a href="https://github.com/boyaziqi" target="_blank">Github</a></div></li>
+
+
+
+                <li><div class="btn danger"><a href="https://plus.google.com/u/0/" target="_blank">Google+</a></div></li>
+
+                <li><div class="btn facebook"><a href="http://weibo.com/boyziqi/home?wvr=5" target="_blank">新浪微博</a></div></li>
+
+                <li><div class="btn twitter"><a href="https://www.linkedin.com/feed/" target="_blank">linkedin</a></div></li>
+              </ul>
+            </div>
+          </div>
+        </footer>
+
+    </div>
+
+
+  <script src="./theme/js/libs/jquery-1.9.1.min.js"></script>
+  <script src="./theme/js/libs/gumby.min.js"></script>
+  <script src="./theme/js/plugins.js"></script>
+</body>
+</html>

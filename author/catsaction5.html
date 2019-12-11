@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+
+        <link rel="icon" type="image/x-icon" href="../theme/image/logo.ico" />
+        <title>CatsAction blog - Articles by CatsAction</title>
+        <meta charset="utf-8" />
+
+
+        <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+        <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
+
+        <link rel="stylesheet" type="text/css" href="../theme/gumby.css" />
+        <link rel="stylesheet" type="text/css" href="../theme/style.css" />
+        <link rel="stylesheet" type="text/css" href="../theme/pygment.css" />
+
+        <script src="../theme/js/libs/modernizr-2.6.2.min.js"></script>
+
+
+
+
+</head>
+
+<body id="index" class="home">
+
+
+    <div class="container">
+
+        <div class="row">
+
+          <header id="banner" class="body">
+                  <h1><a href="../">CatsAction blog <strong>一些学习笔记</strong></a></h1>
+          </header><!-- /#banner -->
+
+            <div id="navigation" class="navbar row">
+              <a href="#" gumby-trigger="#navigation &gt; ul" class="toggle"><i class="icon-menu"></i></a>
+
+              <ul class="columns">
+                <li><a href="../">Home</a></li>
+
+
+              </ul>
+            </div>
+
+<section id="content">
+<h2>Articles by CatsAction</h2>
+
+
+   <div class="row">
+
+
+        <div class="eleven columns">
+                 <ol id="post-list">
+                        <li><article class="hentry">
+                                <header> <h2 class="entry-title"><a href="../weakrefshi-yong-yu-li-jie.html" rel="bookmark" title="Permalink to weakref使用与理解">weakref使用与理解</a></h2> </header>
+                                <footer class="post-info">
+                                    <abbr class="published" title="2016-04-22T00:00:00+08:00"> 2016-04-22  星期五 </abbr>
+                                    <address class="vcard author">By 
+                                    <a class="url fn" href="../author/catsaction.html"> CatsAction</a>
+                                    </address>
+                                </footer><!-- /.post-info -->
+                                <div class="entry-content"> <p>python weakref模块的使用 <br>
+python的垃圾回收器，最主要的一种方式是引用计数，就是当某个对象的引用为0时，该对象将被回收。不过引用计数最大的缺点就是无法解决循环引用的问题。 <br>
+weakref可以实现弱引用，弱引用和普通引用的区别是：当某个对象只存在弱引用时，它会被垃圾回收器收回。 通常用来创建缓存对象和对大型对象的引用。    </p>
+<h4>使用</h4>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">weakref</span>
+<span class="k">class</span> <span class="nc">Object</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">o</span> <span class="o">=</span> <span class="n">Object</span><span class="p">()</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+
+<span class="n">o2</span> <span class="o">=</span> <span class="n">r</span><span class="p">()</span>
+<span class="k">if</span> <span class="mi">02</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;object has been deleted&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;do something&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>由于弱引用会被删除，通常都需要判断它是否存在。当然，如果引用对象是一个类，你可以用hasattr检查它是否有某个属性。None当然没有对应的属性。</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">weakref</span>
+<span class="k">class</span> <span class="nc">WeakObject …</span></pre></div> </div><!-- /.entry-content -->
+
+                                <div class="medium primary btn"><a href="../weakrefshi-yong-yu-li-jie.html" rel="bookmark" title="Permalink to weakref使用与理解">Read more <i class="icon-arrow-right"></i></a></div>
+
+
+
+                                <div class="row tag-row">
+                                        <span>Tagged as : </span>
+                                            <a class="danger label" href="../tag/weakref.html">weakref</a>
+                                            <a class="danger label" href="../tag/ruo-yin-yong.html">弱引用</a>
+                                </div>
+
+
+
+                        </article></li>
+                        <li><article class="hentry">
+                                <header> <h2 class="entry-title"><a href="../guan-yu-pelican-zhu-ti-gum-bugde-chu-li.html" rel="bookmark" title="Permalink to 关于pelican 主题gum bug的处理">关于pelican 主题gum bug的处理</a></h2> </header>
+                                <footer class="post-info">
+                                    <abbr class="published" title="2016-01-05T00:00:00+08:00"> 2016-01-05  星期二 </abbr>
+                                    <address class="vcard author">By 
+                                    <a class="url fn" href="../author/catsaction.html"> CatsAction</a>
+                                    </address>
+                                </footer><!-- /.post-info -->
+                                <div class="entry-content"> <p>最近在用pelican搭建个人静态博客时，在安装主题时，发现官方提供的主题gum不能正常渲染出tags和pages，下面简单记录处理过程。想了解pelican的安装，可以查看我的<a href="../pelicanan-zhuang-yu-bu-shu.html">pelican安装与部署</a></p>
+<h4>1：安装pelican主题</h4>
+<p>下面以安装gum为例</p>
+<div class="highlight"><pre><span></span>git clone https://github.com/getpelican/pelican-themes.git
+cp -r ~/pelican-themes/gum /you-blog-directory
+</pre></div>
+
+
+<p>接下来在配置文件pelicanconf.py中指定主题<code>theme = gum</code>。其实可以不用把主题复制到你的博客目录，你只需在theme后指定主题所在目录，让pelican正确解析到就行。不过为了修改和git版本跟踪，这里把它复制到博客目录。</p>
+<h4>2：gum主题tags和pages的渲染问题。</h4>
+<p>找到gum模板文件sidebar.html。发现它把pages写成PAGES了，导致侧边栏Pages总未展示。官方主题有好几个都有这个问题，我估计是仿照一个主题写的缘故。</p>
+<div class="highlight"><pre><span></span><span class="nt">&lt;h4&gt;</span>Tags<span class="nt">&lt;/h4&gt;</span>
+<span class="cp">{%</span> <span class="k">if</span> <span class="nv">tags</span> <span class="cp">%}</span>
+    <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">&quot;blank&quot;</span><span class="nt">&gt;</span>
+    <span class="cp">{%</span> <span class="k">for</span> <span class="nv">tag …</span></pre></div> </div><!-- /.entry-content -->
+
+                                <div class="medium primary btn"><a href="../guan-yu-pelican-zhu-ti-gum-bugde-chu-li.html" rel="bookmark" title="Permalink to 关于pelican 主题gum bug的处理">Read more <i class="icon-arrow-right"></i></a></div>
+
+
+
+                                <div class="row tag-row">
+                                        <span>Tagged as : </span>
+                                            <a class="danger label" href="../tag/pelican.html">pelican</a>
+                                            <a class="danger label" href="../tag/blog.html">blog</a>
+                                            <a class="danger label" href="../tag/jinjia2.html">jinjia2</a>
+                                            <a class="danger label" href="../tag/html.html">html</a>
+                                </div>
+
+
+
+                        </article></li>
+                        <li><article class="hentry">
+                                <header> <h2 class="entry-title"><a href="../pelicanan-zhuang-yu-bu-shu.html" rel="bookmark" title="Permalink to pelican安装与部署">pelican安装与部署</a></h2> </header>
+                                <footer class="post-info">
+                                    <abbr class="published" title="2016-01-02T00:00:00+08:00"> 2016-01-02  星期六 </abbr>
+                                    <address class="vcard author">By 
+                                    <a class="url fn" href="../author/catsaction.html"> CatsAction</a>
+                                    </address>
+                                </footer><!-- /.post-info -->
+                                <div class="entry-content"> <p>pelican是python编写的一个静态博客生成系统。如果有一定的python基础，部署起来很方便</p>
+<h4>1：安装</h4>
+<div class="highlight"><pre><span></span>virtualenv ~/virtualenvs/pelican
+<span class="nb">cd</span> ~/virtualenvs/pelican
+<span class="nb">source</span> bin/activate
+pip install pelican
+</pre></div>
+
+
+<p>也可以通过源码安装：</p>
+<div class="highlight"><pre><span></span>git clone https://github.com/getpelican/pelican.git
+<span class="nb">cd</span> pelican
+python setup.py install
+</pre></div>
+
+
+<h4>2：生成博客站点</h4>
+<div class="highlight"><pre><span></span>pelican-quickstart
+</pre></div>
+
+
+<p>回车回答相应的问题，就会为你生成一个博客目录和默认的配置文件。现在你已经可以通过reStructuredText和Markdown格式写文章了，使用的是pelican内置的主题。</p>
+<h4>3：写文章</h4>
+<p>在content目录下新建文件写自己的文章。我比较喜欢Markdown，下面是一个例子</p>
+<div class="highlight"><pre><span></span>Title: about me
+Date: 2015-01-02
+categoty …</pre></div> </div><!-- /.entry-content -->
+
+                                <div class="medium primary btn"><a href="../pelicanan-zhuang-yu-bu-shu.html" rel="bookmark" title="Permalink to pelican安装与部署">Read more <i class="icon-arrow-right"></i></a></div>
+
+
+
+                                <div class="row tag-row">
+                                        <span>Tagged as : </span>
+                                            <a class="danger label" href="../tag/pelican.html">pelican</a>
+                                            <a class="danger label" href="../tag/blog.html">blog</a>
+                                            <a class="danger label" href="../tag/git-page.html">git page</a>
+                                </div>
+
+
+
+                        </article></li>
+                </ol><!-- /#posts-list -->
+
+        </div><!-- /.eleven.columns -->
+        
+<div class="three columns" id="sidebar">
+
+<h4>Site</h4>
+
+ <ul>
+      <li><a href="../archives.html">Archives</a></li>
+      <li><a href="../categories.html">Categories</a></li>
+      <li><a href="../tags.html">Tags</a></li>
+</ul>
+
+<a href="../categories.html"><h4>Categories</h4></a>
+<ul class="blank">
+		<li><a href="../category/git.html">git</a></li>
+		<li><a href="../category/golang.html">golang</a></li>
+		<li><a href="../category/http.html">http</a></li>
+		<li><a href="../category/js.html">js</a></li>
+		<li><a href="../category/linux.html">Linux</a></li>
+		<li><a href="../category/python.html">python</a></li>
+		<li><a href="../category/vim.html">vim</a></li>
+</ul>
+
+<nav class="widget">
+  <h4>Social</h4>
+  <ul class="blank">
+    <li><a href="https://github.com/boyaziqi">github</a></li>
+  </ul>
+</nav>
+
+</div> </div><!-- /.row -->
+
+<p class="paginator">
+            <a href="../author/catsaction4.html"><i class="icon-arrow-left"></i></a>
+    Page 5 / 5
+</p>
+</section><!-- /#content -->
+
+       </div><!-- /.row -->
+    </div><!-- /.container -->
+
+
+       <div class="container.nopad bg">
+
+
+        <footer id="credits" class="row">
+          <div class="seven columns">
+            <div class="row">
+              <ul class="socbtns">
+
+                <li><div class="btn primary"><a href="https://github.com/boyaziqi" target="_blank">Github</a></div></li>
+
+
+
+                <li><div class="btn danger"><a href="https://plus.google.com/u/0/" target="_blank">Google+</a></div></li>
+
+                <li><div class="btn facebook"><a href="http://weibo.com/boyziqi/home?wvr=5" target="_blank">新浪微博</a></div></li>
+
+                <li><div class="btn twitter"><a href="https://www.linkedin.com/feed/" target="_blank">linkedin</a></div></li>
+              </ul>
+            </div>
+          </div>
+        </footer>
+
+    </div>
+
+
+  <script src="../theme/js/libs/jquery-1.9.1.min.js"></script>
+  <script src="../theme/js/libs/gumby.min.js"></script>
+  <script src="../theme/js/plugins.js"></script>
+</body>
+</html>

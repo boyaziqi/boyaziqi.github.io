@@ -2,7 +2,8 @@
 <html lang="zh">
 <head>
 
-        <title>CatsAction blog - group by</title>
+        <link rel="icon" type="image/x-icon" href="../theme/image/logo.ico" />
+        <title>CatsAction blog - weakref</title>
         <meta charset="utf-8" />
 
 
@@ -28,17 +29,15 @@
         <div class="row">
 
           <header id="banner" class="body">
-                  <h1><a href="../">CatsAction blog <strong></strong></a></h1>
+                  <h1><a href="../">CatsAction blog <strong>一些学习笔记</strong></a></h1>
           </header><!-- /#banner -->
 
             <div id="navigation" class="navbar row">
               <a href="#" gumby-trigger="#navigation &gt; ul" class="toggle"><i class="icon-menu"></i></a>
-             
+
               <ul class="columns">
                 <li><a href="../">Home</a></li>
 
-                <li><a href="../pages/guan-yu-ben-zhan.html">关于本站</a></li>
-                <li><a href="../pages/guan-yu-wo.html">关于我</a></li>
 
               </ul>
             </div>
@@ -53,28 +52,44 @@
         <div class="eleven columns">
                  <ol id="post-list">
                         <li><article class="hentry">
-                                <header> <h2 class="entry-title"><a href="../mysql-sqlzhi-group-by.html" rel="bookmark" title="Permalink to Mysql SQL之group by">Mysql SQL之group by</a></h2> </header>
+                                <header> <h2 class="entry-title"><a href="../weakrefshi-yong-yu-li-jie.html" rel="bookmark" title="Permalink to weakref使用与理解">weakref使用与理解</a></h2> </header>
                                 <footer class="post-info">
-                                    <abbr class="published" title="2017-04-01T00:00:00+08:00"> 2017-04-01  星期六 </abbr>
+                                    <abbr class="published" title="2016-04-22T00:00:00+08:00"> 2016-04-22  星期五 </abbr>
                                     <address class="vcard author">By 
                                     <a class="url fn" href="../author/catsaction.html"> CatsAction</a>
                                     </address>
                                 </footer><!-- /.post-info -->
-                                <div class="entry-content"> <p>group by用来对数据进行分组，如果不止一条数据，则会返回第一条。</p>
-<h3>1：group by语法</h3>
-<div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="o">`</span><span class="k">table</span><span class="o">`</span>
-<span class="k">WHERE</span> <span class="o">`</span><span class="n">id</span><span class="o">`=</span><span class="mi">12</span>
-<span class="k">GROUP</span> <span class="k">BY</span> <span class="o">`</span><span class="n">id</span><span class="o">`</span>
-</pre></div> </div><!-- /.entry-content -->
+                                <div class="entry-content"> <p>python weakref模块的使用 <br>
+python的垃圾回收器，最主要的一种方式是引用计数，就是当某个对象的引用为0时，该对象将被回收。不过引用计数最大的缺点就是无法解决循环引用的问题。 <br>
+weakref可以实现弱引用，弱引用和普通引用的区别是：当某个对象只存在弱引用时，它会被垃圾回收器收回。 通常用来创建缓存对象和对大型对象的引用。    </p>
+<h4>使用</h4>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">weakref</span>
+<span class="k">class</span> <span class="nc">Object</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
 
-                                <div class="medium primary btn"><a href="../mysql-sqlzhi-group-by.html" rel="bookmark" title="Permalink to Mysql SQL之group by">Read more <i class="icon-arrow-right"></i></a></div>
+<span class="n">o</span> <span class="o">=</span> <span class="n">Object</span><span class="p">()</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+
+<span class="n">o2</span> <span class="o">=</span> <span class="n">r</span><span class="p">()</span>
+<span class="k">if</span> <span class="mi">02</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;object has been deleted&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;do something&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>由于弱引用会被删除，通常都需要判断它是否存在。当然，如果引用对象是一个类，你可以用hasattr检查它是否有某个属性。None当然没有对应的属性。</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">weakref</span>
+<span class="k">class</span> <span class="nc">WeakObject …</span></pre></div> </div><!-- /.entry-content -->
+
+                                <div class="medium primary btn"><a href="../weakrefshi-yong-yu-li-jie.html" rel="bookmark" title="Permalink to weakref使用与理解">Read more <i class="icon-arrow-right"></i></a></div>
 
 
 
                                 <div class="row tag-row">
                                         <span>Tagged as : </span>
-                                            <a class="danger label" href="../tag/group-by.html">group by</a>
-                                            <a class="danger label" href="../tag/sql.html">sql</a>
+                                            <a class="danger label" href="../tag/weakref.html">weakref</a>
+                                            <a class="danger label" href="../tag/ruo-yin-yong.html">弱引用</a>
                                 </div>
 
 
@@ -84,7 +99,7 @@
 
         </div><!-- /.eleven.columns -->
         
-<div class="three columns">
+<div class="three columns" id="sidebar">
 
 <h4>Site</h4>
 
@@ -97,28 +112,13 @@
 <a href="../categories.html"><h4>Categories</h4></a>
 <ul class="blank">
 		<li><a href="../category/git.html">git</a></li>
+		<li><a href="../category/golang.html">golang</a></li>
+		<li><a href="../category/http.html">http</a></li>
 		<li><a href="../category/js.html">js</a></li>
-		<li><a href="../category/mysql.html">mysql</a></li>
+		<li><a href="../category/linux.html">Linux</a></li>
 		<li><a href="../category/python.html">python</a></li>
+		<li><a href="../category/vim.html">vim</a></li>
 </ul>
-
-
-<a href="../tags.html"><h4>Tags</h4></a>
-	<ul class="blank">
-	    <li class="tag-pelican"><a href="../tag/pelican.html">pelican</a></li>
-	    <li class="tag-form"><a href="../tag/form.html">form</a></li>
-	    <li class="tag-group by"><a href="../tag/group-by.html">group by</a></li>
-	    <li class="tag-git page"><a href="../tag/git-page.html">git page</a></li>
-	    <li class="tag-onkeydown"><a href="../tag/onkeydown.html">onkeydown</a></li>
-	    <li class="tag-python装饰器"><a href="../tag/pythonzhuang-shi-qi.html">python装饰器</a></li>
-	    <li class="tag-js"><a href="../tag/js.html">js</a></li>
-	    <li class="tag-blog"><a href="../tag/blog.html">blog</a></li>
-	    <li class="tag-html"><a href="../tag/html.html">html</a></li>
-	    <li class="tag-sql"><a href="../tag/sql.html">sql</a></li>
-	    <li class="tag-jinjia2"><a href="../tag/jinjia2.html">jinjia2</a></li>
-	    <li class="tag-.gitignore"><a href="../tag/gitignore.html">.gitignore</a></li>
-</ul>
-
 
 <nav class="widget">
   <h4>Social</h4>

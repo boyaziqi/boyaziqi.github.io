@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+
+        <link rel="icon" type="image/x-icon" href="../theme/image/logo.ico" />
+        <title>CatsAction blog - __call__</title>
+        <meta charset="utf-8" />
+
+
+        <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+        <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
+
+        <link rel="stylesheet" type="text/css" href="../theme/gumby.css" />
+        <link rel="stylesheet" type="text/css" href="../theme/style.css" />
+        <link rel="stylesheet" type="text/css" href="../theme/pygment.css" />
+
+        <script src="../theme/js/libs/modernizr-2.6.2.min.js"></script>
+
+
+
+
+</head>
+
+<body id="index" class="home">
+
+
+    <div class="container">
+
+        <div class="row">
+
+          <header id="banner" class="body">
+                  <h1><a href="../">CatsAction blog <strong>一些学习笔记</strong></a></h1>
+          </header><!-- /#banner -->
+
+            <div id="navigation" class="navbar row">
+              <a href="#" gumby-trigger="#navigation &gt; ul" class="toggle"><i class="icon-menu"></i></a>
+
+              <ul class="columns">
+                <li><a href="../">Home</a></li>
+
+
+              </ul>
+            </div>
+
+<section id="content">
+
+
+
+   <div class="row">
+
+
+        <div class="eleven columns">
+                 <ol id="post-list">
+                        <li><article class="hentry">
+                                <header> <h2 class="entry-title"><a href="../pythonlei-te-shu-fang-fa.html" rel="bookmark" title="Permalink to python类特殊方法">python类特殊方法</a></h2> </header>
+                                <footer class="post-info">
+                                    <abbr class="published" title="2017-06-06T22:42:00+08:00"> 2017-06-06  星期二 </abbr>
+                                    <address class="vcard author">By 
+                                    <a class="url fn" href="../author/catsaction.html"> CatsAction</a>
+                                    </address>
+                                </footer><!-- /.post-info -->
+                                <div class="entry-content"> <h4>__init__</h4>
+<p>__init__方法在定义实例的时候会被调用</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">test</span><span class="p">(</span><span class="nb">object</span><span class="p">);</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+
+<span class="k">class</span> <span class="nc">test1</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">test1</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+
+
+<p>执行上面的代码，会打印出10。说明在子类没有显示定义__init__方法时，在定义子类实例时，父类的__init__方法会自动被调用。
+不过如果子类定义__init__方法，定义子类实例时不会自动调用父类的__init__方法</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">test</span><span class="p">(</span><span class="nb">object</span><span class="p">);</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_x</span> <span class="o">=</span> <span class="n">x</span>
+
+<span class="k">class</span> <span class="nc">test1</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test1_x</span> <span class="o">=</span> <span class="n">x</span>
+
+<span class="n">t …</span></pre></div> </div><!-- /.entry-content -->
+
+                                <div class="medium primary btn"><a href="../pythonlei-te-shu-fang-fa.html" rel="bookmark" title="Permalink to python类特殊方法">Read more <i class="icon-arrow-right"></i></a></div>
+
+
+
+                                <div class="row tag-row">
+                                        <span>Tagged as : </span>
+                                            <a class="danger label" href="../tag/__call__.html">__call__</a>
+                                </div>
+
+
+
+                        </article></li>
+                </ol><!-- /#posts-list -->
+
+        </div><!-- /.eleven.columns -->
+        
+<div class="three columns" id="sidebar">
+
+<h4>Site</h4>
+
+ <ul>
+      <li><a href="../archives.html">Archives</a></li>
+      <li><a href="../categories.html">Categories</a></li>
+      <li><a href="../tags.html">Tags</a></li>
+</ul>
+
+<a href="../categories.html"><h4>Categories</h4></a>
+<ul class="blank">
+		<li><a href="../category/git.html">git</a></li>
+		<li><a href="../category/golang.html">golang</a></li>
+		<li><a href="../category/http.html">http</a></li>
+		<li><a href="../category/js.html">js</a></li>
+		<li><a href="../category/linux.html">Linux</a></li>
+		<li><a href="../category/python.html">python</a></li>
+		<li><a href="../category/vim.html">vim</a></li>
+</ul>
+
+<nav class="widget">
+  <h4>Social</h4>
+  <ul class="blank">
+    <li><a href="https://github.com/boyaziqi">github</a></li>
+  </ul>
+</nav>
+
+</div> </div><!-- /.row -->
+
+<p class="paginator">
+    Page 1 / 1
+</p>
+</section><!-- /#content -->
+
+       </div><!-- /.row -->
+    </div><!-- /.container -->
+
+
+       <div class="container.nopad bg">
+
+
+        <footer id="credits" class="row">
+          <div class="seven columns">
+            <div class="row">
+              <ul class="socbtns">
+
+                <li><div class="btn primary"><a href="https://github.com/boyaziqi" target="_blank">Github</a></div></li>
+
+
+
+                <li><div class="btn danger"><a href="https://plus.google.com/u/0/" target="_blank">Google+</a></div></li>
+
+                <li><div class="btn facebook"><a href="http://weibo.com/boyziqi/home?wvr=5" target="_blank">新浪微博</a></div></li>
+
+                <li><div class="btn twitter"><a href="https://www.linkedin.com/feed/" target="_blank">linkedin</a></div></li>
+              </ul>
+            </div>
+          </div>
+        </footer>
+
+    </div>
+
+
+  <script src="../theme/js/libs/jquery-1.9.1.min.js"></script>
+  <script src="../theme/js/libs/gumby.min.js"></script>
+  <script src="../theme/js/plugins.js"></script>
+</body>
+</html>

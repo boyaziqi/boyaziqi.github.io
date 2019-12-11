@@ -2,6 +2,7 @@
 <html lang="zh">
 <head>
 
+        <link rel="icon" type="image/x-icon" href="../theme/image/logo.ico" />
         <title>CatsAction blog - python装饰器</title>
         <meta charset="utf-8" />
 
@@ -28,17 +29,15 @@
         <div class="row">
 
           <header id="banner" class="body">
-                  <h1><a href="../">CatsAction blog <strong></strong></a></h1>
+                  <h1><a href="../">CatsAction blog <strong>一些学习笔记</strong></a></h1>
           </header><!-- /#banner -->
 
             <div id="navigation" class="navbar row">
               <a href="#" gumby-trigger="#navigation &gt; ul" class="toggle"><i class="icon-menu"></i></a>
-             
+
               <ul class="columns">
                 <li><a href="../">Home</a></li>
 
-                <li><a href="../pages/guan-yu-ben-zhan.html">关于本站</a></li>
-                <li><a href="../pages/guan-yu-wo.html">关于我</a></li>
 
               </ul>
             </div>
@@ -65,21 +64,21 @@
 <h4>1：不带参数的装饰器（函数）</h4>
 <div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">decorate</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;this is a decorate&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;this is a decorate&quot;</span><span class="p">)</span>
         <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">wrapper</span>
 
 <span class="nd">@decorate</span>
 <span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;this is test&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;this is test&quot;</span><span class="p">)</span>
 
 <span class="n">test</span><span class="p">()</span>
 </pre></div>
 
 
 <p><em>注意：调用方式是@decorate，后面不跟括号，加上括号就成调用带参数的生成器了。相当于<code>test = decorate(test)</code>。输出结果为：</em></p>
-<div class="highlight"><pre><span></span>this is a decorate
-this is test …</pre></div> </div><!-- /.entry-content -->
+<div class="highlight"><pre><span></span><span class="err">this is a decorate</span>
+<span class="err">this is test …</span></pre></div> </div><!-- /.entry-content -->
 
                                 <div class="medium primary btn"><a href="../pythonzhuang-shi-qi.html" rel="bookmark" title="Permalink to python装饰器">Read more <i class="icon-arrow-right"></i></a></div>
 
@@ -97,7 +96,7 @@ this is test …</pre></div> </div><!-- /.entry-content -->
 
         </div><!-- /.eleven.columns -->
         
-<div class="three columns">
+<div class="three columns" id="sidebar">
 
 <h4>Site</h4>
 
@@ -110,28 +109,13 @@ this is test …</pre></div> </div><!-- /.entry-content -->
 <a href="../categories.html"><h4>Categories</h4></a>
 <ul class="blank">
 		<li><a href="../category/git.html">git</a></li>
+		<li><a href="../category/golang.html">golang</a></li>
+		<li><a href="../category/http.html">http</a></li>
 		<li><a href="../category/js.html">js</a></li>
-		<li><a href="../category/mysql.html">mysql</a></li>
+		<li><a href="../category/linux.html">Linux</a></li>
 		<li><a href="../category/python.html">python</a></li>
+		<li><a href="../category/vim.html">vim</a></li>
 </ul>
-
-
-<a href="../tags.html"><h4>Tags</h4></a>
-	<ul class="blank">
-	    <li class="tag-pelican"><a href="../tag/pelican.html">pelican</a></li>
-	    <li class="tag-form"><a href="../tag/form.html">form</a></li>
-	    <li class="tag-group by"><a href="../tag/group-by.html">group by</a></li>
-	    <li class="tag-git page"><a href="../tag/git-page.html">git page</a></li>
-	    <li class="tag-onkeydown"><a href="../tag/onkeydown.html">onkeydown</a></li>
-	    <li class="tag-python装饰器"><a href="../tag/pythonzhuang-shi-qi.html">python装饰器</a></li>
-	    <li class="tag-js"><a href="../tag/js.html">js</a></li>
-	    <li class="tag-blog"><a href="../tag/blog.html">blog</a></li>
-	    <li class="tag-html"><a href="../tag/html.html">html</a></li>
-	    <li class="tag-sql"><a href="../tag/sql.html">sql</a></li>
-	    <li class="tag-jinjia2"><a href="../tag/jinjia2.html">jinjia2</a></li>
-	    <li class="tag-.gitignore"><a href="../tag/gitignore.html">.gitignore</a></li>
-</ul>
-
 
 <nav class="widget">
   <h4>Social</h4>

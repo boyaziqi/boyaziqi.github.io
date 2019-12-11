@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+
+        <link rel="icon" type="image/x-icon" href="./theme/image/logo.ico" />
+        <title>python类特殊方法</title>
+        <meta charset="utf-8" />
+
+
+        <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+        <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
+
+        <link rel="stylesheet" type="text/css" href="./theme/gumby.css" />
+        <link rel="stylesheet" type="text/css" href="./theme/style.css" />
+        <link rel="stylesheet" type="text/css" href="./theme/pygment.css" />
+
+        <script src="./theme/js/libs/modernizr-2.6.2.min.js"></script>
+
+
+
+
+</head>
+
+<body id="index" class="home">
+
+
+    <div class="container">
+
+        <div class="row">
+
+          <header id="banner" class="body">
+                  <h1><a href="./">CatsAction blog <strong>一些学习笔记</strong></a></h1>
+          </header><!-- /#banner -->
+
+            <div id="navigation" class="navbar row">
+              <a href="#" gumby-trigger="#navigation &gt; ul" class="toggle"><i class="icon-menu"></i></a>
+
+              <ul class="columns">
+                <li><a href="./">Home</a></li>
+
+
+              </ul>
+            </div>
+
+<section id="content" class="body">
+
+   <div class="row">
+        <div class="eleven columns">
+
+
+            <header>
+              <h2 class="entry-title">
+                <a href="./pythonlei-te-shu-fang-fa.html" rel="bookmark"
+                   title="Permalink to python类特殊方法">python类特殊方法</a></h2>
+           
+            </header>
+            <footer class="post-info">
+              <abbr class="published" title="2017-06-06T22:42:00+08:00">
+                2017-06-06  星期二
+              </abbr>
+              <address class="vcard author">By 
+                <a class="url fn" href="./author/catsaction.html"> CatsAction</a>
+              </address>
+            </footer><!-- /.post-info -->
+            <div class="entry-content">
+              <h4>__init__</h4>
+<p>__init__方法在定义实例的时候会被调用</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">test</span><span class="p">(</span><span class="nb">object</span><span class="p">);</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+
+<span class="k">class</span> <span class="nc">test1</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">test1</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+
+
+<p>执行上面的代码，会打印出10。说明在子类没有显示定义__init__方法时，在定义子类实例时，父类的__init__方法会自动被调用。
+不过如果子类定义__init__方法，定义子类实例时不会自动调用父类的__init__方法</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">test</span><span class="p">(</span><span class="nb">object</span><span class="p">);</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_x</span> <span class="o">=</span> <span class="n">x</span>
+
+<span class="k">class</span> <span class="nc">test1</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test1_x</span> <span class="o">=</span> <span class="n">x</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">test1</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">test_x</span><span class="p">)</span>
+</pre></div>
+
+
+<p>执行上面的代码，会产生如下异常，说明父类的__init__方法在定义实例时（准确的说是定义子类实例）未被调用。</p>
+<div class="highlight"><pre><span></span>AttributeError: tesst1 instance has no attribute <span class="s1">&#39;test_x&#39;</span>
+</pre></div>
+
+
+<h4>__new__</h4>
+<p><code>__new__</code>才是 Python 事实上的构造方法，而 <code>__init__</code> 更确切的说是初始化方法。<code>__new__</code> 会产生一个实例对象，再把这个实例对象传给<code>__init__</code> 绑定一些属性。
+因此 <code>__new__</code> 是一个类方法，虽然它没有加 classsmethod 装饰器。不过我们大部分时间都不要实现__new__ 方法，因为 Python 解释器会调用 object 对象的 <code>__new__</code> 给我们返回一个实例对象。</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">test</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+
+
+<h4>__call__</h4>
+<p>当一个类实现了__call__方法时，它的实例就是可调用的。即像函数一样使用。</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CallTest</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;sum:&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="nv">t</span> <span class="o">=</span> CallTest<span class="o">(</span><span class="s2">&quot;test&quot;</span><span class="o">)</span>
+t<span class="o">(</span><span class="m">1</span>,2<span class="o">)</span>
+</pre></div>
+
+
+<p>上面将会输出:</p>
+<div class="highlight"><pre><span></span><span class="nb">test</span>
+sum: <span class="m">3</span>
+</pre></div>
+
+
+<p>从输出结果我们可以看到，__init__在创建实例的时候被调用，用来初始化一些属性。而__call__在实例被像函数一样调用时被调用。</p>
+<blockquote>
+<p>python3中，类是type的实例，用dir(type)查看type的方法时，可以看见type实现了__call__方法，因此在定义类的时候会调用对应的__call__方法，这也是
+元类的工作方式。关于元类，可以查看我的其他文章。同样，函数也实现了__call__方法</p>
+</blockquote>
+<h4>__getitem__ __getattribute__ __getattr__</h4>
+<p>这里把三个属性放在一起讨论，方便区别</p>
+<ul>
+<li>__getitem__ 在a['a'] 时被调用</li>
+<li>__getattr__ 在某个实例属性不存在的时候被调用</li>
+<li>__getattribute__ 是无条件被调用.对任何对象的属性访问时,都会隐式的调用__getattribute__方法</li>
+</ul>
+            </div><!-- /.entry-content -->
+
+
+        </div><!-- /.eleven.columns -->
+
+<div class="three columns" id="sidebar">
+
+<h4>Site</h4>
+
+ <ul>
+      <li><a href="./archives.html">Archives</a></li>
+      <li><a href="./categories.html">Categories</a></li>
+      <li><a href="./tags.html">Tags</a></li>
+</ul>
+
+<a href="./categories.html"><h4>Categories</h4></a>
+<ul class="blank">
+		<li><a href="./category/git.html">git</a></li>
+		<li><a href="./category/golang.html">golang</a></li>
+		<li><a href="./category/http.html">http</a></li>
+		<li><a href="./category/js.html">js</a></li>
+		<li><a href="./category/linux.html">Linux</a></li>
+		<li><a href="./category/python.html">python</a></li>
+		<li><a href="./category/vim.html">vim</a></li>
+</ul>
+
+<nav class="widget">
+  <h4>Social</h4>
+  <ul class="blank">
+    <li><a href="https://github.com/boyaziqi">github</a></li>
+  </ul>
+</nav>
+
+</div> </div><!-- /.row -->
+
+
+</section>
+
+       </div><!-- /.row -->
+    </div><!-- /.container -->
+
+
+       <div class="container.nopad bg">
+
+
+        <footer id="credits" class="row">
+          <div class="seven columns">
+            <div class="row">
+              <ul class="socbtns">
+
+                <li><div class="btn primary"><a href="https://github.com/boyaziqi" target="_blank">Github</a></div></li>
+
+
+
+                <li><div class="btn danger"><a href="https://plus.google.com/u/0/" target="_blank">Google+</a></div></li>
+
+                <li><div class="btn facebook"><a href="http://weibo.com/boyziqi/home?wvr=5" target="_blank">新浪微博</a></div></li>
+
+                <li><div class="btn twitter"><a href="https://www.linkedin.com/feed/" target="_blank">linkedin</a></div></li>
+              </ul>
+            </div>
+          </div>
+        </footer>
+
+    </div>
+
+
+  <script src="./theme/js/libs/jquery-1.9.1.min.js"></script>
+  <script src="./theme/js/libs/gumby.min.js"></script>
+  <script src="./theme/js/plugins.js"></script>
+</body>
+</html>

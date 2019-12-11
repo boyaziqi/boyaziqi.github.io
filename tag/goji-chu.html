@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+
+        <link rel="icon" type="image/x-icon" href="../theme/image/logo.ico" />
+        <title>CatsAction blog - go基础</title>
+        <meta charset="utf-8" />
+
+
+        <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+        <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
+
+        <link rel="stylesheet" type="text/css" href="../theme/gumby.css" />
+        <link rel="stylesheet" type="text/css" href="../theme/style.css" />
+        <link rel="stylesheet" type="text/css" href="../theme/pygment.css" />
+
+        <script src="../theme/js/libs/modernizr-2.6.2.min.js"></script>
+
+
+
+
+</head>
+
+<body id="index" class="home">
+
+
+    <div class="container">
+
+        <div class="row">
+
+          <header id="banner" class="body">
+                  <h1><a href="../">CatsAction blog <strong>一些学习笔记</strong></a></h1>
+          </header><!-- /#banner -->
+
+            <div id="navigation" class="navbar row">
+              <a href="#" gumby-trigger="#navigation &gt; ul" class="toggle"><i class="icon-menu"></i></a>
+
+              <ul class="columns">
+                <li><a href="../">Home</a></li>
+
+
+              </ul>
+            </div>
+
+<section id="content">
+
+
+
+   <div class="row">
+
+
+        <div class="eleven columns">
+                 <ol id="post-list">
+                        <li><article class="hentry">
+                                <header> <h2 class="entry-title"><a href="../go-xiang-guan-te-xing-zong-jie.html" rel="bookmark" title="Permalink to Go 相关特性总结">Go 相关特性总结</a></h2> </header>
+                                <footer class="post-info">
+                                    <abbr class="published" title="2018-02-17T00:00:00+08:00"> 2018-02-17  星期六 </abbr>
+                                    <address class="vcard author">By 
+                                    <a class="url fn" href="../author/catsaction.html"> CatsAction</a>
+                                    </address>
+                                </footer><!-- /.post-info -->
+                                <div class="entry-content"> <h3>1：不能为结构体字面量直接赋值</h3>
+<div class="highlight"><pre><span></span><span class="kd">type</span> <span class="nx">Point</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">x</span> <span class="kt">int</span>
+    <span class="nx">y</span> <span class="kt">int</span>
+<span class="p">}</span>
+<span class="c1">// 错误</span>
+<span class="nx">Point</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">}.</span><span class="nx">x</span> <span class="p">=</span> <span class="mi">12</span>
+
+<span class="c1">// 正确</span>
+<span class="kd">var</span> <span class="nx">p</span> <span class="p">=</span> <span class="nx">Point</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">}</span>
+<span class="nx">p</span><span class="p">.</span><span class="nx">x</span> <span class="p">=</span> <span class="mi">12</span>
+<span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+</pre></div>
+
+
+<blockquote>
+<p>查看相关文档，总结出来的规律是不能为不能取地址的字面量赋值，因为还没赋值给变量，不能获取相关地址，指向不明确</p>
+</blockquote>
+<h3>2：map 类型的元素不能直接取地址</h3>
+<p><em>官方的解释是元素可能因为 map 大小的改变重新映射，导致地址改变</em></p>
+<div class="highlight"><pre><span></span><span class="kd">type</span> <span class="nx">Point</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">x</span> <span class="kt">int</span>
+    <span class="nx">y</span> <span class="kt">int</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">l</span> <span class="p">=</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string …</span></pre></div> </div><!-- /.entry-content -->
+
+                                <div class="medium primary btn"><a href="../go-xiang-guan-te-xing-zong-jie.html" rel="bookmark" title="Permalink to Go 相关特性总结">Read more <i class="icon-arrow-right"></i></a></div>
+
+
+
+                                <div class="row tag-row">
+                                        <span>Tagged as : </span>
+                                            <a class="danger label" href="../tag/goji-chu.html">go基础</a>
+                                </div>
+
+
+
+                        </article></li>
+                </ol><!-- /#posts-list -->
+
+        </div><!-- /.eleven.columns -->
+        
+<div class="three columns" id="sidebar">
+
+<h4>Site</h4>
+
+ <ul>
+      <li><a href="../archives.html">Archives</a></li>
+      <li><a href="../categories.html">Categories</a></li>
+      <li><a href="../tags.html">Tags</a></li>
+</ul>
+
+<a href="../categories.html"><h4>Categories</h4></a>
+<ul class="blank">
+		<li><a href="../category/git.html">git</a></li>
+		<li><a href="../category/golang.html">golang</a></li>
+		<li><a href="../category/http.html">http</a></li>
+		<li><a href="../category/js.html">js</a></li>
+		<li><a href="../category/linux.html">Linux</a></li>
+		<li><a href="../category/python.html">python</a></li>
+		<li><a href="../category/vim.html">vim</a></li>
+</ul>
+
+<nav class="widget">
+  <h4>Social</h4>
+  <ul class="blank">
+    <li><a href="https://github.com/boyaziqi">github</a></li>
+  </ul>
+</nav>
+
+</div> </div><!-- /.row -->
+
+<p class="paginator">
+    Page 1 / 1
+</p>
+</section><!-- /#content -->
+
+       </div><!-- /.row -->
+    </div><!-- /.container -->
+
+
+       <div class="container.nopad bg">
+
+
+        <footer id="credits" class="row">
+          <div class="seven columns">
+            <div class="row">
+              <ul class="socbtns">
+
+                <li><div class="btn primary"><a href="https://github.com/boyaziqi" target="_blank">Github</a></div></li>
+
+
+
+                <li><div class="btn danger"><a href="https://plus.google.com/u/0/" target="_blank">Google+</a></div></li>
+
+                <li><div class="btn facebook"><a href="http://weibo.com/boyziqi/home?wvr=5" target="_blank">新浪微博</a></div></li>
+
+                <li><div class="btn twitter"><a href="https://www.linkedin.com/feed/" target="_blank">linkedin</a></div></li>
+              </ul>
+            </div>
+          </div>
+        </footer>
+
+    </div>
+
+
+  <script src="../theme/js/libs/jquery-1.9.1.min.js"></script>
+  <script src="../theme/js/libs/gumby.min.js"></script>
+  <script src="../theme/js/plugins.js"></script>
+</body>
+</html>

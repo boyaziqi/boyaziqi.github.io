@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+
+        <link rel="icon" type="image/x-icon" href="../theme/image/logo.ico" />
+        <title>CatsAction blog</title>
+        <meta charset="utf-8" />
+
+
+        <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+        <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
+
+        <link rel="stylesheet" type="text/css" href="../theme/gumby.css" />
+        <link rel="stylesheet" type="text/css" href="../theme/style.css" />
+        <link rel="stylesheet" type="text/css" href="../theme/pygment.css" />
+
+        <script src="../theme/js/libs/modernizr-2.6.2.min.js"></script>
+
+
+
+
+</head>
+
+<body id="index" class="home">
+
+
+    <div class="container">
+
+        <div class="row">
+
+          <header id="banner" class="body">
+                  <h1><a href="../">CatsAction blog <strong>一些学习笔记</strong></a></h1>
+          </header><!-- /#banner -->
+
+            <div id="navigation" class="navbar row">
+              <a href="#" gumby-trigger="#navigation &gt; ul" class="toggle"><i class="icon-menu"></i></a>
+
+              <ul class="columns">
+                <li><a href="../">Home</a></li>
+
+
+              </ul>
+            </div>
+
+<section id="content">
+<h2>Articles in the python category</h2>
+
+
+   <div class="row">
+
+
+        <div class="eleven columns">
+                 <ol id="post-list">
+                        <li><article class="hentry">
+                                <header> <h2 class="entry-title"><a href="../python-xin-shi-lei-he-jiu-shi-lei-de-yi-xie-li-jie.html" rel="bookmark" title="Permalink to python 新式类和旧式类的一些理解">python 新式类和旧式类的一些理解</a></h2> </header>
+                                <footer class="post-info">
+                                    <abbr class="published" title="2017-10-18T10:37:00+08:00"> 2017-10-18  星期三 </abbr>
+                                    <address class="vcard author">By 
+                                    <a class="url fn" href="../author/catsaction.html"> CatsAction</a>
+                                    </address>
+                                </footer><!-- /.post-info -->
+                                <div class="entry-content"> <blockquote>
+<p>下面是两个类,一个新式类，一个旧式类</p>
+</blockquote>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">OldClass</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">NewClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">old_instance</span> <span class="o">=</span> <span class="n">OldClass</span><span class="p">()</span>
+<span class="n">new_instance</span> <span class="o">=</span> <span class="n">NewClass</span><span class="p">()</span>
+</pre></div>
+
+
+<blockquote>
+<p>下面是我在ipython运行测试的结果</p>
+</blockquote>
+<div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">15</span><span class="p">]:</span> <span class="k">class</span> <span class="nc">OldClass</span><span class="p">():</span>
+    <span class="o">...</span><span class="p">:</span>     <span class="k">pass</span>
+    <span class="o">...</span><span class="p">:</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">16</span><span class="p">]:</span> <span class="k">class</span> <span class="nc">NewClass</span><span class="p">():</span>
+    <span class="o">...</span><span class="p">:</span>     <span class="k">pass</span>
+    <span class="o">...</span><span class="p">:</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">17</span><span class="p">]:</span> <span class="n">old_instance</span> <span class="o">=</span> <span class="n">OldClass</span><span class="p">()</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">18</span><span class="p">]:</span> <span class="n">new_instance</span> <span class="o">=</span> <span class="n">NewClass</span><span class="p">()</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">19</span><span class="p">]:</span> <span class="nb">type</span><span class="p">(</span><span class="n">old_instance</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">19</span><span class="p">]:</span> <span class="n">instance</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">23</span><span class="p">]:</span> <span class="nb">type</span><span class="p">(</span><span class="n">new_instance</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">23</span><span class="p">]:</span> <span class="n">__main__</span><span class="o">.</span><span class="n">NewClass</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">24 …</span></pre></div> </div><!-- /.entry-content -->
+
+                                <div class="medium primary btn"><a href="../python-xin-shi-lei-he-jiu-shi-lei-de-yi-xie-li-jie.html" rel="bookmark" title="Permalink to python 新式类和旧式类的一些理解">Read more <i class="icon-arrow-right"></i></a></div>
+
+
+
+                                <div class="row tag-row">
+                                </div>
+
+
+
+                        </article></li>
+                        <li><article class="hentry">
+                                <header> <h2 class="entry-title"><a href="../pythonlei-te-shu-fang-fa.html" rel="bookmark" title="Permalink to python类特殊方法">python类特殊方法</a></h2> </header>
+                                <footer class="post-info">
+                                    <abbr class="published" title="2017-06-06T22:42:00+08:00"> 2017-06-06  星期二 </abbr>
+                                    <address class="vcard author">By 
+                                    <a class="url fn" href="../author/catsaction.html"> CatsAction</a>
+                                    </address>
+                                </footer><!-- /.post-info -->
+                                <div class="entry-content"> <h4>__init__</h4>
+<p>__init__方法在定义实例的时候会被调用</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">test</span><span class="p">(</span><span class="nb">object</span><span class="p">);</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+
+<span class="k">class</span> <span class="nc">test1</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">test1</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+
+
+<p>执行上面的代码，会打印出10。说明在子类没有显示定义__init__方法时，在定义子类实例时，父类的__init__方法会自动被调用。
+不过如果子类定义__init__方法，定义子类实例时不会自动调用父类的__init__方法</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">test</span><span class="p">(</span><span class="nb">object</span><span class="p">);</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_x</span> <span class="o">=</span> <span class="n">x</span>
+
+<span class="k">class</span> <span class="nc">test1</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test1_x</span> <span class="o">=</span> <span class="n">x</span>
+
+<span class="n">t …</span></pre></div> </div><!-- /.entry-content -->
+
+                                <div class="medium primary btn"><a href="../pythonlei-te-shu-fang-fa.html" rel="bookmark" title="Permalink to python类特殊方法">Read more <i class="icon-arrow-right"></i></a></div>
+
+
+
+                                <div class="row tag-row">
+                                        <span>Tagged as : </span>
+                                            <a class="danger label" href="../tag/__call__.html">__call__</a>
+                                </div>
+
+
+
+                        </article></li>
+                        <li><article class="hentry">
+                                <header> <h2 class="entry-title"><a href="../pythonzhuang-shi-qi.html" rel="bookmark" title="Permalink to python装饰器">python装饰器</a></h2> </header>
+                                <footer class="post-info">
+                                    <abbr class="published" title="2017-04-05T17:50:00+08:00"> 2017-04-05  星期三 </abbr>
+                                    <address class="vcard author">By 
+                                    <a class="url fn" href="../author/catsaction.html"> CatsAction</a>
+                                    </address>
+                                </footer><!-- /.post-info -->
+                                <div class="entry-content"> <p>装饰器的定义就不冗述了，它可以是函数，也可以是类。可以带参数。接下来分别介绍：
+<br></p>
+<h4>1：不带参数的装饰器（函数）</h4>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">decorate</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;this is a decorate&quot;</span><span class="p">)</span>
+        <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
+
+<span class="nd">@decorate</span>
+<span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;this is test&quot;</span><span class="p">)</span>
+
+<span class="n">test</span><span class="p">()</span>
+</pre></div>
+
+
+<p><em>注意：调用方式是@decorate，后面不跟括号，加上括号就成调用带参数的生成器了。相当于<code>test = decorate(test)</code>。输出结果为：</em></p>
+<div class="highlight"><pre><span></span><span class="err">this is a decorate</span>
+<span class="err">this is test …</span></pre></div> </div><!-- /.entry-content -->
+
+                                <div class="medium primary btn"><a href="../pythonzhuang-shi-qi.html" rel="bookmark" title="Permalink to python装饰器">Read more <i class="icon-arrow-right"></i></a></div>
+
+
+
+                                <div class="row tag-row">
+                                        <span>Tagged as : </span>
+                                            <a class="danger label" href="../tag/pythonzhuang-shi-qi.html">python装饰器</a>
+                                </div>
+
+
+
+                        </article></li>
+                        <li><article class="hentry">
+                                <header> <h2 class="entry-title"><a href="../tornadolu-you-zhuang-shi-qi.html" rel="bookmark" title="Permalink to tornado路由装饰器">tornado路由装饰器</a></h2> </header>
+                                <footer class="post-info">
+                                    <abbr class="published" title="2016-08-17T00:00:00+08:00"> 2016-08-17  星期三 </abbr>
+                                    <address class="vcard author">By 
+                                    <a class="url fn" href="../author/catsaction.html"> CatsAction</a>
+                                    </address>
+                                </footer><!-- /.post-info -->
+                                <div class="entry-content"> <p>我们知道，tornado启动时通过Application类加载handler，并实现handler的对应关系，即所谓URL路由。
+下面是<a href="http://demo.pythoner.com/itt2zh/ch1.html#ch1-1-1">tornado入门里的一个简单示例</a></p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tornado.httpserver</span>
+<span class="kn">import</span> <span class="nn">tornado.ioloop</span>
+<span class="kn">import</span> <span class="nn">tornado.options</span>
+<span class="kn">import</span> <span class="nn">tornado.web</span>
+
+<span class="kn">from</span> <span class="nn">tornado.options</span> <span class="kn">import</span> <span class="n">define</span><span class="p">,</span> <span class="n">options</span>
+<span class="n">define</span><span class="p">(</span><span class="s2">&quot;port&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">8000</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;run on the given port&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">IndexHandler</span><span class="p">(</span><span class="n">tornado</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">RequestHandler</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">greeting</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="s1">&#39;greeting&#39;</span><span class="p">,</span> <span class="s1">&#39;Hello&#39;</span><span class="p">)</span>
+        <span class="bp">self …</span></pre></div> </div><!-- /.entry-content -->
+
+                                <div class="medium primary btn"><a href="../tornadolu-you-zhuang-shi-qi.html" rel="bookmark" title="Permalink to tornado路由装饰器">Read more <i class="icon-arrow-right"></i></a></div>
+
+
+
+                                <div class="row tag-row">
+                                        <span>Tagged as : </span>
+                                            <a class="danger label" href="../tag/tornado.html">tornado</a>
+                                            <a class="danger label" href="../tag/urllu-you.html">url路由</a>
+                                </div>
+
+
+
+                        </article></li>
+                        <li><article class="hentry">
+                                <header> <h2 class="entry-title"><a href="../shi-yong-fabricyuan-cheng-bu-shu-dai-ma.html" rel="bookmark" title="Permalink to 使用fabric远程部署代码">使用fabric远程部署代码</a></h2> </header>
+                                <footer class="post-info">
+                                    <abbr class="published" title="2016-05-03T00:00:00+08:00"> 2016-05-03  星期二 </abbr>
+                                    <address class="vcard author">By 
+                                    <a class="url fn" href="../author/catsaction.html"> CatsAction</a>
+                                    </address>
+                                </footer><!-- /.post-info -->
+                                <div class="entry-content"> <h4>1：安装</h4>
+<div class="highlight"><pre><span></span>pip install fabric
+</pre></div>
+
+
+<h4>2：基本使用</h4>
+<p>在项目目录下新建fabfile.py文件，写入如下代码。fab的所有任务均写在fabfile.py文件或者fabfile包目录中（含有__init__.py）</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="k">def</span> <span class="nf">uname</span><span class="p">():</span>
+    <span class="n">local</span><span class="p">(</span><span class="s2">&quot;uname -s&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<h4>3：在远程机器上执行</h4>
+<p>在远程机器上执行，需要把local换成run。</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="k">def</span> <span class="nf">uname</span><span class="p">():</span>
+    <span class="n">run</span><span class="p">(</span><span class="s2">&quot;uname -s&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>$ fab uname
+</pre></div>
+
+
+<p>运行这个命令，会让你输入远程机器的名字。然后在指定的机器上执行uname -s</p>
+<h4>4：指定主机</h4>
+<p>可以通过env.hosts指定。env是一个dict子类，可以像操作字典一样访问它，也可以想类一样直接访问它的属性。</p>
+<div class="highlight"><pre><span></span><span class="kn">from …</span></pre></div> </div><!-- /.entry-content -->
+
+                                <div class="medium primary btn"><a href="../shi-yong-fabricyuan-cheng-bu-shu-dai-ma.html" rel="bookmark" title="Permalink to 使用fabric远程部署代码">Read more <i class="icon-arrow-right"></i></a></div>
+
+
+
+                                <div class="row tag-row">
+                                        <span>Tagged as : </span>
+                                            <a class="danger label" href="../tag/fab.html">fab</a>
+                                            <a class="danger label" href="../tag/zi-dong-hua-yun-wei.html">自动化运维</a>
+                                </div>
+
+
+
+                        </article></li>
+                </ol><!-- /#posts-list -->
+
+        </div><!-- /.eleven.columns -->
+        
+<div class="three columns" id="sidebar">
+
+<h4>Site</h4>
+
+ <ul>
+      <li><a href="../archives.html">Archives</a></li>
+      <li><a href="../categories.html">Categories</a></li>
+      <li><a href="../tags.html">Tags</a></li>
+</ul>
+
+<a href="../categories.html"><h4>Categories</h4></a>
+<ul class="blank">
+		<li><a href="../category/git.html">git</a></li>
+		<li><a href="../category/golang.html">golang</a></li>
+		<li><a href="../category/http.html">http</a></li>
+		<li><a href="../category/js.html">js</a></li>
+		<li><a href="../category/linux.html">Linux</a></li>
+		<li><a href="../category/python.html">python</a></li>
+		<li><a href="../category/vim.html">vim</a></li>
+</ul>
+
+<nav class="widget">
+  <h4>Social</h4>
+  <ul class="blank">
+    <li><a href="https://github.com/boyaziqi">github</a></li>
+  </ul>
+</nav>
+
+</div> </div><!-- /.row -->
+
+<p class="paginator">
+            <a href="../category/python.html"><i class="icon-arrow-left"></i></a>
+    Page 2 / 3
+        <a href="../category/python3.html"><i class="icon-arrow-right"></i></a>
+</p>
+</section><!-- /#content -->
+
+       </div><!-- /.row -->
+    </div><!-- /.container -->
+
+
+       <div class="container.nopad bg">
+
+
+        <footer id="credits" class="row">
+          <div class="seven columns">
+            <div class="row">
+              <ul class="socbtns">
+
+                <li><div class="btn primary"><a href="https://github.com/boyaziqi" target="_blank">Github</a></div></li>
+
+
+
+                <li><div class="btn danger"><a href="https://plus.google.com/u/0/" target="_blank">Google+</a></div></li>
+
+                <li><div class="btn facebook"><a href="http://weibo.com/boyziqi/home?wvr=5" target="_blank">新浪微博</a></div></li>
+
+                <li><div class="btn twitter"><a href="https://www.linkedin.com/feed/" target="_blank">linkedin</a></div></li>
+              </ul>
+            </div>
+          </div>
+        </footer>
+
+    </div>
+
+
+  <script src="../theme/js/libs/jquery-1.9.1.min.js"></script>
+  <script src="../theme/js/libs/gumby.min.js"></script>
+  <script src="../theme/js/plugins.js"></script>
+</body>
+</html>

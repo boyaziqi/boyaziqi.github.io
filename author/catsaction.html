@@ -2,6 +2,7 @@
 <html lang="zh">
 <head>
 
+        <link rel="icon" type="image/x-icon" href="../theme/image/logo.ico" />
         <title>CatsAction blog - Articles by CatsAction</title>
         <meta charset="utf-8" />
 
@@ -28,17 +29,15 @@
         <div class="row">
 
           <header id="banner" class="body">
-                  <h1><a href="../">CatsAction blog <strong></strong></a></h1>
+                  <h1><a href="../">CatsAction blog <strong>一些学习笔记</strong></a></h1>
           </header><!-- /#banner -->
 
             <div id="navigation" class="navbar row">
               <a href="#" gumby-trigger="#navigation &gt; ul" class="toggle"><i class="icon-menu"></i></a>
-             
+
               <ul class="columns">
                 <li><a href="../">Home</a></li>
 
-                <li><a href="../pages/guan-yu-ben-zhan.html">关于本站</a></li>
-                <li><a href="../pages/guan-yu-wo.html">关于我</a></li>
 
               </ul>
             </div>
@@ -53,194 +52,203 @@
         <div class="eleven columns">
                  <ol id="post-list">
                         <li><article class="hentry">
-                                <header> <h2 class="entry-title"><a href="../pythonzhuang-shi-qi.html" rel="bookmark" title="Permalink to python装饰器">python装饰器</a></h2> </header>
+                                <header> <h2 class="entry-title"><a href="../python-yi-chang-wen-ti-hui-zong.html" rel="bookmark" title="Permalink to Python 异常问题汇总">Python 异常问题汇总</a></h2> </header>
                                 <footer class="post-info">
-                                    <abbr class="published" title="2017-04-05T17:50:00+08:00"> 2017-04-05  星期三 </abbr>
+                                    <abbr class="published" title="2018-04-24T11:20:20+08:00"> 2018-04-24  星期二 </abbr>
                                     <address class="vcard author">By 
                                     <a class="url fn" href="../author/catsaction.html"> CatsAction</a>
                                     </address>
                                 </footer><!-- /.post-info -->
-                                <div class="entry-content"> <p>装饰器的定义就不冗述了，它可以是函数，也可以是类。可以带参数。接下来分别介绍：
-<br></p>
-<h4>1：不带参数的装饰器（函数）</h4>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">decorate</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;this is a decorate&quot;</span><span class="p">)</span>
-        <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">wrapper</span>
+                                <div class="entry-content"> <h4>问题一：TypeError: object() takes no parameters</h4>
+<p>最近在测试 Python 的 <code>__new__</code> 方法时，我写了如下验证代码</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">test</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;this is a init method&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span>
 
-<span class="nd">@decorate</span>
-<span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;this is test&quot;</span><span class="p">)</span>
-
-<span class="n">test</span><span class="p">()</span>
-</pre></div>
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;this is a new method&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
-<p><em>注意：调用方式是@decorate，后面不跟括号，加上括号就成调用带参数的生成器了。相当于<code>test = decorate(test)</code>。输出结果为：</em></p>
-<div class="highlight"><pre><span></span>this is a decorate
-this is test …</pre></div> </div><!-- /.entry-content -->
+<span class="n">t</span> <span class="o">=</span> <span class="n">test</span><span class="p">(</span><span class="mi">12 …</span></pre></div> </div><!-- /.entry-content -->
 
-                                <div class="medium primary btn"><a href="../pythonzhuang-shi-qi.html" rel="bookmark" title="Permalink to python装饰器">Read more <i class="icon-arrow-right"></i></a></div>
+                                <div class="medium primary btn"><a href="../python-yi-chang-wen-ti-hui-zong.html" rel="bookmark" title="Permalink to Python 异常问题汇总">Read more <i class="icon-arrow-right"></i></a></div>
 
 
 
                                 <div class="row tag-row">
                                         <span>Tagged as : </span>
-                                            <a class="danger label" href="../tag/pythonzhuang-shi-qi.html">python装饰器</a>
+                                            <a class="danger label" href="../tag/python-yi-chang.html">Python 异常</a>
                                 </div>
 
 
 
                         </article></li>
                         <li><article class="hentry">
-                                <header> <h2 class="entry-title"><a href="../mysql-sqlzhi-group-by.html" rel="bookmark" title="Permalink to Mysql SQL之group by">Mysql SQL之group by</a></h2> </header>
+                                <header> <h2 class="entry-title"><a href="../python-mo-ren-can-shu.html" rel="bookmark" title="Permalink to Python 默认参数">Python 默认参数</a></h2> </header>
                                 <footer class="post-info">
-                                    <abbr class="published" title="2017-04-01T00:00:00+08:00"> 2017-04-01  星期六 </abbr>
+                                    <abbr class="published" title="2018-03-22T11:56:00+08:00"> 2018-03-22  星期四 </abbr>
                                     <address class="vcard author">By 
                                     <a class="url fn" href="../author/catsaction.html"> CatsAction</a>
                                     </address>
                                 </footer><!-- /.post-info -->
-                                <div class="entry-content"> <p>group by用来对数据进行分组，如果不止一条数据，则会返回第一条。</p>
-<h3>1：group by语法</h3>
-<div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="o">`</span><span class="k">table</span><span class="o">`</span>
-<span class="k">WHERE</span> <span class="o">`</span><span class="n">id</span><span class="o">`=</span><span class="mi">12</span>
-<span class="k">GROUP</span> <span class="k">BY</span> <span class="o">`</span><span class="n">id</span><span class="o">`</span>
-</pre></div> </div><!-- /.entry-content -->
+                                <div class="entry-content"> <p>python 默认值的陷阱</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="p">[]):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+        <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+</pre></div>
 
-                                <div class="medium primary btn"><a href="../mysql-sqlzhi-group-by.html" rel="bookmark" title="Permalink to Mysql SQL之group by">Read more <i class="icon-arrow-right"></i></a></div>
+
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">test</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">test</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">test</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+
+<p>输出结果</p>
+<div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+
+<p>最后一行为什么是<code>[0, 1, 0, 1, 2]</code>, 而不是期望中的<code>[0, 1, 2]</code> ？<br>
+官方文档是这样解释的</p>
+<blockquote>
+<p>Default values are computed once …</p></blockquote> </div><!-- /.entry-content -->
+
+                                <div class="medium primary btn"><a href="../python-mo-ren-can-shu.html" rel="bookmark" title="Permalink to Python 默认参数">Read more <i class="icon-arrow-right"></i></a></div>
 
 
 
                                 <div class="row tag-row">
                                         <span>Tagged as : </span>
-                                            <a class="danger label" href="../tag/group-by.html">group by</a>
-                                            <a class="danger label" href="../tag/sql.html">sql</a>
+                                            <a class="danger label" href="../tag/default-arg.html">default arg</a>
                                 </div>
 
 
 
                         </article></li>
                         <li><article class="hentry">
-                                <header> <h2 class="entry-title"><a href="../jin-zhi-inputshu-ru-kuang-hui-che-zi-dong-ti-jiao-biao-dan.html" rel="bookmark" title="Permalink to 禁止input输入框回车自动提交表单">禁止input输入框回车自动提交表单</a></h2> </header>
+                                <header> <h2 class="entry-title"><a href="../guan-yu-sublime-text3shi-yong-zhong-de-yi-xie-ji-lu.html" rel="bookmark" title="Permalink to 关于sublime text3使用中的一些记录">关于sublime text3使用中的一些记录</a></h2> </header>
                                 <footer class="post-info">
-                                    <abbr class="published" title="2015-05-01T00:00:00+08:00"> 2015-05-01  星期五 </abbr>
+                                    <abbr class="published" title="2018-03-20T15:22:00+08:00"> 2018-03-20  星期二 </abbr>
                                     <address class="vcard author">By 
                                     <a class="url fn" href="../author/catsaction.html"> CatsAction</a>
                                     </address>
                                 </footer><!-- /.post-info -->
-                                <div class="entry-content"> <p>最近在做项目的时候，发现一个小bug。input输入框回车直接提交表单，导致页面直接展示后端返回的json数据，而未执行相应的js跳转页面。</p>
-<div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;xxxxx&quot;</span><span class="p">:</span> <span class="s2">&quot;xxxxxxx&quot;</span><span class="p">,</span> <span class="nt">&quot;yyyyyyy&quot;</span><span class="p">:</span> <span class="s2">&quot;yyyyyyyy&quot;</span><span class="p">},</span> <span class="nt">&quot;success&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span><span class="p">}</span>
-</pre></div>
+                                <div class="entry-content"> <h4>1. 最新安装 Package Control</h4>
+<ul>
+<li>现在sublime text首次使用 Package Control，会自动安装。不用再调用 console 执行命令</li>
+</ul>
+<h4>2. 安装主题</h4>
+<p>可直接通过Cackage Control 安装
+- <a href="https://packagecontrol.io/packages/Theme%20-%20Soda">Soda</a>
+- <a href="https://packagecontrol.io/packages/Theme%20-%20Flatland">Flatland</a></p>
+<h4>3. 自定义设置</h4>
+<ul>
+<li>添加自定义设置 (Preference -&gt; Settings)</li>
+<li>语法自定义设置 (Preference -&gt; Settings -&gt; Syntax Specific)</li>
+</ul>
+<h4>4. 安装代码自动补全扩展</h4>
+<ul>
+<li>我比较喜欢 <code>SublimeCodeIntel</code>。主要是因为它比较轻量，而且支持多种语言，不需要在单独安装相关依赖库</li>
+</ul>
+<p>可以参考<a href="http://python.jobbole.com/81312/">将Sublime Text 3设置为Python全栈开发环境</a></p> </div><!-- /.entry-content -->
 
-
-<p>解决方法是为keydown事件指定返回值。如下：</p>
-<div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">form</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;vehicle-selection&quot;</span> <span class="na">action</span><span class="o">=</span><span class="s">&quot;/selection&quot;</span> <span class="na">method</span><span class="o">=</span><span class="s">&quot;POST&quot;</span> <span class="na">onkeydown</span><span class="o">=</span><span class="s">&quot;if(event.keyCode==13){return false}&quot;</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;nature&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;211&quot;</span><span class="p">&gt;</span>
-......
-<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
-</pre></div>
-
-
-<p>通过keyCode==13判断是否回车键</p> </div><!-- /.entry-content -->
-
-                                <div class="medium primary btn"><a href="../jin-zhi-inputshu-ru-kuang-hui-che-zi-dong-ti-jiao-biao-dan.html" rel="bookmark" title="Permalink to 禁止input输入框回车自动提交表单">Read more <i class="icon-arrow-right"></i></a></div>
+                                <div class="medium primary btn"><a href="../guan-yu-sublime-text3shi-yong-zhong-de-yi-xie-ji-lu.html" rel="bookmark" title="Permalink to 关于sublime text3使用中的一些记录">Read more <i class="icon-arrow-right"></i></a></div>
 
 
 
                                 <div class="row tag-row">
                                         <span>Tagged as : </span>
-                                            <a class="danger label" href="../tag/form.html">form</a>
-                                            <a class="danger label" href="../tag/js.html">js</a>
-                                            <a class="danger label" href="../tag/onkeydown.html">onkeydown</a>
+                                            <a class="danger label" href="../tag/sublime-text3.html">sublime text3</a>
                                 </div>
 
 
 
                         </article></li>
                         <li><article class="hentry">
-                                <header> <h2 class="entry-title"><a href="../guan-yu-pelican-zhu-ti-gum-bugde-chu-li.html" rel="bookmark" title="Permalink to 关于pelican 主题gum bug的处理">关于pelican 主题gum bug的处理</a></h2> </header>
+                                <header> <h2 class="entry-title"><a href="../python-she-ji-mo-shi-zong-jie.html" rel="bookmark" title="Permalink to Python 设计模式总结">Python 设计模式总结</a></h2> </header>
                                 <footer class="post-info">
-                                    <abbr class="published" title="2015-01-05T00:00:00+08:00"> 2015-01-05  星期一 </abbr>
+                                    <abbr class="published" title="2018-03-10T22:52:00+08:00"> 2018-03-10  星期六 </abbr>
                                     <address class="vcard author">By 
                                     <a class="url fn" href="../author/catsaction.html"> CatsAction</a>
                                     </address>
                                 </footer><!-- /.post-info -->
-                                <div class="entry-content"> <p>最近在用pelican搭建个人静态博客时，在安装主题时，发现官方提供的主题gum不能正常渲染出tags和pages，下面简单记录处理过程。想了解pelican的安装，可以查看我的<a href="../pelicanan-zhuang-yu-bu-shu.html">pelican安装与部署</a></p>
-<h4>1：安装pelican主题</h4>
-<p>下面以安装gum为例</p>
-<div class="highlight"><pre><span></span>git clone https://github.com/getpelican/pelican-themes.git
-cp -r ~/pelican-themes/gum /you-blog-directory
+                                <div class="entry-content"> <h3>单例模式</h3>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Singleton</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;_insurance&#39;</span><span class="p">):</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_insurance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Singleton</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span>
+                <span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_insurance</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">s1</span> <span class="o">=</span> <span class="n">Singleton</span><span class="p">()</span>
+    <span class="n">s2</span> <span class="o">=</span> <span class="n">Singleton</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">s1</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span>
 </pre></div>
 
 
-<p>接下来在配置文件pelicanconf.py中指定主题<code>theme = gum</code>。其实可以不用把主题复制到你的博客目录，你只需在theme后指定主题所在目录，让pelican正确解析到就行。不过为了修改和git版本跟踪，这里把它复制到博客目录。</p>
-<h4>2：gum主题tags和pages的渲染问题。</h4>
-<p>找到gum模板文件sidebar.html。发现它把pages写成PAGES了，导致侧边栏Pages总未展示。官方主题有好几个都有这个问题，我估计是仿照一个主题写的缘故。</p>
-<div class="highlight"><pre><span></span><span class="nt">&lt;h4&gt;</span>Tags<span class="nt">&lt;/h4&gt;</span>
-<span class="cp">{%</span> <span class="k">if</span> <span class="nv">tags</span> <span class="cp">%}</span>
-    <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">&quot;blank&quot;</span><span class="nt">&gt;</span>
-    <span class="cp">{%</span> <span class="k">for</span> <span class="nv">tag …</span></pre></div> </div><!-- /.entry-content -->
+<p>输出结果</p>
+<div class="highlight"><pre><span></span>&lt;__main__.Singleton object at 0x1019f6320&gt;
+&lt;__main__.Singleton object at 0x1019f6320&gt;
+</pre></div>
 
-                                <div class="medium primary btn"><a href="../guan-yu-pelican-zhu-ti-gum-bugde-chu-li.html" rel="bookmark" title="Permalink to 关于pelican 主题gum bug的处理">Read more <i class="icon-arrow-right"></i></a></div>
+
+<p>每个人的输出结果可能不一样，但他们应当相等 …</p> </div><!-- /.entry-content -->
+
+                                <div class="medium primary btn"><a href="../python-she-ji-mo-shi-zong-jie.html" rel="bookmark" title="Permalink to Python 设计模式总结">Read more <i class="icon-arrow-right"></i></a></div>
 
 
 
                                 <div class="row tag-row">
                                         <span>Tagged as : </span>
-                                            <a class="danger label" href="../tag/pelican.html">pelican</a>
-                                            <a class="danger label" href="../tag/blog.html">blog</a>
-                                            <a class="danger label" href="../tag/jinjia2.html">jinjia2</a>
-                                            <a class="danger label" href="../tag/html.html">html</a>
+                                            <a class="danger label" href="../tag/she-ji-mo-shi.html">设计模式</a>
                                 </div>
 
 
 
                         </article></li>
                         <li><article class="hentry">
-                                <header> <h2 class="entry-title"><a href="../pelicanan-zhuang-yu-bu-shu.html" rel="bookmark" title="Permalink to pelican安装与部署">pelican安装与部署</a></h2> </header>
+                                <header> <h2 class="entry-title"><a href="../python-super-han-shu-de-li-jie.html" rel="bookmark" title="Permalink to Python super 函数的理解">Python super 函数的理解</a></h2> </header>
                                 <footer class="post-info">
-                                    <abbr class="published" title="2015-01-02T00:00:00+08:00"> 2015-01-02  星期五 </abbr>
+                                    <abbr class="published" title="2018-03-10T21:12:00+08:00"> 2018-03-10  星期六 </abbr>
                                     <address class="vcard author">By 
                                     <a class="url fn" href="../author/catsaction.html"> CatsAction</a>
                                     </address>
                                 </footer><!-- /.post-info -->
-                                <div class="entry-content"> <p>pelican是python编写的一个静态博客生成系统。如果有一定的python基础，部署起来很方便</p>
-<h4>1：安装</h4>
-<div class="highlight"><pre><span></span>virtualenv ~/virtualenvs/pelican
-<span class="nb">cd</span> ~/virtualenvs/pelican
-<span class="nb">source</span> bin/activate
-pip install pelican
+                                <div class="entry-content"> <h3>super 是一个类</h3>
+<p>当我们调用 super() 的时候，实际上是实例化了一个 super 类。你没看错， super 是个类，既不是关键字也不是函数等其他数据结构:</p>
+<div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="k">class</span> <span class="nc">Test</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+   <span class="o">...</span><span class="p">:</span>     <span class="k">pass</span>
+   <span class="o">...</span><span class="p">:</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">s</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Test</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="nb">type</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="nb">super</span>
 </pre></div>
 
 
-<p>也可以通过源码安装：</p>
-<div class="highlight"><pre><span></span>git clone https://github.com/getpelican/pelican.git
-<span class="nb">cd</span> pelican
-python setup.py install
+<p>在大多数情况下， super 包含了两个非常重要的信息: 一个 MRO 以及 MRO 中的一个类。当以如下方式调用 super 时:</p>
+<div class="highlight"><pre><span></span><span class="nb">super</span><span class="p">(</span><span class="n">a_type</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
 </pre></div>
 
 
-<h4>2：生成博客站点</h4>
-<div class="highlight"><pre><span></span>pelican-quickstart
-</pre></div>
+<p>MRO 指的是 type(obj) 的 MRO …</p> </div><!-- /.entry-content -->
 
-
-<p>回车回答相应的问题，就会为你生成一个博客目录和默认的配置文件。现在你已经可以通过reStructuredText和Markdown格式写文章了，使用的是pelican内置的主题。</p>
-<h4>3：写文章</h4>
-<p>在content目录下新建文件写自己的文章。我比较喜欢Markdown，下面是一个例子</p>
-<div class="highlight"><pre><span></span><span class="n">Title</span><span class="o">:</span> <span class="n">about</span> <span class="n">me</span>
-<span class="n">Date</span><span class="o">:</span> <span class="mi">2015</span><span class="o">-</span><span class="mi">01 …</span></pre></div> </div><!-- /.entry-content -->
-
-                                <div class="medium primary btn"><a href="../pelicanan-zhuang-yu-bu-shu.html" rel="bookmark" title="Permalink to pelican安装与部署">Read more <i class="icon-arrow-right"></i></a></div>
+                                <div class="medium primary btn"><a href="../python-super-han-shu-de-li-jie.html" rel="bookmark" title="Permalink to Python super 函数的理解">Read more <i class="icon-arrow-right"></i></a></div>
 
 
 
                                 <div class="row tag-row">
                                         <span>Tagged as : </span>
-                                            <a class="danger label" href="../tag/pelican.html">pelican</a>
-                                            <a class="danger label" href="../tag/blog.html">blog</a>
-                                            <a class="danger label" href="../tag/git-page.html">git page</a>
+                                            <a class="danger label" href="../tag/super.html">super</a>
                                 </div>
 
 
@@ -250,7 +258,7 @@ python setup.py install
 
         </div><!-- /.eleven.columns -->
         
-<div class="three columns">
+<div class="three columns" id="sidebar">
 
 <h4>Site</h4>
 
@@ -263,28 +271,13 @@ python setup.py install
 <a href="../categories.html"><h4>Categories</h4></a>
 <ul class="blank">
 		<li><a href="../category/git.html">git</a></li>
+		<li><a href="../category/golang.html">golang</a></li>
+		<li><a href="../category/http.html">http</a></li>
 		<li><a href="../category/js.html">js</a></li>
-		<li><a href="../category/mysql.html">mysql</a></li>
+		<li><a href="../category/linux.html">Linux</a></li>
 		<li><a href="../category/python.html">python</a></li>
+		<li><a href="../category/vim.html">vim</a></li>
 </ul>
-
-
-<a href="../tags.html"><h4>Tags</h4></a>
-	<ul class="blank">
-	    <li class="tag-pelican"><a href="../tag/pelican.html">pelican</a></li>
-	    <li class="tag-form"><a href="../tag/form.html">form</a></li>
-	    <li class="tag-group by"><a href="../tag/group-by.html">group by</a></li>
-	    <li class="tag-git page"><a href="../tag/git-page.html">git page</a></li>
-	    <li class="tag-onkeydown"><a href="../tag/onkeydown.html">onkeydown</a></li>
-	    <li class="tag-python装饰器"><a href="../tag/pythonzhuang-shi-qi.html">python装饰器</a></li>
-	    <li class="tag-js"><a href="../tag/js.html">js</a></li>
-	    <li class="tag-blog"><a href="../tag/blog.html">blog</a></li>
-	    <li class="tag-html"><a href="../tag/html.html">html</a></li>
-	    <li class="tag-sql"><a href="../tag/sql.html">sql</a></li>
-	    <li class="tag-jinjia2"><a href="../tag/jinjia2.html">jinjia2</a></li>
-	    <li class="tag-.gitignore"><a href="../tag/gitignore.html">.gitignore</a></li>
-</ul>
-
 
 <nav class="widget">
   <h4>Social</h4>
@@ -296,7 +289,7 @@ python setup.py install
 </div> </div><!-- /.row -->
 
 <p class="paginator">
-    Page 1 / 2
+    Page 1 / 5
         <a href="../author/catsaction2.html"><i class="icon-arrow-right"></i></a>
 </p>
 </section><!-- /#content -->

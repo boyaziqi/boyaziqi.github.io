@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+
+        <link rel="icon" type="image/x-icon" href="./theme/image/logo.ico" />
+        <title>Go 的方法申明总结</title>
+        <meta charset="utf-8" />
+
+
+        <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+        <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
+
+        <link rel="stylesheet" type="text/css" href="./theme/gumby.css" />
+        <link rel="stylesheet" type="text/css" href="./theme/style.css" />
+        <link rel="stylesheet" type="text/css" href="./theme/pygment.css" />
+
+        <script src="./theme/js/libs/modernizr-2.6.2.min.js"></script>
+
+
+
+
+</head>
+
+<body id="index" class="home">
+
+
+    <div class="container">
+
+        <div class="row">
+
+          <header id="banner" class="body">
+                  <h1><a href="./">CatsAction blog <strong>一些学习笔记</strong></a></h1>
+          </header><!-- /#banner -->
+
+            <div id="navigation" class="navbar row">
+              <a href="#" gumby-trigger="#navigation &gt; ul" class="toggle"><i class="icon-menu"></i></a>
+
+              <ul class="columns">
+                <li><a href="./">Home</a></li>
+
+
+              </ul>
+            </div>
+
+<section id="content" class="body">
+
+   <div class="row">
+        <div class="eleven columns">
+
+
+            <header>
+              <h2 class="entry-title">
+                <a href="./go-de-fang-fa-shen-ming-zong-jie.html" rel="bookmark"
+                   title="Permalink to Go 的方法申明总结">Go 的方法申明总结</a></h2>
+           
+            </header>
+            <footer class="post-info">
+              <abbr class="published" title="2018-02-17T00:00:00+08:00">
+                2018-02-17  星期六
+              </abbr>
+              <address class="vcard author">By 
+                <a class="url fn" href="./author/catsaction.html"> CatsAction</a>
+              </address>
+            </footer><!-- /.post-info -->
+            <div class="entry-content">
+              <p><em>下面的代码均省略包导入和主函数，只列出说明代码</em></p>
+<h4>1：不能为非本地类型申明方法</h4>
+<div class="highlight"><pre><span></span><span class="kd">func</span> <span class="p">(</span><span class="nx">i</span> <span class="kt">int</span><span class="p">)</span> <span class="nx">add</span> <span class="p">(</span><span class="nx">j</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">i</span> <span class="o">+</span> <span class="nx">j</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>如果运行上面的代码，会报错<code>cannot define new methods on non-local type int</code>，正确的写法是先将 int 类型申明为本地类型</em></p>
+<div class="highlight"><pre><span></span><span class="kd">type</span> <span class="nx">LocalInt</span> <span class="kt">int</span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">i</span> <span class="o">*</span><span class="nx">LocalInt</span><span class="p">)</span> <span class="nx">add</span> <span class="p">(</span><span class="nx">j</span> <span class="nx">LocalInt</span><span class="p">)</span> <span class="nx">LocalInt</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">*</span><span class="nx">i</span> <span class="o">+</span> <span class="nx">j</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<blockquote>
+<p>之所以申明为指针类型接受者，是为了方便后面讲解</p>
+</blockquote>
+<h3>2：类型字面量，不能直接调用指针接受者方法，必须先申明变量</h3>
+<div class="highlight"><pre><span></span><span class="nx">LocalInt</span><span class="p">(</span><span class="mi">12</span><span class="p">).</span><span class="nx">add</span><span class="p">(</span><span class="nx">LocalInt</span><span class="p">(</span><span class="mi">12</span><span class="p">))</span>
+</pre></div>
+
+
+<p><em>运行上面的代码，会如下错</em></p>
+<div class="highlight"><pre><span></span><span class="c1"># command-line-arguments</span>
+./test.go:28:17: cannot call pointer method on LocalInt<span class="o">(</span><span class="m">12</span><span class="o">)</span>
+./test.go:28:17: cannot take the address of LocalInt<span class="o">(</span><span class="m">12</span><span class="o">)</span>
+</pre></div>
+
+
+<p><em>应先申明变量</em></p>
+<div class="highlight"><pre><span></span><span class="nx">i</span> <span class="o">:=</span> <span class="nx">LocalInt</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+<span class="nx">i</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">LocalInt</span><span class="p">(</span><span class="mi">12</span><span class="p">))</span>
+</pre></div>
+
+
+<h3>3：go为强类型，相关类型不能混用</h3>
+<div class="highlight"><pre><span></span><span class="nx">i</span> <span class="o">:=</span> <span class="mi">12</span>
+<span class="nx">i</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">LocalInt</span><span class="p">(</span><span class="mi">12</span><span class="p">))</span>
+</pre></div>
+
+
+<p><em>虽然 LocalInt 和 int 类型表现一致，但它们仍不是同一种类型，因此会报错<code>i.add undefined (type int has no field or method add)</code></em></p>
+            </div><!-- /.entry-content -->
+
+
+        </div><!-- /.eleven.columns -->
+
+<div class="three columns" id="sidebar">
+
+<h4>Site</h4>
+
+ <ul>
+      <li><a href="./archives.html">Archives</a></li>
+      <li><a href="./categories.html">Categories</a></li>
+      <li><a href="./tags.html">Tags</a></li>
+</ul>
+
+<a href="./categories.html"><h4>Categories</h4></a>
+<ul class="blank">
+		<li><a href="./category/git.html">git</a></li>
+		<li><a href="./category/golang.html">golang</a></li>
+		<li><a href="./category/http.html">http</a></li>
+		<li><a href="./category/js.html">js</a></li>
+		<li><a href="./category/linux.html">Linux</a></li>
+		<li><a href="./category/python.html">python</a></li>
+		<li><a href="./category/vim.html">vim</a></li>
+</ul>
+
+<nav class="widget">
+  <h4>Social</h4>
+  <ul class="blank">
+    <li><a href="https://github.com/boyaziqi">github</a></li>
+  </ul>
+</nav>
+
+</div> </div><!-- /.row -->
+
+
+</section>
+
+       </div><!-- /.row -->
+    </div><!-- /.container -->
+
+
+       <div class="container.nopad bg">
+
+
+        <footer id="credits" class="row">
+          <div class="seven columns">
+            <div class="row">
+              <ul class="socbtns">
+
+                <li><div class="btn primary"><a href="https://github.com/boyaziqi" target="_blank">Github</a></div></li>
+
+
+
+                <li><div class="btn danger"><a href="https://plus.google.com/u/0/" target="_blank">Google+</a></div></li>
+
+                <li><div class="btn facebook"><a href="http://weibo.com/boyziqi/home?wvr=5" target="_blank">新浪微博</a></div></li>
+
+                <li><div class="btn twitter"><a href="https://www.linkedin.com/feed/" target="_blank">linkedin</a></div></li>
+              </ul>
+            </div>
+          </div>
+        </footer>
+
+    </div>
+
+
+  <script src="./theme/js/libs/jquery-1.9.1.min.js"></script>
+  <script src="./theme/js/libs/gumby.min.js"></script>
+  <script src="./theme/js/plugins.js"></script>
+</body>
+</html>

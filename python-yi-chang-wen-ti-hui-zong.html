@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+
+        <link rel="icon" type="image/x-icon" href="./theme/image/logo.ico" />
+        <title>Python 异常问题汇总</title>
+        <meta charset="utf-8" />
+
+
+        <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+        <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
+
+        <link rel="stylesheet" type="text/css" href="./theme/gumby.css" />
+        <link rel="stylesheet" type="text/css" href="./theme/style.css" />
+        <link rel="stylesheet" type="text/css" href="./theme/pygment.css" />
+
+        <script src="./theme/js/libs/modernizr-2.6.2.min.js"></script>
+
+
+
+
+</head>
+
+<body id="index" class="home">
+
+
+    <div class="container">
+
+        <div class="row">
+
+          <header id="banner" class="body">
+                  <h1><a href="./">CatsAction blog <strong>一些学习笔记</strong></a></h1>
+          </header><!-- /#banner -->
+
+            <div id="navigation" class="navbar row">
+              <a href="#" gumby-trigger="#navigation &gt; ul" class="toggle"><i class="icon-menu"></i></a>
+
+              <ul class="columns">
+                <li><a href="./">Home</a></li>
+
+
+              </ul>
+            </div>
+
+<section id="content" class="body">
+
+   <div class="row">
+        <div class="eleven columns">
+
+
+            <header>
+              <h2 class="entry-title">
+                <a href="./python-yi-chang-wen-ti-hui-zong.html" rel="bookmark"
+                   title="Permalink to Python 异常问题汇总">Python 异常问题汇总</a></h2>
+           
+            </header>
+            <footer class="post-info">
+              <abbr class="published" title="2018-04-24T11:20:20+08:00">
+                2018-04-24  星期二
+              </abbr>
+              <address class="vcard author">By 
+                <a class="url fn" href="./author/catsaction.html"> CatsAction</a>
+              </address>
+            </footer><!-- /.post-info -->
+            <div class="entry-content">
+              <h4>问题一：TypeError: object() takes no parameters</h4>
+<p>最近在测试 Python 的 <code>__new__</code> 方法时，我写了如下验证代码</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">test</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;this is a init method&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span>
+
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;this is a new method&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">test</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+</pre></div>
+
+
+<p>结果在 Python2 运行正常，在 Python3 却报如下异常</p>
+<div class="highlight"><pre><span></span>this is a new method
+Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+  File <span class="s2">&quot;test.py&quot;</span>, line <span class="m">11</span>, in &lt;module&gt;
+    <span class="nv">t</span> <span class="o">=</span> test<span class="o">(</span><span class="m">12</span><span class="o">)</span>
+  File <span class="s2">&quot;test.py&quot;</span>, line <span class="m">8</span>, in __new__
+    <span class="k">return</span> super<span class="o">(</span>test, cls<span class="o">)</span>.__new__<span class="o">(</span>cls, *args, **kwargs<span class="o">)</span>
+TypeError: object<span class="o">()</span> takes no parameters
+</pre></div>
+
+
+<p>一开始是以为 <code>__init__</code> 拼写错误，或者 tab，spec 混用导致，但是 <code>t = test()</code> 却提示需要传递参数 a</p>
+<div class="highlight"><pre><span></span>this is a new method
+Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+  File <span class="s2">&quot;test.py&quot;</span>, line <span class="m">11</span>, in &lt;module&gt;
+    <span class="nv">t</span> <span class="o">=</span> test<span class="o">()</span>
+TypeError: __init__<span class="o">()</span> missing <span class="m">1</span> required positional argument: <span class="s1">&#39;a&#39;</span>
+</pre></div>
+
+
+<p>那这样就纳闷了，竟然可以找到自己的 <code>__init__</code> 方法，那为什么还报 no parameters 呢。</p>
+<hr>
+<p>这是分割线。后面我查询了很久，在 stackoverflow 找到了回答
+https://stackoverflow.com/questions/34777773/typeerror-object-takes-no-parameters-after-defining-new`   </p>
+<p>下面是 @Blckknght 的回答</p>
+<blockquote>
+<p>In Python 3.3 and later, if you're overriding both __new__ and __init__, you need to avoid passing any extra arguments to the object methods you're overriding. 
+If you only override one of those methods, it's allowed to pass extra arguments to the other one (since that usually happens without your help).</p>
+</blockquote>
+<p>将我的测试代码<code>__new__</code> 方法部分改成如下</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;this is a new method&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>   <span class="c1"># 不需要传递额外的参数</span>
+</pre></div>
+
+
+<p>这样就可以运行成功了。  </p>
+<p>那我不禁要问，Python3.3+ 到底怎么调用 <code>__init__</code> 方法的呢，上面的回答也答复了。<code>__init__</code> 调用是通过 <code>type.__call__</code>，那么 <code>object.__new__</code> 自然不需要知道 <code>__init__</code>  的额外参数   </p>
+<p>感谢 @Blckknght 的回答！！！ </p>
+            </div><!-- /.entry-content -->
+
+
+        </div><!-- /.eleven.columns -->
+
+<div class="three columns" id="sidebar">
+
+<h4>Site</h4>
+
+ <ul>
+      <li><a href="./archives.html">Archives</a></li>
+      <li><a href="./categories.html">Categories</a></li>
+      <li><a href="./tags.html">Tags</a></li>
+</ul>
+
+<a href="./categories.html"><h4>Categories</h4></a>
+<ul class="blank">
+		<li><a href="./category/git.html">git</a></li>
+		<li><a href="./category/golang.html">golang</a></li>
+		<li><a href="./category/http.html">http</a></li>
+		<li><a href="./category/js.html">js</a></li>
+		<li><a href="./category/linux.html">Linux</a></li>
+		<li><a href="./category/python.html">python</a></li>
+		<li><a href="./category/vim.html">vim</a></li>
+</ul>
+
+<nav class="widget">
+  <h4>Social</h4>
+  <ul class="blank">
+    <li><a href="https://github.com/boyaziqi">github</a></li>
+  </ul>
+</nav>
+
+</div> </div><!-- /.row -->
+
+
+</section>
+
+       </div><!-- /.row -->
+    </div><!-- /.container -->
+
+
+       <div class="container.nopad bg">
+
+
+        <footer id="credits" class="row">
+          <div class="seven columns">
+            <div class="row">
+              <ul class="socbtns">
+
+                <li><div class="btn primary"><a href="https://github.com/boyaziqi" target="_blank">Github</a></div></li>
+
+
+
+                <li><div class="btn danger"><a href="https://plus.google.com/u/0/" target="_blank">Google+</a></div></li>
+
+                <li><div class="btn facebook"><a href="http://weibo.com/boyziqi/home?wvr=5" target="_blank">新浪微博</a></div></li>
+
+                <li><div class="btn twitter"><a href="https://www.linkedin.com/feed/" target="_blank">linkedin</a></div></li>
+              </ul>
+            </div>
+          </div>
+        </footer>
+
+    </div>
+
+
+  <script src="./theme/js/libs/jquery-1.9.1.min.js"></script>
+  <script src="./theme/js/libs/gumby.min.js"></script>
+  <script src="./theme/js/plugins.js"></script>
+</body>
+</html>

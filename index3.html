@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+
+        <link rel="icon" type="image/x-icon" href="./theme/image/logo.ico" />
+        <title>CatsAction blog</title>
+        <meta charset="utf-8" />
+
+
+        <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+        <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
+
+        <link rel="stylesheet" type="text/css" href="./theme/gumby.css" />
+        <link rel="stylesheet" type="text/css" href="./theme/style.css" />
+        <link rel="stylesheet" type="text/css" href="./theme/pygment.css" />
+
+        <script src="./theme/js/libs/modernizr-2.6.2.min.js"></script>
+
+
+
+
+</head>
+
+<body id="index" class="home">
+
+
+    <div class="container">
+
+        <div class="row">
+
+          <header id="banner" class="body">
+                  <h1><a href="./">CatsAction blog <strong>一些学习笔记</strong></a></h1>
+          </header><!-- /#banner -->
+
+            <div id="navigation" class="navbar row">
+              <a href="#" gumby-trigger="#navigation &gt; ul" class="toggle"><i class="icon-menu"></i></a>
+
+              <ul class="columns">
+                <li><a href="./">Home</a></li>
+
+
+              </ul>
+            </div>
+
+<section id="content">
+
+
+
+   <div class="row">
+
+
+        <div class="eleven columns">
+                 <ol id="post-list">
+                        <li><article class="hentry">
+                                <header> <h2 class="entry-title"><a href="./python-xin-shi-lei-he-jiu-shi-lei-de-yi-xie-li-jie.html" rel="bookmark" title="Permalink to python 新式类和旧式类的一些理解">python 新式类和旧式类的一些理解</a></h2> </header>
+                                <footer class="post-info">
+                                    <abbr class="published" title="2017-10-18T10:37:00+08:00"> 2017-10-18  星期三 </abbr>
+                                    <address class="vcard author">By 
+                                    <a class="url fn" href="./author/catsaction.html"> CatsAction</a>
+                                    </address>
+                                </footer><!-- /.post-info -->
+                                <div class="entry-content"> <blockquote>
+<p>下面是两个类,一个新式类，一个旧式类</p>
+</blockquote>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">OldClass</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">NewClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">old_instance</span> <span class="o">=</span> <span class="n">OldClass</span><span class="p">()</span>
+<span class="n">new_instance</span> <span class="o">=</span> <span class="n">NewClass</span><span class="p">()</span>
+</pre></div>
+
+
+<blockquote>
+<p>下面是我在ipython运行测试的结果</p>
+</blockquote>
+<div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">15</span><span class="p">]:</span> <span class="k">class</span> <span class="nc">OldClass</span><span class="p">():</span>
+    <span class="o">...</span><span class="p">:</span>     <span class="k">pass</span>
+    <span class="o">...</span><span class="p">:</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">16</span><span class="p">]:</span> <span class="k">class</span> <span class="nc">NewClass</span><span class="p">():</span>
+    <span class="o">...</span><span class="p">:</span>     <span class="k">pass</span>
+    <span class="o">...</span><span class="p">:</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">17</span><span class="p">]:</span> <span class="n">old_instance</span> <span class="o">=</span> <span class="n">OldClass</span><span class="p">()</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">18</span><span class="p">]:</span> <span class="n">new_instance</span> <span class="o">=</span> <span class="n">NewClass</span><span class="p">()</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">19</span><span class="p">]:</span> <span class="nb">type</span><span class="p">(</span><span class="n">old_instance</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">19</span><span class="p">]:</span> <span class="n">instance</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">23</span><span class="p">]:</span> <span class="nb">type</span><span class="p">(</span><span class="n">new_instance</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">23</span><span class="p">]:</span> <span class="n">__main__</span><span class="o">.</span><span class="n">NewClass</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">24 …</span></pre></div> </div><!-- /.entry-content -->
+
+                                <div class="medium primary btn"><a href="./python-xin-shi-lei-he-jiu-shi-lei-de-yi-xie-li-jie.html" rel="bookmark" title="Permalink to python 新式类和旧式类的一些理解">Read more <i class="icon-arrow-right"></i></a></div>
+
+
+
+                                <div class="row tag-row">
+                                </div>
+
+
+
+                        </article></li>
+                        <li><article class="hentry">
+                                <header> <h2 class="entry-title"><a href="./kua-yu-fang-wen-zong-jie.html" rel="bookmark" title="Permalink to 跨域访问总结">跨域访问总结</a></h2> </header>
+                                <footer class="post-info">
+                                    <abbr class="published" title="2017-09-26T17:02:00+08:00"> 2017-09-26  星期二 </abbr>
+                                    <address class="vcard author">By 
+                                    <a class="url fn" href="./author/catsaction.html"> CatsAction</a>
+                                    </address>
+                                </footer><!-- /.post-info -->
+                                <div class="entry-content"> <p>具体可以参考这里(https://github.com/wengjq/Blog/issues/2)</p> </div><!-- /.entry-content -->
+
+                                <div class="medium primary btn"><a href="./kua-yu-fang-wen-zong-jie.html" rel="bookmark" title="Permalink to 跨域访问总结">Read more <i class="icon-arrow-right"></i></a></div>
+
+
+
+                                <div class="row tag-row">
+                                        <span>Tagged as : </span>
+                                            <a class="danger label" href="./tag/js.html">js</a>
+                                            <a class="danger label" href="./tag/http.html">http</a>
+                                </div>
+
+
+
+                        </article></li>
+                        <li><article class="hentry">
+                                <header> <h2 class="entry-title"><a href="./yi-xie-you-yong-de-gitji-qiao.html" rel="bookmark" title="Permalink to 一些有用的git技巧">一些有用的git技巧</a></h2> </header>
+                                <footer class="post-info">
+                                    <abbr class="published" title="2017-09-25T22:50:00+08:00"> 2017-09-25  星期一 </abbr>
+                                    <address class="vcard author">By 
+                                    <a class="url fn" href="./author/catsaction.html"> CatsAction</a>
+                                    </address>
+                                </footer><!-- /.post-info -->
+                                <div class="entry-content"> <h4>将同一个文件的修改分多次添加到index暂存区</h4>
+<div class="highlight"><pre><span></span><span class="c1"># 添加每个变化前，都会要求确认</span>
+<span class="c1"># 对于同一个文件的多处变化，可以实现分次提交</span>
+git add -p
+
+<span class="c1"># 停止追踪指定文件，但该文件会保留在工作区</span>
+$ git rm --cached <span class="o">[</span>file<span class="o">]</span>
+
+<span class="c1"># 改名文件，并且将这个改名放入暂存区</span>
+$ git mv <span class="o">[</span>file-original<span class="o">]</span> <span class="o">[</span>file-renamed<span class="o">]</span>
+</pre></div>
+
+
+<h3>git commit 提交指定文件和回退上次提交</h3>
+<div class="highlight"><pre><span></span><span class="c1"># 提交暂存区的指定文件到仓库区</span>
+$ git commit <span class="o">[</span>file1<span class="o">]</span> <span class="o">[</span>file2<span class="o">]</span> ... -m <span class="o">[</span>message<span class="o">]</span>
+
+<span class="c1"># 提交时显示所有diff信息</span>
+$ git commit -v
+
+<span class="c1"># 使用一次新的commit，替代上一次提交</span>
+<span class="c1"># 如果代码没有任何新变化，则用来改写上一次commit的提交信息</span>
+$ git commit --amend -m <span class="o">[</span>message<span class="o">]</span>
+
+<span class="c1"># 重做上一次commit，并包括指定文件的新变化</span>
+$ git commit --amend <span class="o">[</span>file1<span class="o">]</span> <span class="o">[</span>file2 …</pre></div> </div><!-- /.entry-content -->
+
+                                <div class="medium primary btn"><a href="./yi-xie-you-yong-de-gitji-qiao.html" rel="bookmark" title="Permalink to 一些有用的git技巧">Read more <i class="icon-arrow-right"></i></a></div>
+
+
+
+                                <div class="row tag-row">
+                                        <span>Tagged as : </span>
+                                            <a class="danger label" href="./tag/git.html">git</a>
+                                </div>
+
+
+
+                        </article></li>
+                        <li><article class="hentry">
+                                <header> <h2 class="entry-title"><a href="./vim-xuan-xiang-iskeyword.html" rel="bookmark" title="Permalink to vim 选项iskeyword">vim 选项iskeyword</a></h2> </header>
+                                <footer class="post-info">
+                                    <abbr class="published" title="2017-06-23T00:00:00+08:00"> 2017-06-23  星期五 </abbr>
+                                    <address class="vcard author">By 
+                                    <a class="url fn" href="./author/catsaction.html"> CatsAction</a>
+                                    </address>
+                                </footer><!-- /.post-info -->
+                                <div class="entry-content"> <p>之前在用ctags来辅助跳转到 python 定义处时，我已经生成相应的tags文件，可是在类似self.method_name的语句按<code>&lt;C-T&gt;</code>时却不能正常跳转。查看
+tags文件里也有对应的tag，网上搜索了好久也未找寻到解决方法。一个偶然的机会，发现iskeyword选项，它很好的解决了我的烦恼。</p>
+<p>iskeyword 设置作为单词整体的字符，可能是升级到vim8.0的原因，"."字符被当做单词的一部分，所以<code>viw</code>等操作时都会选中点，<code>&lt;C-T&gt;</code>也不能正常识别，所以我做了如下修改</p>
+<div class="highlight"><pre><span></span><span class="nb">set</span> iskeyword -<span class="o">=</span> .
+</pre></div>
+
+
+<p>这样就好了，可以使用</p>
+<div class="highlight"><pre><span></span><span class="err">set iskeyword?</span>
+</pre></div>
+
+
+<p>查看当前值</p> </div><!-- /.entry-content -->
+
+                                <div class="medium primary btn"><a href="./vim-xuan-xiang-iskeyword.html" rel="bookmark" title="Permalink to vim 选项iskeyword">Read more <i class="icon-arrow-right"></i></a></div>
+
+
+
+                                <div class="row tag-row">
+                                        <span>Tagged as : </span>
+                                            <a class="danger label" href="./tag/vimxuan-xiang.html">vim选项</a>
+                                </div>
+
+
+
+                        </article></li>
+                        <li><article class="hentry">
+                                <header> <h2 class="entry-title"><a href="./pythonlei-te-shu-fang-fa.html" rel="bookmark" title="Permalink to python类特殊方法">python类特殊方法</a></h2> </header>
+                                <footer class="post-info">
+                                    <abbr class="published" title="2017-06-06T22:42:00+08:00"> 2017-06-06  星期二 </abbr>
+                                    <address class="vcard author">By 
+                                    <a class="url fn" href="./author/catsaction.html"> CatsAction</a>
+                                    </address>
+                                </footer><!-- /.post-info -->
+                                <div class="entry-content"> <h4>__init__</h4>
+<p>__init__方法在定义实例的时候会被调用</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">test</span><span class="p">(</span><span class="nb">object</span><span class="p">);</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+
+<span class="k">class</span> <span class="nc">test1</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">test1</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+
+
+<p>执行上面的代码，会打印出10。说明在子类没有显示定义__init__方法时，在定义子类实例时，父类的__init__方法会自动被调用。
+不过如果子类定义__init__方法，定义子类实例时不会自动调用父类的__init__方法</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">test</span><span class="p">(</span><span class="nb">object</span><span class="p">);</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_x</span> <span class="o">=</span> <span class="n">x</span>
+
+<span class="k">class</span> <span class="nc">test1</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test1_x</span> <span class="o">=</span> <span class="n">x</span>
+
+<span class="n">t …</span></pre></div> </div><!-- /.entry-content -->
+
+                                <div class="medium primary btn"><a href="./pythonlei-te-shu-fang-fa.html" rel="bookmark" title="Permalink to python类特殊方法">Read more <i class="icon-arrow-right"></i></a></div>
+
+
+
+                                <div class="row tag-row">
+                                        <span>Tagged as : </span>
+                                            <a class="danger label" href="./tag/__call__.html">__call__</a>
+                                </div>
+
+
+
+                        </article></li>
+                </ol><!-- /#posts-list -->
+
+        </div><!-- /.eleven.columns -->
+        
+<div class="three columns" id="sidebar">
+
+<h4>Site</h4>
+
+ <ul>
+      <li><a href="./archives.html">Archives</a></li>
+      <li><a href="./categories.html">Categories</a></li>
+      <li><a href="./tags.html">Tags</a></li>
+</ul>
+
+<a href="./categories.html"><h4>Categories</h4></a>
+<ul class="blank">
+		<li><a href="./category/git.html">git</a></li>
+		<li><a href="./category/golang.html">golang</a></li>
+		<li><a href="./category/http.html">http</a></li>
+		<li><a href="./category/js.html">js</a></li>
+		<li><a href="./category/linux.html">Linux</a></li>
+		<li><a href="./category/python.html">python</a></li>
+		<li><a href="./category/vim.html">vim</a></li>
+</ul>
+
+<nav class="widget">
+  <h4>Social</h4>
+  <ul class="blank">
+    <li><a href="https://github.com/boyaziqi">github</a></li>
+  </ul>
+</nav>
+
+</div> </div><!-- /.row -->
+
+<p class="paginator">
+            <a href="./index2.html"><i class="icon-arrow-left"></i></a>
+    Page 3 / 5
+        <a href="./index4.html"><i class="icon-arrow-right"></i></a>
+</p>
+</section><!-- /#content -->
+
+       </div><!-- /.row -->
+    </div><!-- /.container -->
+
+
+       <div class="container.nopad bg">
+
+
+        <footer id="credits" class="row">
+          <div class="seven columns">
+            <div class="row">
+              <ul class="socbtns">
+
+                <li><div class="btn primary"><a href="https://github.com/boyaziqi" target="_blank">Github</a></div></li>
+
+
+
+                <li><div class="btn danger"><a href="https://plus.google.com/u/0/" target="_blank">Google+</a></div></li>
+
+                <li><div class="btn facebook"><a href="http://weibo.com/boyziqi/home?wvr=5" target="_blank">新浪微博</a></div></li>
+
+                <li><div class="btn twitter"><a href="https://www.linkedin.com/feed/" target="_blank">linkedin</a></div></li>
+              </ul>
+            </div>
+          </div>
+        </footer>
+
+    </div>
+
+
+  <script src="./theme/js/libs/jquery-1.9.1.min.js"></script>
+  <script src="./theme/js/libs/gumby.min.js"></script>
+  <script src="./theme/js/plugins.js"></script>
+</body>
+</html>

@@ -1,70 +1,82 @@
 <!DOCTYPE html>
-<html lang="zh">
-<head>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="CatsAction" />
 
-        <title>pelican安装与部署</title>
-        <meta charset="utf-8" />
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="pelican, blog, git page, python, " />
+
+<meta property="og:title" content="pelican安装与部署"/>
+<meta property="og:url" content="./pelicanan-zhuang-yu-bu-shu.html" />
+<meta property="og:description" content="pelican是python编写的一个静态博客生成系统。如果有一定的python基础，部署起来很方便 1：安装 virtualenv ~/virtualenvs/pelican cd ~/virtualenvs/pelican source bin/activate pip install pelican 也可以通过源码安装： git clone https://github.com/getpelican/pelican.git cd pelican python setup.py install 2：生成博客站点 pelican-quickstart 回车回答相应的问题，就会为你生成一个博客目录和默认的配置文件。现在你已经可以通过reStructuredText和Markdown格式写文章了，使用的是pelican内置的主题。 3：写文章 在content目录下新建文件写自己的文章。我比较喜欢Markdown，下面是一个例子 Title: about me Date: 2015-01-02 categoty …" />
+<meta property="og:site_name" content="CatsAction&#39;s blog" />
+<meta property="og:article:author" content="CatsAction" />
+<meta property="og:article:published_time" content="2015-01-02T00:00:00+08:00" />
+<meta name="twitter:title" content="pelican安装与部署">
+<meta name="twitter:description" content="pelican是python编写的一个静态博客生成系统。如果有一定的python基础，部署起来很方便 1：安装 virtualenv ~/virtualenvs/pelican cd ~/virtualenvs/pelican source bin/activate pip install pelican 也可以通过源码安装： git clone https://github.com/getpelican/pelican.git cd pelican python setup.py install 2：生成博客站点 pelican-quickstart 回车回答相应的问题，就会为你生成一个博客目录和默认的配置文件。现在你已经可以通过reStructuredText和Markdown格式写文章了，使用的是pelican内置的主题。 3：写文章 在content目录下新建文件写自己的文章。我比较喜欢Markdown，下面是一个例子 Title: about me Date: 2015-01-02 categoty …">
+
+        <title>pelican安装与部署 ·
+CatsAction&#39;s blog
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="./theme/image/logo.ico" />
+        <link rel="stylesheet" type="text/css" href="./theme/css/elegant.prod.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/custom.css" media="screen">
 
 
-        <!-- Mobile viewport optimized: j.mp/bplateviewport -->
-        <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
 
-        <link rel="stylesheet" type="text/css" href="./theme/gumby.css" />
-        <link rel="stylesheet" type="text/css" href="./theme/style.css" />
-        <link rel="stylesheet" type="text/css" href="./theme/pygment.css" />
-
-        <script src="./theme/js/libs/modernizr-2.6.2.min.js"></script>
-
-
-
-
-</head>
-
-<body id="index" class="home">
-
-
-    <div class="container">
-
-        <div class="row">
-
-          <header id="banner" class="body">
-                  <h1><a href="./">CatsAction blog <strong></strong></a></h1>
-          </header><!-- /#banner -->
-
-            <div id="navigation" class="navbar row">
-              <a href="#" gumby-trigger="#navigation &gt; ul" class="toggle"><i class="icon-menu"></i></a>
-             
-              <ul class="columns">
-                <li><a href="./">Home</a></li>
-
-                <li><a href="./pages/guan-yu-ben-zhan.html">关于本站</a></li>
-                <li><a href="./pages/guan-yu-wo.html">关于我</a></li>
-
-              </ul>
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="./"><span class=site-name>CatsAction's blog</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       .
+                                    >Home</a>
+                                </li>
+                                <li ><a href="./categories.html">Categories</a></li>
+                                <li ><a href="./tags.html">Tags</a></li>
+                                <li ><a href="./archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="./search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+    <div class="row-fluid">
+        <header class="page-header span10 offset2">
+            <h1>
+                <a href="./pelicanan-zhuang-yu-bu-shu.html">
+                    pelican安装与部署
+                </a>
+            </h1>
+        </header>
+    </div>
 
-<section id="content" class="body">
-
-   <div class="row">
-        <div class="eleven columns">
-
-
-            <header>
-              <h2 class="entry-title">
-                <a href="./pelicanan-zhuang-yu-bu-shu.html" rel="bookmark"
-                   title="Permalink to pelican安装与部署">pelican安装与部署</a></h2>
-           
-            </header>
-            <footer class="post-info">
-              <abbr class="published" title="2015-01-02T00:00:00+08:00">
-                2015-01-02  星期五
-              </abbr>
-              <address class="vcard author">By 
-                <a class="url fn" href="./author/catsaction.html"> CatsAction</a>
-              </address>
-            </footer><!-- /.post-info -->
-            <div class="entry-content">
-              <p>pelican是python编写的一个静态博客生成系统。如果有一定的python基础，部署起来很方便</p>
+    <div class="row-fluid">
+            <div class="span8 offset2 article-content">
+                
+                <p>pelican是python编写的一个静态博客生成系统。如果有一定的python基础，部署起来很方便</p>
 <h4>1：安装</h4>
 <div class="highlight"><pre><span></span>virtualenv ~/virtualenvs/pelican
 <span class="nb">cd</span> ~/virtualenvs/pelican
@@ -88,12 +100,12 @@ python setup.py install
 <p>回车回答相应的问题，就会为你生成一个博客目录和默认的配置文件。现在你已经可以通过reStructuredText和Markdown格式写文章了，使用的是pelican内置的主题。</p>
 <h4>3：写文章</h4>
 <p>在content目录下新建文件写自己的文章。我比较喜欢Markdown，下面是一个例子</p>
-<div class="highlight"><pre><span></span><span class="n">Title</span><span class="o">:</span> <span class="n">about</span> <span class="n">me</span>
-<span class="n">Date</span><span class="o">:</span> <span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">02</span>
-<span class="n">categoty</span><span class="o">:</span> <span class="n">me</span>
-<span class="n">tags</span><span class="o">:</span> <span class="n">introduction</span>
+<div class="highlight"><pre><span></span>Title: about me
+Date: 2015-01-02
+categoty: me
+tags: introduction
 
-<span class="n">Here</span> <span class="k">is</span> <span class="n">my</span> <span class="n">personal</span> <span class="n">introduction</span>
+Here is my personal introduction
 </pre></div>
 
 
@@ -132,90 +144,150 @@ python -m http.server
 <div class="highlight"><pre><span></span>git remote add user-page git@github.com:elemoine/elemoine.github.io.git
 git push user-page gh-pages:master
 </pre></div>
-            </div><!-- /.entry-content -->
 
 
-        </div><!-- /.eleven.columns -->
+                
 
-<div class="three columns">
-
-<h4>Site</h4>
-
- <ul>
-      <li><a href="./archives.html">Archives</a></li>
-      <li><a href="./categories.html">Categories</a></li>
-      <li><a href="./tags.html">Tags</a></li>
-</ul>
-
-<a href="./categories.html"><h4>Categories</h4></a>
-<ul class="blank">
-		<li><a href="./category/git.html">git</a></li>
-		<li><a href="./category/js.html">js</a></li>
-		<li><a href="./category/mysql.html">mysql</a></li>
-		<li><a href="./category/python.html">python</a></li>
-</ul>
-
-
-<a href="./tags.html"><h4>Tags</h4></a>
-	<ul class="blank">
-	    <li class="tag-pelican"><a href="./tag/pelican.html">pelican</a></li>
-	    <li class="tag-form"><a href="./tag/form.html">form</a></li>
-	    <li class="tag-group by"><a href="./tag/group-by.html">group by</a></li>
-	    <li class="tag-git page"><a href="./tag/git-page.html">git page</a></li>
-	    <li class="tag-onkeydown"><a href="./tag/onkeydown.html">onkeydown</a></li>
-	    <li class="tag-python装饰器"><a href="./tag/pythonzhuang-shi-qi.html">python装饰器</a></li>
-	    <li class="tag-js"><a href="./tag/js.html">js</a></li>
-	    <li class="tag-blog"><a href="./tag/blog.html">blog</a></li>
-	    <li class="tag-html"><a href="./tag/html.html">html</a></li>
-	    <li class="tag-sql"><a href="./tag/sql.html">sql</a></li>
-	    <li class="tag-jinjia2"><a href="./tag/jinjia2.html">jinjia2</a></li>
-	    <li class="tag-.gitignore"><a href="./tag/gitignore.html">.gitignore</a></li>
-</ul>
-
-
-<nav class="widget">
-  <h4>Social</h4>
-  <ul class="blank">
-    <li><a href="https://github.com/boyaziqi">github</a></li>
-  </ul>
-</nav>
-
-</div> </div><!-- /.row -->
-
-
-</section>
-
-       </div><!-- /.row -->
-    </div><!-- /.container -->
-
-
-       <div class="container.nopad bg">
-
-
-        <footer id="credits" class="row">
-          <div class="seven columns">
-            <div class="row">
-              <ul class="socbtns">
-
-                <li><div class="btn primary"><a href="https://github.com/boyaziqi" target="_blank">Github</a></div></li>
+                
+                
+                
 
 
 
-                <li><div class="btn danger"><a href="https://plus.google.com/u/0/" target="_blank">Google+</a></div></li>
 
-                <li><div class="btn facebook"><a href="http://weibo.com/boyziqi/home?wvr=5" target="_blank">新浪微博</a></div></li>
 
-                <li><div class="btn twitter"><a href="https://www.linkedin.com/feed/" target="_blank">linkedin</a></div></li>
-              </ul>
+
+                <hr />
+                <aside>
+                    <nav>
+                        <ul class="articles-timeline">
+                            <li class="next-article"><a href="./guan-yu-pelican-zhu-ti-gum-bugde-chu-li.html"
+                                    title="Next: 关于pelican 主题gum bug的处理">关于pelican 主题gum bug的处理</a> »</li>
+                        </ul>
+                    </nav>
+                </aside>
             </div>
-          </div>
-        </footer>
+            <section id="article-sidebar" class="span2">
+                <h4>Published</h4>
+                <time itemprop="dateCreated" datetime="2015-01-02T00:00:00+08:00"> 1
+                    2, 2015</time>
+                <!---->
+                <h4>Category</h4>
+                <a class="category-link"
+                    href="./categories.html#python-ref">python</a>
+                <h4>Tags</h4>
+                <ul class="list-of-tags tags-in-article">
+                    <li><a href="./tags.html#blog-ref">blog
+                            <span>2</span>
+</a></li>
+                    <li><a href="./tags.html#git-page-ref">git page
+                            <span>1</span>
+</a></li>
+                    <li><a href="./tags.html#pelican-ref">pelican
+                            <span>2</span>
+</a></li>
+                </ul>
+<h4>Stay in Touch</h4>
+<div id="sidebar-social-link">
+    <a href="mailto:catsaction@126.com" title="My Email Address" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mail" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#328cff"/><path d="m250 186c-46 0-69 35-69 74 0 44 29 72 68 72 43 0 73-32 73-75 0-44-34-71-72-71zm-1-37c30 0 57 13 77 33 0-22 35-22 35 1v150c-1 10 10 16 16 9 25-25 54-128-14-187-64-56-149-47-195-15-48 33-79 107-49 175 33 76 126 99 182 76 28-12 41 26 12 39-45 19-168 17-225-82-38-68-36-185 67-248 78-46 182-33 244 32 66 69 62 197-2 246-28 23-71 1-71-32v-11c-20 20-47 32-77 32-57 0-108-51-108-108 0-58 51-110 108-110" fill="#fff"/></svg>
+    </a>
+    <a href="https://github.com/boyaziqi" title="catsaction Github Repository" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+    <a href="https://www.linkedin.com/feed/" title="My LinkedIn" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="LinkedIn" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%" fill="#0077b5"/><circle cx="142" cy="138" r="37"/><path stroke="#fff" stroke-width="66" d="M244 194v198M142 194v198"/><path d="M276 282c0-20 13-40 36-40 24 0 33 18 33 45v105h66V279c0-61-32-89-76-89-34 0-51 19-59 32"/></svg>
+    </a>
+</div>
+<h4>Friendship Links</h4>
+<ul class="list-of-tags tags-in-article">
+    <li>
+    <a href="https://leetcode-cn.com/" title="力扣中国站点" target="_blank" rel="nofollow noopener noreferrer">
+      LeetCode
+    </a>
+    </li>
+    <li>
+    <a href="https://coolshell.cn/about" title="陈皓酷壳" target="_blank" rel="nofollow noopener noreferrer">
+      CoolShell
+    </a>
+    </li>
+    <li>
+    <a href="https://yikun.github.io/" title="姜毅坤博客" target="_blank" rel="nofollow noopener noreferrer">
+      Yikun
+    </a>
+    </li>
+    <li>
+    <a href="https://www.nowcoder.com/" title="牛客网" target="_blank" rel="nofollow noopener noreferrer">
+      牛客网
+    </a>
+    </li>
+  </ul>
+                
 
+
+
+
+
+                
+
+
+
+
+
+            </section>
+        </div>
+</article>
+                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+    <div>
+        <span class="site-name">CatsAction's blog</span> - It's a wonderful world
     </div>
 
 
-  <script src="./theme/js/libs/jquery-1.9.1.min.js"></script>
-  <script src="./theme/js/libs/gumby.min.js"></script>
-  <script src="./theme/js/plugins.js"></script>
-</body>
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>        <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
 </html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="CatsAction" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="Redis, Redis, " />
+
+<meta property="og:title" content="Redis系列四 - 锁、信号量、事务"/>
+<meta property="og:url" content="./redisxi-lie-si.html" />
+<meta property="og:description" content="前述 本篇先讲述Redis锁、信号量实现，最后讲解事务及Lua脚本。对于锁和信号量的具体实现，这里不讲，可以查看网上关于Redis分布式锁具体实现的博文。这里只谈谈相关实现思路，并指出相应实现会遇到的问题及解决思路。 分布式锁 Redis没有原生支持锁，需要自己实现。基本思路就是利用string。下面是一个简要步骤。 1，获取锁 执行下面命令获取锁 set lockname value EX 30 NX 上面的命令设置一个含过期时间字符串，过期时间自己定，它的作用是避免某个获取锁的客户端由于某些原因长期阻塞。 NX选项指定在字符串不存在的时候才能设置成功，用来判断是否获取到锁。 如果成功设置，则获取到锁，否则继续等待重新获取。 PS：value最好是个随机字符串，比如uuid，避免并发状态下误删其它客户端创建的锁。 2，释放锁 释放锁就是删除指定的key。由于del删除的时候可能是其他事务设置的锁，因此一定要检查value是否相等。并利用WATCH 监听锁key，避免被其他事务修改。 3，改进 上面的删除不是原子性的，因此可以利用lua脚本来删除。lua脚本能很好的支持事务。 3 …" />
+<meta property="og:site_name" content="CatsAction&#39;s blog" />
+<meta property="og:article:author" content="CatsAction" />
+<meta property="og:article:published_time" content="2019-09-22T00:00:00+08:00" />
+<meta name="twitter:title" content="Redis系列四 - 锁、信号量、事务">
+<meta name="twitter:description" content="前述 本篇先讲述Redis锁、信号量实现，最后讲解事务及Lua脚本。对于锁和信号量的具体实现，这里不讲，可以查看网上关于Redis分布式锁具体实现的博文。这里只谈谈相关实现思路，并指出相应实现会遇到的问题及解决思路。 分布式锁 Redis没有原生支持锁，需要自己实现。基本思路就是利用string。下面是一个简要步骤。 1，获取锁 执行下面命令获取锁 set lockname value EX 30 NX 上面的命令设置一个含过期时间字符串，过期时间自己定，它的作用是避免某个获取锁的客户端由于某些原因长期阻塞。 NX选项指定在字符串不存在的时候才能设置成功，用来判断是否获取到锁。 如果成功设置，则获取到锁，否则继续等待重新获取。 PS：value最好是个随机字符串，比如uuid，避免并发状态下误删其它客户端创建的锁。 2，释放锁 释放锁就是删除指定的key。由于del删除的时候可能是其他事务设置的锁，因此一定要检查value是否相等。并利用WATCH 监听锁key，避免被其他事务修改。 3，改进 上面的删除不是原子性的，因此可以利用lua脚本来删除。lua脚本能很好的支持事务。 3 …">
+
+        <title>Redis系列四 - 锁、信号量、事务 ·
+CatsAction&#39;s blog
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="./theme/image/logo.ico" />
+        <link rel="stylesheet" type="text/css" href="./theme/css/elegant.prod.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/custom.css" media="screen">
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="./"><span class=site-name>CatsAction's blog</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       .
+                                    >Home</a>
+                                </li>
+                                <li ><a href="./categories.html">Categories</a></li>
+                                <li ><a href="./tags.html">Tags</a></li>
+                                <li ><a href="./archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="./search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+    <div class="row-fluid">
+        <header class="page-header span10 offset2">
+            <h1>
+                <a href="./redisxi-lie-si.html">
+                    Redis系列四
+                    <small class="subtitle">
+                        锁、信号量、事务
+                    </small>
+                </a>
+            </h1>
+        </header>
+    </div>
+
+    <div class="row-fluid">
+            <div class="span8 offset2 article-content">
+                
+                <h2>前述</h2>
+<p>本篇先讲述Redis锁、信号量实现，最后讲解事务及Lua脚本。对于锁和信号量的具体实现，这里不讲，可以查看网上关于Redis分布式锁具体实现的博文。这里只谈谈相关实现思路，并指出相应实现会遇到的问题及解决思路。</p>
+<h2>分布式锁</h2>
+<p>Redis没有原生支持锁，需要自己实现。基本思路就是利用string。下面是一个简要步骤。</p>
+<p>1，获取锁</p>
+<p>执行下面命令获取锁</p>
+<div class="highlight"><pre><span></span><span class="err">set lockname value EX 30 NX</span>
+</pre></div>
+
+
+<p>上面的命令设置一个含过期时间字符串，过期时间自己定，它的作用是避免某个获取锁的客户端由于某些原因长期阻塞。
+NX选项指定在字符串不存在的时候才能设置成功，用来判断是否获取到锁。</p>
+<p>如果成功设置，则获取到锁，否则继续等待重新获取。</p>
+<p><em>PS：value最好是个随机字符串，比如uuid，避免并发状态下误删其它客户端创建的锁。</em></p>
+<p>2，释放锁</p>
+<p>释放锁就是删除指定的key。由于del删除的时候可能是其他事务设置的锁，因此一定要检查value是否相等。并利用<code>WATCH</code>
+监听锁key，避免被其他事务修改。</p>
+<p>3，改进</p>
+<p>上面的删除不是原子性的，因此可以利用lua脚本来删除。lua脚本能很好的支持事务。</p>
+<p>3，其他方式</p>
+<p>Redis官方推荐RedLock算法实现，它可以避免上面的锁单节点的问题。很多主要语言都已经有开源的实现了，自己项目中直接用就行。参考<a href="https://redis.io/topics/distlock">官网</a>
+和<a href="https://www.jianshu.com/p/7e47a4503b87">RedLock锁</a></p>
+<p>RedLock缺点就是只适用于N个独立的Redis节点，主从模式和集群模式并不适用。而且至少得三个节点。参考<a href="https://juejin.im/post/59f592c65188255f5c5142d2">Redis RedLock 完美的分布式锁么？</a></p>
+<p><em>其他参考资料：<a href="https://juejin.im/post/5cc165816fb9a03202221dd5">Redis分布式锁</a></em></p>
+<blockquote>
+<p><em>！思考</em>，如果主从复制模式，A进程在master节点获取到锁，在锁信息还没同步到slave节点时，master节点挂掉，此时slave被提升为主节点，B进程从slave节点获取锁，就造成重复获取锁，这种问题怎么解决？</p>
+</blockquote>
+<p>对于上面问题，RedLock是无法解决的。因为RedLock锁不支持主从复制模式，而且依赖系统时间。思考了很久，我觉得Redis由客户端控制锁的方式是很难解决的，因为A进程和B进程之间并不知道彼此获取锁的情况。</p>
+<p>如果master节点和slave节点数据强一致，只有数据同步完成才给客户端返回获取锁成功，那上面的问题就解决了。但是这种方式影响了Redis服务对命令的响应速度，和Redis的设计思想不匹配。而且，到目前为止官方也不支持数据强一致的主从复制和集群模式。</p>
+<p>有人建议zookeeper实现分布式锁。我查阅了zookeeper相关资料，它对数据一致性的却支持的比较好，支持不同维度的数据一致性。关于zookeeper分布式锁，参考<a href="https://www.cnblogs.com/toov5/p/9899489.html">zookeeper分布式锁</a>
+与<a href="https://www.cnblogs.com/felixzh/p/5869212.html">zookeeper功能</a></p>
+<p>后面也会抽空研究下zookeeper，然后再针对zookeeper写相关系列的文章。</p>
+<h2>信号量</h2>
+<p>信号量是一种锁，用于限制资源访问的进程数。</p>
+<p>1，基本构建</p>
+<p>利用Redis zset数据结构存储持有信号量的进程，score为获取时间。假设我们允许5个进程获取信号量。获取信号量时，进程先把自己的标识和当前系统时间加入zset，检查自己的排序位置是不是小于最多允许的进程数（这里为5）。如果小于，则获取信号量成功，否则失败，删除插入的标识。</p>
+<p>这里获取信号量时需要清除过期时间。</p>
+<p>这种方式缺点很明显，每个进程指定的超时时间必须一致，否则无法清除超时的锁。
+还有一个进程的信号量超时被其他进程释放，但是它自己并不知道，如果他的执行不是事务性的，中间可能被其他进程插入影响结果。</p>
+<p>结论：客户端控制锁的问题，彼此之间交流是个问题。如果是Redis自己实现，它完全可以将锁和持有锁的进程映射存储，超时的时候强制回滚。</p>
+<p>2，改进，提升公平</p>
+<p>当获取信号量的进程位于不同网络主机上时，系统时间可能不一致。如A主机进程和B主机进程，加入A主机系统时间比B主机快，那么即使A首先插入自己的标识，B在没有操过这个时间插入也会偷走A成功获取信号量的机会。</p>
+<p>为了提升公平，避免系统时间不一致的影响。可以为Redis实现一个计数器和一个拥有者zset，进程插入自己标识到拥有者zset，先获得计数器，再用计数器值作为score插入。（32位主机可能溢出，64位够用）。</p>
+<p>3，刷新和消除竞争</p>
+<p>刷新信号量的超时时间，利用上一节提到的分布式锁，消除资源计数器的竞争。</p>
+<h2>异步队列</h2>
+<p>1，先进先出队列</p>
+<p>使用列表模仿，如果需要实现优先级，可以多个列表表示不同优先级。</p>
+<p>2，延时队列</p>
+<p>基于有序集合实现（sorted set）。基本思路是将任务作为zset的成员，任务执行时间点作为score。任务执行worker轮询zset，取出第一条数据并检测是否可以执行。</p>
+<h2>事务</h2>
+<p>multi、exec、watch、unwatch、discard。</p>
+<p>Redis的事务没有回滚机制，某条语句执行错误，multi打包的事务就结束了。因此Redis事务原子性，一致性，持久性都不满足。由于Redis是单线程运行，事务可以保证隔离性。watch、unwatch命令实现类似乐观锁的机制。</p>
+<p>Redis支持非事务流水线（pipeline)，会将多个命令一次性发送给Redis，然后等待所以命令结果再返回。pipeline降低了网络延迟消耗。默认pipeline对多个命令不开启事务，不过可以通过参数调整。</p>
+<h2>Lua脚本</h2>
+<p>由于Redis事务的缺陷，Redis提供了Lua脚本来保证原子性，但是脚本会阻塞其他客户端进程执行。</p>
+<p>通过<code>EVAL</code>命令执行脚本。脚本中可以通过<code>Redis.call</code>和<code>Redis.pcall</code>调用Redis命令</p>
+<p>一条简单的Redis脚本示例，传递参数应该由KEYS和ARGV指定。</p>
+<div class="highlight"><pre><span></span><span class="err">eval &quot;return redis.call(&#39;set&#39;,KEYS[1], ARGV[1])&quot; 1 foo bar</span>
+</pre></div>
+
+
+<h2>后述</h2>
+<p>我们讲解了Redis分布式锁的实现思路和一些问题，并引出了zookeeper的替代方案。关于zookeeper，后期会深入研究并针对它写一系列文章。</p>
+
+
+                
+
+                
+                
+                
+
+
+
+
+
+
+                <hr />
+                <aside>
+                    <nav>
+                        <ul class="articles-timeline">
+                            <li class="previous-article">« <a href="./redisxi-lie-san.html"
+                                    title="Previous: Redis系列三 - 持久化、集群、分片">Redis系列三 <small class="subtitle">持久化、集群、分片</small></a></li>
+                            <li class="next-article"><a href="./redisxi-lie-zhi.html"
+                                    title="Next: Redis系列之 - Sentinel模式">Redis系列之 <small class="subtitle">Sentinel模式</small></a> »</li>
+                        </ul>
+                    </nav>
+                </aside>
+            </div>
+            <section id="article-sidebar" class="span2">
+                <h4>Published</h4>
+                <time itemprop="dateCreated" datetime="2019-09-22T00:00:00+08:00"> 9
+                    22, 2019</time>
+                <!---->
+                <h4>Category</h4>
+                <a class="category-link"
+                    href="./categories.html#redis-ref">Redis</a>
+                <h4>Tags</h4>
+                <ul class="list-of-tags tags-in-article">
+                    <li><a href="./tags.html#redis-ref">Redis
+                            <span>11</span>
+</a></li>
+                </ul>
+<h4>Stay in Touch</h4>
+<div id="sidebar-social-link">
+    <a href="mailto:catsaction@126.com" title="My Email Address" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mail" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#328cff"/><path d="m250 186c-46 0-69 35-69 74 0 44 29 72 68 72 43 0 73-32 73-75 0-44-34-71-72-71zm-1-37c30 0 57 13 77 33 0-22 35-22 35 1v150c-1 10 10 16 16 9 25-25 54-128-14-187-64-56-149-47-195-15-48 33-79 107-49 175 33 76 126 99 182 76 28-12 41 26 12 39-45 19-168 17-225-82-38-68-36-185 67-248 78-46 182-33 244 32 66 69 62 197-2 246-28 23-71 1-71-32v-11c-20 20-47 32-77 32-57 0-108-51-108-108 0-58 51-110 108-110" fill="#fff"/></svg>
+    </a>
+    <a href="https://github.com/boyaziqi" title="catsaction Github Repository" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+    <a href="https://www.linkedin.com/feed/" title="My LinkedIn" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="LinkedIn" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%" fill="#0077b5"/><circle cx="142" cy="138" r="37"/><path stroke="#fff" stroke-width="66" d="M244 194v198M142 194v198"/><path d="M276 282c0-20 13-40 36-40 24 0 33 18 33 45v105h66V279c0-61-32-89-76-89-34 0-51 19-59 32"/></svg>
+    </a>
+</div>
+<h4>Friendship Links</h4>
+<ul class="list-of-tags tags-in-article">
+    <li>
+    <a href="https://leetcode-cn.com/" title="力扣中国站点" target="_blank" rel="nofollow noopener noreferrer">
+      LeetCode
+    </a>
+    </li>
+    <li>
+    <a href="https://coolshell.cn/about" title="陈皓酷壳" target="_blank" rel="nofollow noopener noreferrer">
+      CoolShell
+    </a>
+    </li>
+    <li>
+    <a href="https://yikun.github.io/" title="姜毅坤博客" target="_blank" rel="nofollow noopener noreferrer">
+      Yikun
+    </a>
+    </li>
+    <li>
+    <a href="https://www.nowcoder.com/" title="牛客网" target="_blank" rel="nofollow noopener noreferrer">
+      牛客网
+    </a>
+    </li>
+  </ul>
+                
+
+
+
+
+
+                
+
+
+
+
+
+            </section>
+        </div>
+</article>
+                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+    <div>
+        <span class="site-name">CatsAction's blog</span> - It's a wonderful world
+    </div>
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>        <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>

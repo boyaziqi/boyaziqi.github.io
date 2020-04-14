@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="CatsAction" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="Python 异常, python, " />
+
+<meta property="og:title" content="Python 异常问题汇总"/>
+<meta property="og:url" content="./python-yi-chang-wen-ti-hui-zong.html" />
+<meta property="og:description" content="问题一：TypeError: object() takes no parameters 最近在测试 Python 的 __new__ 方法时，我写了如下验证代码 class test(object): def __init__(self, a): print(&#34;this is a init method&#34;) self.a = a def __new__(cls, *args, **kwargs): print(&#34;this is a new method&#34;) return super(test, cls).__new__(cls, *args, **kwargs) t = test(12 …" />
+<meta property="og:site_name" content="CatsAction&#39;s blog" />
+<meta property="og:article:author" content="CatsAction" />
+<meta property="og:article:published_time" content="2016-04-24T11:20:20+08:00" />
+<meta name="twitter:title" content="Python 异常问题汇总">
+<meta name="twitter:description" content="问题一：TypeError: object() takes no parameters 最近在测试 Python 的 __new__ 方法时，我写了如下验证代码 class test(object): def __init__(self, a): print(&#34;this is a init method&#34;) self.a = a def __new__(cls, *args, **kwargs): print(&#34;this is a new method&#34;) return super(test, cls).__new__(cls, *args, **kwargs) t = test(12 …">
+
+        <title>Python 异常问题汇总 ·
+CatsAction&#39;s blog
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="./theme/image/logo.ico" />
+        <link rel="stylesheet" type="text/css" href="./theme/css/elegant.prod.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/custom.css" media="screen">
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="./"><span class=site-name>CatsAction's blog</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       .
+                                    >Home</a>
+                                </li>
+                                <li ><a href="./categories.html">Categories</a></li>
+                                <li ><a href="./tags.html">Tags</a></li>
+                                <li ><a href="./archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="./search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+    <div class="row-fluid">
+        <header class="page-header span10 offset2">
+            <h1>
+                <a href="./python-yi-chang-wen-ti-hui-zong.html">
+                    Python 异常问题汇总
+                </a>
+            </h1>
+        </header>
+    </div>
+
+    <div class="row-fluid">
+            <div class="span8 offset2 article-content">
+                
+                <h4>问题一：TypeError: object() takes no parameters</h4>
+<p>最近在测试 Python 的 <code>__new__</code> 方法时，我写了如下验证代码</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">test</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;this is a init method&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span>
+
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;this is a new method&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">test</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+</pre></div>
+
+
+<p>结果在 Python2 运行正常，在 Python3 却报如下异常</p>
+<div class="highlight"><pre><span></span>this is a new method
+Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+  File <span class="s2">&quot;test.py&quot;</span>, line <span class="m">11</span>, in &lt;module&gt;
+    <span class="nv">t</span> <span class="o">=</span> test<span class="o">(</span><span class="m">12</span><span class="o">)</span>
+  File <span class="s2">&quot;test.py&quot;</span>, line <span class="m">8</span>, in __new__
+    <span class="k">return</span> super<span class="o">(</span>test, cls<span class="o">)</span>.__new__<span class="o">(</span>cls, *args, **kwargs<span class="o">)</span>
+TypeError: object<span class="o">()</span> takes no parameters
+</pre></div>
+
+
+<p>一开始是以为 <code>__init__</code> 拼写错误，或者 tab，spec 混用导致，但是 <code>t = test()</code> 却提示需要传递参数 a</p>
+<div class="highlight"><pre><span></span>this is a new method
+Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+  File <span class="s2">&quot;test.py&quot;</span>, line <span class="m">11</span>, in &lt;module&gt;
+    <span class="nv">t</span> <span class="o">=</span> test<span class="o">()</span>
+TypeError: __init__<span class="o">()</span> missing <span class="m">1</span> required positional argument: <span class="s1">&#39;a&#39;</span>
+</pre></div>
+
+
+<p>那这样就纳闷了，竟然可以找到自己的 <code>__init__</code> 方法，那为什么还报 no parameters 呢。</p>
+<hr>
+<p>这是分割线。后面我查询了很久，在 stackoverflow 找到了回答
+https://stackoverflow.com/questions/34777773/typeerror-object-takes-no-parameters-after-defining-new`   </p>
+<p>下面是 @Blckknght 的回答</p>
+<blockquote>
+<p>In Python 3.3 and later, if you're overriding both __new__ and __init__, you need to avoid passing any extra arguments to the object methods you're overriding. 
+If you only override one of those methods, it's allowed to pass extra arguments to the other one (since that usually happens without your help).</p>
+</blockquote>
+<p>将我的测试代码<code>__new__</code> 方法部分改成如下</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;this is a new method&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>   <span class="c1"># 不需要传递额外的参数</span>
+</pre></div>
+
+
+<p>这样就可以运行成功了。  </p>
+<p>那我不禁要问，Python3.3+ 到底怎么调用 <code>__init__</code> 方法的呢，上面的回答也答复了。<code>__init__</code> 调用是通过 <code>type.__call__</code>，那么 <code>object.__new__</code> 自然不需要知道 <code>__init__</code>  的额外参数   </p>
+<p>感谢 @Blckknght 的回答！！！ </p>
+
+
+                
+
+                
+                
+                
+
+
+
+
+
+
+                <hr />
+                <aside>
+                    <nav>
+                        <ul class="articles-timeline">
+                            <li class="previous-article">« <a href="./weakrefshi-yong-yu-li-jie.html"
+                                    title="Previous: weakref使用与理解">weakref使用与理解</a></li>
+                            <li class="next-article"><a href="./jin-zhi-inputshu-ru-kuang-hui-che-zi-dong-ti-jiao-biao-dan.html"
+                                    title="Next: 禁止input输入框回车自动提交表单">禁止input输入框回车自动提交表单</a> »</li>
+                        </ul>
+                    </nav>
+                </aside>
+            </div>
+            <section id="article-sidebar" class="span2">
+                <h4>Published</h4>
+                <time itemprop="dateCreated" datetime="2016-04-24T11:20:20+08:00"> 4
+                    24, 2016</time>
+                <!---->
+                <h4>Category</h4>
+                <a class="category-link"
+                    href="./categories.html#python-ref">python</a>
+                <h4>Tags</h4>
+                <ul class="list-of-tags tags-in-article">
+                    <li><a href="./tags.html#python-yi-chang-ref">Python 异常
+                            <span>1</span>
+</a></li>
+                </ul>
+<h4>Stay in Touch</h4>
+<div id="sidebar-social-link">
+    <a href="mailto:catsaction@126.com" title="My Email Address" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mail" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#328cff"/><path d="m250 186c-46 0-69 35-69 74 0 44 29 72 68 72 43 0 73-32 73-75 0-44-34-71-72-71zm-1-37c30 0 57 13 77 33 0-22 35-22 35 1v150c-1 10 10 16 16 9 25-25 54-128-14-187-64-56-149-47-195-15-48 33-79 107-49 175 33 76 126 99 182 76 28-12 41 26 12 39-45 19-168 17-225-82-38-68-36-185 67-248 78-46 182-33 244 32 66 69 62 197-2 246-28 23-71 1-71-32v-11c-20 20-47 32-77 32-57 0-108-51-108-108 0-58 51-110 108-110" fill="#fff"/></svg>
+    </a>
+    <a href="https://github.com/boyaziqi" title="catsaction Github Repository" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+    <a href="https://www.linkedin.com/feed/" title="My LinkedIn" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="LinkedIn" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%" fill="#0077b5"/><circle cx="142" cy="138" r="37"/><path stroke="#fff" stroke-width="66" d="M244 194v198M142 194v198"/><path d="M276 282c0-20 13-40 36-40 24 0 33 18 33 45v105h66V279c0-61-32-89-76-89-34 0-51 19-59 32"/></svg>
+    </a>
+</div>
+<h4>Friendship Links</h4>
+<ul class="list-of-tags tags-in-article">
+    <li>
+    <a href="https://leetcode-cn.com/" title="力扣中国站点" target="_blank" rel="nofollow noopener noreferrer">
+      LeetCode
+    </a>
+    </li>
+    <li>
+    <a href="https://coolshell.cn/about" title="陈皓酷壳" target="_blank" rel="nofollow noopener noreferrer">
+      CoolShell
+    </a>
+    </li>
+    <li>
+    <a href="https://yikun.github.io/" title="姜毅坤博客" target="_blank" rel="nofollow noopener noreferrer">
+      Yikun
+    </a>
+    </li>
+    <li>
+    <a href="https://www.nowcoder.com/" title="牛客网" target="_blank" rel="nofollow noopener noreferrer">
+      牛客网
+    </a>
+    </li>
+  </ul>
+                
+
+
+
+
+
+                
+
+
+
+
+
+            </section>
+        </div>
+</article>
+                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+    <div>
+        <span class="site-name">CatsAction's blog</span> - It's a wonderful world
+    </div>
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>        <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>CatsAction's blog - git</title><link href="/" rel="alternate"></link><link href="/feeds/git.atom.xml" rel="self"></link><id>/</id><updated>2016-12-25T22:50:00+08:00</updated><subtitle></subtitle><entry><title>一些有用的git技巧</title><link href="/yi-xie-you-yong-de-gitji-qiao.html" rel="alternate"></link><published>2016-12-25T22:50:00+08:00</published><updated>2016-12-25T22:50:00+08:00</updated><author><name>CatsAction</name></author><id>tag:None,2016-12-25:/yi-xie-you-yong-de-gitji-qiao.html</id><summary type="html">&lt;h4&gt;将同一个文件的修改分多次添加到index暂存区&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# 添加每个变化前，都会要求确认&lt;/span&gt;
+&lt;span class="c1"&gt;# 对于同一个文件的多处变化，可以实现分次提交&lt;/span&gt;
+git add -p
+
+&lt;span class="c1"&gt;# 停止追踪指定文件，但该文件会保留在工作区&lt;/span&gt;
+$ git rm --cached &lt;span class="o"&gt;[&lt;/span&gt;file&lt;span class="o"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# 改名文件，并且将这个改名放入暂存区&lt;/span&gt;
+$ git mv &lt;span class="o"&gt;[&lt;/span&gt;file-original&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;file-renamed&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;git commit 提交指定文件和回退上次提交&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# 提交暂存区的指定文件到仓库区&lt;/span&gt;
+$ git commit &lt;span class="o"&gt;[&lt;/span&gt;file1&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;file2&lt;span class="o"&gt;]&lt;/span&gt; ... -m &lt;span class="o"&gt;[&lt;/span&gt;message&lt;span class="o"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# 提交时显示所有diff信息&lt;/span&gt;
+$ git commit -v
+
+&lt;span class="c1"&gt;# 使用一次新的commit，替代上一次提交&lt;/span&gt;
+&lt;span class="c1"&gt;# 如果代码没有任何新变化，则用来改写上一次commit的提交信息&lt;/span&gt;
+$ git commit --amend -m &lt;span class="o"&gt;[&lt;/span&gt;message&lt;span class="o"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# 重做上一次commit，并包括指定文件的新变化&lt;/span&gt;
+$ git commit --amend &lt;span class="o"&gt;[&lt;/span&gt;file1&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;file2 …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;h4&gt;将同一个文件的修改分多次添加到index暂存区&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# 添加每个变化前，都会要求确认&lt;/span&gt;
+&lt;span class="c1"&gt;# 对于同一个文件的多处变化，可以实现分次提交&lt;/span&gt;
+git add -p
+
+&lt;span class="c1"&gt;# 停止追踪指定文件，但该文件会保留在工作区&lt;/span&gt;
+$ git rm --cached &lt;span class="o"&gt;[&lt;/span&gt;file&lt;span class="o"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# 改名文件，并且将这个改名放入暂存区&lt;/span&gt;
+$ git mv &lt;span class="o"&gt;[&lt;/span&gt;file-original&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;file-renamed&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;git commit 提交指定文件和回退上次提交&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# 提交暂存区的指定文件到仓库区&lt;/span&gt;
+$ git commit &lt;span class="o"&gt;[&lt;/span&gt;file1&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;file2&lt;span class="o"&gt;]&lt;/span&gt; ... -m &lt;span class="o"&gt;[&lt;/span&gt;message&lt;span class="o"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# 提交时显示所有diff信息&lt;/span&gt;
+$ git commit -v
+
+&lt;span class="c1"&gt;# 使用一次新的commit，替代上一次提交&lt;/span&gt;
+&lt;span class="c1"&gt;# 如果代码没有任何新变化，则用来改写上一次commit的提交信息&lt;/span&gt;
+$ git commit --amend -m &lt;span class="o"&gt;[&lt;/span&gt;message&lt;span class="o"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# 重做上一次commit，并包括指定文件的新变化&lt;/span&gt;
+$ git commit --amend &lt;span class="o"&gt;[&lt;/span&gt;file1&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;file2&lt;span class="o"&gt;]&lt;/span&gt; ...
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;git branch建立和跟踪远程分支&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# 新建一个分支，指向指定commit&lt;/span&gt;
+$ git branch &lt;span class="o"&gt;[&lt;/span&gt;branch&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;commit&lt;span class="o"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# 新建一个分支，与指定的远程分支建立追踪关系&lt;/span&gt;
+$ git branch --track &lt;span class="o"&gt;[&lt;/span&gt;branch&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;remote-branch&lt;span class="o"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# 切换到上一个分支&lt;/span&gt;
+$ git checkout -
+
+&lt;span class="c1"&gt;# 建立追踪关系，在现有分支与指定的远程分支之间&lt;/span&gt;
+$ git branch --set-upstream &lt;span class="o"&gt;[&lt;/span&gt;branch&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;remote-branch&lt;span class="o"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# 选择一个commit，合并进当前分支&lt;/span&gt;
+$ git cherry-pick &lt;span class="o"&gt;[&lt;/span&gt;commit&lt;span class="o"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# 删除远程分支&lt;/span&gt;
+$ git push origin --delete &lt;span class="o"&gt;[&lt;/span&gt;branch-name&lt;span class="o"&gt;]&lt;/span&gt;
+$ git branch -dr &lt;span class="o"&gt;[&lt;/span&gt;remote/branch&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;查看git变更信息&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# 显示commit历史，以及每次commit发生变更的文件&lt;/span&gt;
+$ git log --stat
+
+&lt;span class="c1"&gt;# 搜索提交历史，根据关键词&lt;/span&gt;
+$ git log -S &lt;span class="o"&gt;[&lt;/span&gt;keyword&lt;span class="o"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# 显示指定文件是什么人在什么时间修改过&lt;/span&gt;
+$ git blame &lt;span class="o"&gt;[&lt;/span&gt;file&lt;span class="o"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# 显示某个文件的版本历史，包括文件改名&lt;/span&gt;
+$ git log --follow &lt;span class="o"&gt;[&lt;/span&gt;file&lt;span class="o"&gt;]&lt;/span&gt;
+$ git whatchanged &lt;span class="o"&gt;[&lt;/span&gt;file&lt;span class="o"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# 显示两次提交之间的差异&lt;/span&gt;
+$ git diff &lt;span class="o"&gt;[&lt;/span&gt;first-branch&lt;span class="o"&gt;]&lt;/span&gt;...&lt;span class="o"&gt;[&lt;/span&gt;second-branch&lt;span class="o"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# 显示今天你写了多少行代码&lt;/span&gt;
+$ git diff --shortstat &lt;span class="s2"&gt;&amp;quot;@{0 day ago}&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</content><category term="git"></category><category term="git"></category></entry><entry><title>git .gitignore不起作用的原因</title><link href="/git-gitignorebu-qi-zuo-yong-de-yuan-yin.html" rel="alternate"></link><published>2016-12-20T00:00:00+08:00</published><updated>2016-12-20T00:00:00+08:00</updated><author><name>CatsAction</name></author><id>tag:None,2016-12-20:/git-gitignorebu-qi-zuo-yong-de-yuan-yin.html</id><content type="html">&lt;p&gt;最近自己在折腾一个小项目时，先提交了几次commit，并且推到了上游。可是类似 pyc 这样的文件总是显示在 git status 中，看起来挺不爽的，所以添加了一个 .gitignore 过滤掉 pyc 文件。
+但当我写好规则时，却发现 git status 仍然展示 pyc 文件。搜索了下，原来 gitignore 对已经跟踪的文件是没有效果的，我们需要先清空 git index。解决方法如下:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git rm -r --cached .
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;这样再看的时候，.gitignore 就生效了，重新提交一次就可以了。&lt;/p&gt;</content><category term="git"></category><category term=".gitignore"></category></entry></feed>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="CatsAction" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="Redis, Redis, " />
+
+<meta property="og:title" content="Redis系列二 - 内存淘汰机制"/>
+<meta property="og:url" content="./redisxi-lie-er.html" />
+<meta property="og:description" content="前述 本篇先讲讲Redis过期key的删除机制，然后讲解Redis内存淘汰机制，最后针对LRU和LFU讲解和简单对比。 过期key删除策略 惰性删除：当读/写一个已经过期的key时，会触发惰性删除策略，直接删除掉这个过期key。 定期删除：每隔一段时间，Redis对数据库进行检查，删除里面的过期key。 惰性删除 这种策略对CPU友好，但是可能导致内存浪费。如果一个已经过期的key永远不被访问，它所占用的内存也永远得不到释放。 定期删除 定期删除默认每秒10次检查一次过期key，可以通过hz配置选项控制检查频率。定期删除会做下面检测和清除步骤。 1）随机测试100个设置了过期时间的key。 2） 删除所有发现的已过期的key。 3） 若删除的key超过25个则重复步骤1。 这是一个基于概率的简单算法，基本的假设是抽出的样本能够代表整个key空间，redis持续清理过期的数据直至将要过期的key的百分比降到了25%以下。这也意味着在任何给定的时刻已经过期但仍占据着内存空间的key的量最多为每秒的写操作量除以4。 内存淘汰机制 除了上面一小节的过期key删除策略，Redis还提供了内存淘汰机制。当使用内存超过maxmemory限定时，触发内存淘汰机制。Redis提供了以下几种内存淘汰机制。 noeviction：当内存使用超出maxmemory限制时，客户端访问返回错误（大部分的写入命令，但是DEL命令例外）。 allkeys-lru …" />
+<meta property="og:site_name" content="CatsAction&#39;s blog" />
+<meta property="og:article:author" content="CatsAction" />
+<meta property="og:article:published_time" content="2019-09-15T00:00:00+08:00" />
+<meta name="twitter:title" content="Redis系列二 - 内存淘汰机制">
+<meta name="twitter:description" content="前述 本篇先讲讲Redis过期key的删除机制，然后讲解Redis内存淘汰机制，最后针对LRU和LFU讲解和简单对比。 过期key删除策略 惰性删除：当读/写一个已经过期的key时，会触发惰性删除策略，直接删除掉这个过期key。 定期删除：每隔一段时间，Redis对数据库进行检查，删除里面的过期key。 惰性删除 这种策略对CPU友好，但是可能导致内存浪费。如果一个已经过期的key永远不被访问，它所占用的内存也永远得不到释放。 定期删除 定期删除默认每秒10次检查一次过期key，可以通过hz配置选项控制检查频率。定期删除会做下面检测和清除步骤。 1）随机测试100个设置了过期时间的key。 2） 删除所有发现的已过期的key。 3） 若删除的key超过25个则重复步骤1。 这是一个基于概率的简单算法，基本的假设是抽出的样本能够代表整个key空间，redis持续清理过期的数据直至将要过期的key的百分比降到了25%以下。这也意味着在任何给定的时刻已经过期但仍占据着内存空间的key的量最多为每秒的写操作量除以4。 内存淘汰机制 除了上面一小节的过期key删除策略，Redis还提供了内存淘汰机制。当使用内存超过maxmemory限定时，触发内存淘汰机制。Redis提供了以下几种内存淘汰机制。 noeviction：当内存使用超出maxmemory限制时，客户端访问返回错误（大部分的写入命令，但是DEL命令例外）。 allkeys-lru …">
+
+        <title>Redis系列二 - 内存淘汰机制 ·
+CatsAction&#39;s blog
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="./theme/image/logo.ico" />
+        <link rel="stylesheet" type="text/css" href="./theme/css/elegant.prod.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/custom.css" media="screen">
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="./"><span class=site-name>CatsAction's blog</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       .
+                                    >Home</a>
+                                </li>
+                                <li ><a href="./categories.html">Categories</a></li>
+                                <li ><a href="./tags.html">Tags</a></li>
+                                <li ><a href="./archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="./search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+    <div class="row-fluid">
+        <header class="page-header span10 offset2">
+            <h1>
+                <a href="./redisxi-lie-er.html">
+                    Redis系列二
+                    <small class="subtitle">
+                        内存淘汰机制
+                    </small>
+                </a>
+            </h1>
+        </header>
+    </div>
+
+    <div class="row-fluid">
+            <div class="span8 offset2 article-content">
+                
+                <h2>前述</h2>
+<p>本篇先讲讲Redis过期key的删除机制，然后讲解Redis内存淘汰机制，最后针对LRU和LFU讲解和简单对比。</p>
+<h2>过期key删除策略</h2>
+<ul>
+<li>
+<p>惰性删除：当读/写一个已经过期的key时，会触发惰性删除策略，直接删除掉这个过期key。</p>
+</li>
+<li>
+<p>定期删除：每隔一段时间，Redis对数据库进行检查，删除里面的过期key。</p>
+</li>
+</ul>
+<h5>惰性删除</h5>
+<p>这种策略对CPU友好，但是可能导致内存浪费。如果一个已经过期的key永远不被访问，它所占用的内存也永远得不到释放。</p>
+<h5>定期删除</h5>
+<p>定期删除默认每秒10次检查一次过期key，可以通过<code>hz</code>配置选项控制检查频率。定期删除会做下面检测和清除步骤。</p>
+<p>1）随机测试100个设置了过期时间的key。</p>
+<p>2） 删除所有发现的已过期的key。</p>
+<p>3） 若删除的key超过25个则重复步骤1。</p>
+<p>这是一个基于概率的简单算法，基本的假设是抽出的样本能够代表整个key空间，redis持续清理过期的数据直至将要过期的key的百分比降到了25%以下。这也意味着在任何给定的时刻已经过期但仍占据着内存空间的key的量最多为每秒的写操作量除以4。</p>
+<h2>内存淘汰机制</h2>
+<p>除了上面一小节的过期key删除策略，Redis还提供了内存淘汰机制。当使用内存超过<code>maxmemory</code>限定时，触发内存淘汰机制。Redis提供了以下几种内存淘汰机制。</p>
+<ul>
+<li>
+<p>noeviction：当内存使用超出maxmemory限制时，客户端访问返回错误（大部分的写入命令，但是DEL命令例外）。</p>
+</li>
+<li>
+<p>allkeys-lru: 对所有的key应用LRU淘汰机制。</p>
+</li>
+<li>
+<p>volatile-lru: 仅对设置了过期时间的key应用LRU淘汰机制。</p>
+</li>
+<li>
+<p>allkeys-random: 随机回收所有的key。</p>
+</li>
+<li>
+<p>volatile-random: 随机回收设置了过期时间的key。</p>
+</li>
+<li>
+<p>volatile-ttl: 只对设置了过期时间的key进行回收，但优先回收存活时间（TTL）较短的key。 </p>
+</li>
+</ul>
+<h2>Redis LRU实现</h2>
+<p>Redis使用的是近似LRU算法，它跟常规的LRU算法还不太一样。</p>
+<p>近似LRU算法通过随机采样法淘汰数据，每次随机取出一定数量的key，从里面淘汰掉最近最少使用的key。可以通过maxmemory-samples配置随机采样的key数量，值越大，越接近真实LRU算法。默认值为5。</p>
+<p>Redis的近似LRU算法，避免了对所有的key操作，减少了内存消耗，避免了扫描所有key的时间复杂度。</p>
+<h2>Redis LFU算法</h2>
+<p>LFU算法，全称Least Frequently Used。根据访问的频率淘汰访问相对不频繁的key。LFU避免了一个key很少被访问，而最近被访问一次而不被淘汰的问题。LRF算法是4.0新增的。</p>
+<p>Redis LFU算法提供了下面两种策略：</p>
+<ul>
+<li>
+<p>valatile-lfu：只对设置了过期时间的key应用LFU策略。</p>
+</li>
+<li>
+<p>allkey-lfu：对所有key基于LFU回收内存。</p>
+</li>
+</ul>
+<p>Redis4.0对LFU增加了两个配置。</p>
+<div class="highlight"><pre><span></span><span class="err">lfu-log-factor 10</span>
+<span class="err">lfu-decay-time 1</span>
+</pre></div>
+
+
+<blockquote>
+<p>lfu-log-factor：可以调整计数器counter的增长速度，lfu-log-factor越大，counter增长的越慢。</p>
+<p>lfu-decay-time：是一个以分钟为单位的数值，可以调整counter的减少速度。</p>
+</blockquote>
+<h5>Redis LFU工作机制</h5>
+<p>Redis会为每个key对象维护一个计数器counter和最近一次计数被减少时的时间（总共24bit，LRU的最近访问时间拆分为两部分分，高位的16bit为最近计数器被减少时的时间，低位的8bit为计数器counter）。</p>
+<p>当一个key被访问需要增加计数器counter时，需要根据两个因子r、p比较，当<code>r &lt; p</code>时，counter自增1，否则不增加。其中r因子为<code>0-1</code>之间的随机数，p因子由当前的counter值和配置项<code>lfu-log-factor</code>共同决定。</p>
+<p>需要减少counter值时，并不是总减少1。Redis会计算key对象最近一次被减少时间相对于目前时间过去了多少个lfu-decay-time，即<code>(now - last_dect_time) / lfu-decay-time</code>的值，counter即减去算出来的值。</p>
+<blockquote>
+<p>基于现在时间和最近一次操作时间的差值，解决了
+一个key一段时间访问频繁，从而counter值增加，但是后期访问频率比较低甚至不访问，如果只是简单的累加counter，那这种情况则不能很好的被清除。</p>
+</blockquote>
+<p>下面的Redis源码展示了counter计数器增加和减少的逻辑，详细代码讲解可以参考本章最后面的参考资料链接<strong>Redis中的LFU算法</strong>。</p>
+<div class="highlight"><pre><span></span><span class="kt">uint8_t</span> <span class="nf">LFULogIncr</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">counter</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">counter</span> <span class="o">==</span> <span class="mi">255</span><span class="p">)</span> <span class="k">return</span> <span class="mi">255</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">rand</span><span class="p">()</span><span class="o">/</span><span class="n">RAND_MAX</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">baseval</span> <span class="o">=</span> <span class="n">counter</span> <span class="o">-</span> <span class="n">LFU_INIT_VAL</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">baseval</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="n">baseval</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">p</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">baseval</span><span class="o">*</span><span class="n">server</span><span class="p">.</span><span class="n">lfu_log_factor</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">r</span> <span class="o">&lt;</span> <span class="n">p</span><span class="p">)</span> <span class="n">counter</span><span class="o">++</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">counter</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">unsigned</span> <span class="kt">long</span> <span class="nf">LFUDecrAndReturn</span><span class="p">(</span><span class="n">robj</span> <span class="o">*</span><span class="n">o</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">ldt</span> <span class="o">=</span> <span class="n">o</span><span class="o">-&gt;</span><span class="n">lru</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">counter</span> <span class="o">=</span> <span class="n">o</span><span class="o">-&gt;</span><span class="n">lru</span> <span class="o">&amp;</span> <span class="mi">255</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">num_periods</span> <span class="o">=</span> <span class="n">server</span><span class="p">.</span><span class="n">lfu_decay_time</span> <span class="o">?</span> <span class="n">LFUTimeElapsed</span><span class="p">(</span><span class="n">ldt</span><span class="p">)</span> <span class="o">/</span> <span class="n">server</span><span class="p">.</span><span class="nl">lfu_decay_time</span> <span class="p">:</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">num_periods</span><span class="p">)</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="p">(</span><span class="n">num_periods</span> <span class="o">&gt;</span> <span class="n">counter</span><span class="p">)</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="n">counter</span> <span class="o">-</span> <span class="n">num_periods</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">counter</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>由于LFU需要根据counter排序，如果对所有的key操作，肯定会影响Redis的吞吐量。基于这个原因，可以参考LRU算法，给定一个固定的pool，随机选取一批key，再在被选中的key中应用LFU淘汰机制。</p>
+<h2>后述</h2>
+<p><em>参考资料：</em></p>
+<p><em>Redis官方文档：<a href="https://redis.io/topics/lru-cache">Using Redis as an LRU cache</a></em></p>
+<p><em><a href="https://juejin.im/post/5d674ac2e51d4557ca7fdd70">Redis的内存淘汰策略</a></em></p>
+<p><em><a href="https://www.cnblogs.com/linxiyue/p/10955533.html">Redis中的LFU算法</a></em></p>
+<p><em>Redis系列其他文章：</em></p>
+<p><em><a href="./redisxi-lie-zhi.html">Redis Sentinel模式</a></em></p>
+<p><em><a href="./redisxi-lie-yi.html">Redis概述和数据类型</a></em></p>
+
+
+                
+
+                
+                
+                
+
+
+
+
+
+
+                <hr />
+                <aside>
+                    <nav>
+                        <ul class="articles-timeline">
+                            <li class="previous-article">« <a href="./redisxi-lie-yi.html"
+                                    title="Previous: Redis系列一 - 概念和数据类型">Redis系列一 <small class="subtitle">概念和数据类型</small></a></li>
+                            <li class="next-article"><a href="./redisxi-lie-san.html"
+                                    title="Next: Redis系列三 - 持久化、集群、分片">Redis系列三 <small class="subtitle">持久化、集群、分片</small></a> »</li>
+                        </ul>
+                    </nav>
+                </aside>
+            </div>
+            <section id="article-sidebar" class="span2">
+                <h4>Published</h4>
+                <time itemprop="dateCreated" datetime="2019-09-15T00:00:00+08:00"> 9
+                    15, 2019</time>
+                <!---->
+                <h4>Category</h4>
+                <a class="category-link"
+                    href="./categories.html#redis-ref">Redis</a>
+                <h4>Tags</h4>
+                <ul class="list-of-tags tags-in-article">
+                    <li><a href="./tags.html#redis-ref">Redis
+                            <span>11</span>
+</a></li>
+                </ul>
+<h4>Stay in Touch</h4>
+<div id="sidebar-social-link">
+    <a href="mailto:catsaction@126.com" title="My Email Address" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mail" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#328cff"/><path d="m250 186c-46 0-69 35-69 74 0 44 29 72 68 72 43 0 73-32 73-75 0-44-34-71-72-71zm-1-37c30 0 57 13 77 33 0-22 35-22 35 1v150c-1 10 10 16 16 9 25-25 54-128-14-187-64-56-149-47-195-15-48 33-79 107-49 175 33 76 126 99 182 76 28-12 41 26 12 39-45 19-168 17-225-82-38-68-36-185 67-248 78-46 182-33 244 32 66 69 62 197-2 246-28 23-71 1-71-32v-11c-20 20-47 32-77 32-57 0-108-51-108-108 0-58 51-110 108-110" fill="#fff"/></svg>
+    </a>
+    <a href="https://github.com/boyaziqi" title="catsaction Github Repository" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+    <a href="https://www.linkedin.com/feed/" title="My LinkedIn" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="LinkedIn" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%" fill="#0077b5"/><circle cx="142" cy="138" r="37"/><path stroke="#fff" stroke-width="66" d="M244 194v198M142 194v198"/><path d="M276 282c0-20 13-40 36-40 24 0 33 18 33 45v105h66V279c0-61-32-89-76-89-34 0-51 19-59 32"/></svg>
+    </a>
+</div>
+<h4>Friendship Links</h4>
+<ul class="list-of-tags tags-in-article">
+    <li>
+    <a href="https://leetcode-cn.com/" title="力扣中国站点" target="_blank" rel="nofollow noopener noreferrer">
+      LeetCode
+    </a>
+    </li>
+    <li>
+    <a href="https://coolshell.cn/about" title="陈皓酷壳" target="_blank" rel="nofollow noopener noreferrer">
+      CoolShell
+    </a>
+    </li>
+    <li>
+    <a href="https://yikun.github.io/" title="姜毅坤博客" target="_blank" rel="nofollow noopener noreferrer">
+      Yikun
+    </a>
+    </li>
+    <li>
+    <a href="https://www.nowcoder.com/" title="牛客网" target="_blank" rel="nofollow noopener noreferrer">
+      牛客网
+    </a>
+    </li>
+  </ul>
+                
+
+
+
+
+
+                
+
+
+
+
+
+            </section>
+        </div>
+</article>
+                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+    <div>
+        <span class="site-name">CatsAction's blog</span> - It's a wonderful world
+    </div>
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>        <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>

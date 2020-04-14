@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="CatsAction" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="MQ, Docker, RabbitMQ, " />
+
+<meta property="og:title" content="RabbitMQ系列第三篇 - 分布式部署"/>
+<meta property="og:url" content="./rabbitmqxi-lie-di-san-pian.html" />
+<meta property="og:description" content="集群特点 RabbitMQ节点不完全拷贝。所以其他非所有者节点只知道队列的元数据，和指向该队列节点的指针。 集群节点类型 内存节点 磁盘节点 如果集群只有一个磁盘节点，当该节点宕机时，集群仍然运行，但是不能创建Queue，Exchange，Binding， 也不能增加用户，更改权限，集群节点删除和增加也不行。因此为了集群的健壮，应两个磁盘节点。 基于Docker测试集群部署 Docker是现在很流行的容器化技术，它部署方便，资源消耗小。Docker的学习可以查看Docker从入门到实践 首先获取RabbitMQ镜像 docker pull rabbitmq:3-management 利用刚刚获取的镜像启动三个RabbitMQ容器。用docker ps查看是否启动成功。 docker run -d --hostname rabbit1 --name rabbitmq-cluster1 -p 15672:15672 -p 5672:5672 -e RABBITMQ_ERLANG_COOKIE=&#39;rabbitcookie …" />
+<meta property="og:site_name" content="CatsAction&#39;s blog" />
+<meta property="og:article:author" content="CatsAction" />
+<meta property="og:article:published_time" content="2019-01-10T00:00:00+08:00" />
+<meta name="twitter:title" content="RabbitMQ系列第三篇 - 分布式部署">
+<meta name="twitter:description" content="集群特点 RabbitMQ节点不完全拷贝。所以其他非所有者节点只知道队列的元数据，和指向该队列节点的指针。 集群节点类型 内存节点 磁盘节点 如果集群只有一个磁盘节点，当该节点宕机时，集群仍然运行，但是不能创建Queue，Exchange，Binding， 也不能增加用户，更改权限，集群节点删除和增加也不行。因此为了集群的健壮，应两个磁盘节点。 基于Docker测试集群部署 Docker是现在很流行的容器化技术，它部署方便，资源消耗小。Docker的学习可以查看Docker从入门到实践 首先获取RabbitMQ镜像 docker pull rabbitmq:3-management 利用刚刚获取的镜像启动三个RabbitMQ容器。用docker ps查看是否启动成功。 docker run -d --hostname rabbit1 --name rabbitmq-cluster1 -p 15672:15672 -p 5672:5672 -e RABBITMQ_ERLANG_COOKIE=&#39;rabbitcookie …">
+
+        <title>RabbitMQ系列第三篇 - 分布式部署 ·
+CatsAction&#39;s blog
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="./theme/image/logo.ico" />
+        <link rel="stylesheet" type="text/css" href="./theme/css/elegant.prod.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/custom.css" media="screen">
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="./"><span class=site-name>CatsAction's blog</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       .
+                                    >Home</a>
+                                </li>
+                                <li ><a href="./categories.html">Categories</a></li>
+                                <li ><a href="./tags.html">Tags</a></li>
+                                <li ><a href="./archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="./search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+    <div class="row-fluid">
+        <header class="page-header span10 offset2">
+            <h1>
+                <a href="./rabbitmqxi-lie-di-san-pian.html">
+                    RabbitMQ系列第三篇
+                    <small class="subtitle">
+                        分布式部署
+                    </small>
+                </a>
+            </h1>
+        </header>
+    </div>
+
+    <div class="row-fluid">
+            <div class="span8 offset2 article-content">
+                
+                <h4>集群特点</h4>
+<p>RabbitMQ节点不完全拷贝。所以其他非所有者节点只知道队列的元数据，和指向该队列节点的指针。</p>
+<p><img alt="集群特点" src="./images/rabbitmq-cluster-feature.png"></p>
+<h4>集群节点类型</h4>
+<ul>
+<li>内存节点</li>
+<li>磁盘节点</li>
+</ul>
+<p>如果集群只有一个磁盘节点，当该节点宕机时，集群仍然运行，但是不能创建Queue，Exchange，Binding，
+也不能增加用户，更改权限，集群节点删除和增加也不行。因此为了集群的健壮，应两个磁盘节点。</p>
+<h4>基于Docker测试集群部署</h4>
+<p>Docker是现在很流行的容器化技术，它部署方便，资源消耗小。Docker的学习可以查看<a href="https://yeasy.gitbooks.io/docker_practice/network/linking.html">Docker从入门到实践</a></p>
+<p>首先获取RabbitMQ镜像</p>
+<div class="highlight"><pre><span></span>docker pull rabbitmq:3-management
+</pre></div>
+
+
+<p>利用刚刚获取的镜像启动三个RabbitMQ容器。用<code>docker ps</code>查看是否启动成功。</p>
+<div class="highlight"><pre><span></span>docker run -d --hostname rabbit1 --name rabbitmq-cluster1 -p <span class="m">15672</span>:15672 -p <span class="m">5672</span>:5672 -e <span class="nv">RABBITMQ_ERLANG_COOKIE</span><span class="o">=</span><span class="s1">&#39;rabbitcookie&#39;</span> rabbitmq:3-management
+docker run -d --hostname rabbit2 --name rabbitmq-cluster2 -p <span class="m">15673</span>:15672 -p <span class="m">5673</span>:5672 -e <span class="nv">RABBITMQ_ERLANG_COOKIE</span><span class="o">=</span><span class="s1">&#39;rabbitcookie&#39;</span> rabbitmq:3-management
+docker run -d --hostname rabbit3 --name rabbitmq-cluster3 -p <span class="m">15674</span>:15672 -p <span class="m">5674</span>:5672 -e <span class="nv">RABBITMQ_ERLANG_COOKIE</span><span class="o">=</span><span class="s1">&#39;rabbitcookie&#39;</span> rabbitmq:3-management
+</pre></div>
+
+
+<p>创建bridge网络模型</p>
+<div class="highlight"><pre><span></span>xufan in ~ λ docker network create my-net
+da548bf4ff7d59a9b5bea3ca1b15a54ec4eb6474cf13c7023617ee505632c7db
+xufan in ~ λ docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+a537e2bf0f6e        allspark_default    bridge              <span class="nb">local</span>
+be294ecd2c06        bridge              bridge              <span class="nb">local</span>
+13a3502ca0b7        host                host                <span class="nb">local</span>
+da548bf4ff7d        my-net              bridge              <span class="nb">local</span>
+74271d3b1ef4        none                null                <span class="nb">local</span>
+</pre></div>
+
+
+<p>将上面创建的三个容器连接到自定义的网络my-net上。</p>
+<div class="highlight"><pre><span></span>docker network connect my-net rabbitmq-cluster1
+docker network connect my-net rabbitmq-cluster2
+docker network connect my-net rabbitmq-cluster3
+</pre></div>
+
+
+<p>执行<code>docker exec -it rabbitmq-cluster1 bash</code>进入第1个容器，ping其他两台容器看看是否网络正常联通。如果没有ping命令，可安装<a href="https://stackoverflow.com/questions/39901311/docker-ubuntu-bash-ping-command-not-found">iputils-ping</a></p>
+<p>在第2，3个节点执行下面命令加入集群</p>
+<div class="highlight"><pre><span></span>rabbitmqctl stop_app
+rabbitmqctl reset
+rabbitmqctl join_cluster rabbit@rabbit1
+rabbitmqctl start_app
+</pre></div>
+
+
+<p>有时会执行失败，后面再抽时间分析下具体原因和解决思路。</p>
+<h4>镜像队列</h4>
+<p>默认，RabbitMQ集群的队列和消息只存储在一个单一的节点（宣布它的节点）。如果这个节点挂掉，它的Queue和Message都将丢失（Exchange和Binding三个节点都有，因此不会丢失）。因此，RabbitMQ支持镜像队列。每个镜像队列高可用有一个主队列，然后一个或多个从队列。所有的操作先传给主队列，主队列再分发给从队列。如Publisher分发一个消息，只有消息成功分发给所有从队列，才会得到确认。Customer消费消息，不管它连接的是哪个节点，都会转到主节点。镜像队列提升了高可用，但是没有负载均衡的效果（所有节点做相同的工作）</p>
+
+
+                
+
+                
+                
+                
+
+
+
+
+
+
+                <hr />
+                <aside>
+                    <nav>
+                        <ul class="articles-timeline">
+                            <li class="previous-article">« <a href="./rabbitmqxi-lie-di-er-pian.html"
+                                    title="Previous: RabbitMQ系列第二篇 - 如何保证消息可靠性">RabbitMQ系列第二篇 <small class="subtitle">如何保证消息可靠性</small></a></li>
+                            <li class="next-article"><a href="./dockerxi-lie-yi.html"
+                                    title="Next: Docker系列（一） - 概念及入门">Docker系列（一） <small class="subtitle">概念及入门</small></a> »</li>
+                        </ul>
+                    </nav>
+                </aside>
+            </div>
+            <section id="article-sidebar" class="span2">
+                <h4>Published</h4>
+                <time itemprop="dateCreated" datetime="2019-01-10T00:00:00+08:00"> 1
+                    10, 2019</time>
+                <!---->
+                <h4>Category</h4>
+                <a class="category-link"
+                    href="./categories.html#rabbitmq-ref">RabbitMQ</a>
+                <h4>Tags</h4>
+                <ul class="list-of-tags tags-in-article">
+                    <li><a href="./tags.html#docker-ref">Docker
+                            <span>6</span>
+</a></li>
+                    <li><a href="./tags.html#mq-ref">MQ
+                            <span>3</span>
+</a></li>
+                </ul>
+<h4>Stay in Touch</h4>
+<div id="sidebar-social-link">
+    <a href="mailto:catsaction@126.com" title="My Email Address" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mail" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#328cff"/><path d="m250 186c-46 0-69 35-69 74 0 44 29 72 68 72 43 0 73-32 73-75 0-44-34-71-72-71zm-1-37c30 0 57 13 77 33 0-22 35-22 35 1v150c-1 10 10 16 16 9 25-25 54-128-14-187-64-56-149-47-195-15-48 33-79 107-49 175 33 76 126 99 182 76 28-12 41 26 12 39-45 19-168 17-225-82-38-68-36-185 67-248 78-46 182-33 244 32 66 69 62 197-2 246-28 23-71 1-71-32v-11c-20 20-47 32-77 32-57 0-108-51-108-108 0-58 51-110 108-110" fill="#fff"/></svg>
+    </a>
+    <a href="https://github.com/boyaziqi" title="catsaction Github Repository" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+    <a href="https://www.linkedin.com/feed/" title="My LinkedIn" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="LinkedIn" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%" fill="#0077b5"/><circle cx="142" cy="138" r="37"/><path stroke="#fff" stroke-width="66" d="M244 194v198M142 194v198"/><path d="M276 282c0-20 13-40 36-40 24 0 33 18 33 45v105h66V279c0-61-32-89-76-89-34 0-51 19-59 32"/></svg>
+    </a>
+</div>
+<h4>Friendship Links</h4>
+<ul class="list-of-tags tags-in-article">
+    <li>
+    <a href="https://leetcode-cn.com/" title="力扣中国站点" target="_blank" rel="nofollow noopener noreferrer">
+      LeetCode
+    </a>
+    </li>
+    <li>
+    <a href="https://coolshell.cn/about" title="陈皓酷壳" target="_blank" rel="nofollow noopener noreferrer">
+      CoolShell
+    </a>
+    </li>
+    <li>
+    <a href="https://yikun.github.io/" title="姜毅坤博客" target="_blank" rel="nofollow noopener noreferrer">
+      Yikun
+    </a>
+    </li>
+    <li>
+    <a href="https://www.nowcoder.com/" title="牛客网" target="_blank" rel="nofollow noopener noreferrer">
+      牛客网
+    </a>
+    </li>
+  </ul>
+                
+
+
+
+
+
+                
+
+
+
+
+
+            </section>
+        </div>
+</article>
+                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+    <div>
+        <span class="site-name">CatsAction's blog</span> - It's a wonderful world
+    </div>
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>        <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>

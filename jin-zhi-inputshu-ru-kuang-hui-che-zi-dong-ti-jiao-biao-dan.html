@@ -1,70 +1,83 @@
 <!DOCTYPE html>
-<html lang="zh">
-<head>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="CatsAction" />
 
-        <title>禁止input输入框回车自动提交表单</title>
-        <meta charset="utf-8" />
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="form, js, HTML5, js, " />
+
+<meta property="og:title" content="禁止input输入框回车自动提交表单"/>
+<meta property="og:url" content="./jin-zhi-inputshu-ru-kuang-hui-che-zi-dong-ti-jiao-biao-dan.html" />
+<meta property="og:description" content="最近在做项目的时候，发现一个小bug。input输入框回车直接提交表单，导致页面直接展示后端返回的json数据，而未执行相应的js跳转页面。 {&#34;code&#34;: 200, &#34;data&#34;: {&#34;xxxxx&#34;: &#34;xxxxxxx&#34;, &#34;yyyyyyy&#34;: &#34;yyyyyyyy&#34;}, &#34;success&#34;: &#34;true&#34;} 解决方法是为keydown事件指定返回值。如下： &lt;form name=&#34;vehicle-selection&#34; action=&#34;/selection&#34; method=&#34;POST&#34; onkeydown=&#34;if(event.keyCode==13){return false}&#34;&gt; &lt;input type=&#34;text&#34; name=&#34;nature&#34; value=&#34;211&#34;&gt; ...... &lt;/form&gt; 通过keyCode==13判断是否回车键" />
+<meta property="og:site_name" content="CatsAction&#39;s blog" />
+<meta property="og:article:author" content="CatsAction" />
+<meta property="og:article:published_time" content="2016-05-01T00:00:00+08:00" />
+<meta property="og:article:modified_time" content="2017-04-10T11:17:00+08:00" />
+<meta name="twitter:title" content="禁止input输入框回车自动提交表单">
+<meta name="twitter:description" content="最近在做项目的时候，发现一个小bug。input输入框回车直接提交表单，导致页面直接展示后端返回的json数据，而未执行相应的js跳转页面。 {&#34;code&#34;: 200, &#34;data&#34;: {&#34;xxxxx&#34;: &#34;xxxxxxx&#34;, &#34;yyyyyyy&#34;: &#34;yyyyyyyy&#34;}, &#34;success&#34;: &#34;true&#34;} 解决方法是为keydown事件指定返回值。如下： &lt;form name=&#34;vehicle-selection&#34; action=&#34;/selection&#34; method=&#34;POST&#34; onkeydown=&#34;if(event.keyCode==13){return false}&#34;&gt; &lt;input type=&#34;text&#34; name=&#34;nature&#34; value=&#34;211&#34;&gt; ...... &lt;/form&gt; 通过keyCode==13判断是否回车键">
+
+        <title>禁止input输入框回车自动提交表单 ·
+CatsAction&#39;s blog
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="./theme/image/logo.ico" />
+        <link rel="stylesheet" type="text/css" href="./theme/css/elegant.prod.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/custom.css" media="screen">
 
 
-        <!-- Mobile viewport optimized: j.mp/bplateviewport -->
-        <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
 
-        <link rel="stylesheet" type="text/css" href="./theme/gumby.css" />
-        <link rel="stylesheet" type="text/css" href="./theme/style.css" />
-        <link rel="stylesheet" type="text/css" href="./theme/pygment.css" />
-
-        <script src="./theme/js/libs/modernizr-2.6.2.min.js"></script>
-
-
-
-
-</head>
-
-<body id="index" class="home">
-
-
-    <div class="container">
-
-        <div class="row">
-
-          <header id="banner" class="body">
-                  <h1><a href="./">CatsAction blog <strong></strong></a></h1>
-          </header><!-- /#banner -->
-
-            <div id="navigation" class="navbar row">
-              <a href="#" gumby-trigger="#navigation &gt; ul" class="toggle"><i class="icon-menu"></i></a>
-             
-              <ul class="columns">
-                <li><a href="./">Home</a></li>
-
-                <li><a href="./pages/guan-yu-ben-zhan.html">关于本站</a></li>
-                <li><a href="./pages/guan-yu-wo.html">关于我</a></li>
-
-              </ul>
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="./"><span class=site-name>CatsAction's blog</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       .
+                                    >Home</a>
+                                </li>
+                                <li ><a href="./categories.html">Categories</a></li>
+                                <li ><a href="./tags.html">Tags</a></li>
+                                <li ><a href="./archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="./search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+    <div class="row-fluid">
+        <header class="page-header span10 offset2">
+            <h1>
+                <a href="./jin-zhi-inputshu-ru-kuang-hui-che-zi-dong-ti-jiao-biao-dan.html">
+                    禁止input输入框回车自动提交表单
+                </a>
+            </h1>
+        </header>
+    </div>
 
-<section id="content" class="body">
-
-   <div class="row">
-        <div class="eleven columns">
-
-
-            <header>
-              <h2 class="entry-title">
-                <a href="./jin-zhi-inputshu-ru-kuang-hui-che-zi-dong-ti-jiao-biao-dan.html" rel="bookmark"
-                   title="Permalink to 禁止input输入框回车自动提交表单">禁止input输入框回车自动提交表单</a></h2>
-           
-            </header>
-            <footer class="post-info">
-              <abbr class="published" title="2015-05-01T00:00:00+08:00">
-                2015-05-01  星期五
-              </abbr>
-              <address class="vcard author">By 
-                <a class="url fn" href="./author/catsaction.html"> CatsAction</a>
-              </address>
-            </footer><!-- /.post-info -->
-            <div class="entry-content">
-              <p>最近在做项目的时候，发现一个小bug。input输入框回车直接提交表单，导致页面直接展示后端返回的json数据，而未执行相应的js跳转页面。</p>
+    <div class="row-fluid">
+            <div class="span8 offset2 article-content">
+                
+                <p>最近在做项目的时候，发现一个小bug。input输入框回车直接提交表单，导致页面直接展示后端返回的json数据，而未执行相应的js跳转页面。</p>
 <div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;xxxxx&quot;</span><span class="p">:</span> <span class="s2">&quot;xxxxxxx&quot;</span><span class="p">,</span> <span class="nt">&quot;yyyyyyy&quot;</span><span class="p">:</span> <span class="s2">&quot;yyyyyyyy&quot;</span><span class="p">},</span> <span class="nt">&quot;success&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span><span class="p">}</span>
 </pre></div>
 
@@ -78,90 +91,155 @@
 
 
 <p>通过keyCode==13判断是否回车键</p>
-            </div><!-- /.entry-content -->
 
 
-        </div><!-- /.eleven.columns -->
+                
 
-<div class="three columns">
-
-<h4>Site</h4>
-
- <ul>
-      <li><a href="./archives.html">Archives</a></li>
-      <li><a href="./categories.html">Categories</a></li>
-      <li><a href="./tags.html">Tags</a></li>
-</ul>
-
-<a href="./categories.html"><h4>Categories</h4></a>
-<ul class="blank">
-		<li><a href="./category/git.html">git</a></li>
-		<li><a href="./category/js.html">js</a></li>
-		<li><a href="./category/mysql.html">mysql</a></li>
-		<li><a href="./category/python.html">python</a></li>
-</ul>
-
-
-<a href="./tags.html"><h4>Tags</h4></a>
-	<ul class="blank">
-	    <li class="tag-pelican"><a href="./tag/pelican.html">pelican</a></li>
-	    <li class="tag-form"><a href="./tag/form.html">form</a></li>
-	    <li class="tag-group by"><a href="./tag/group-by.html">group by</a></li>
-	    <li class="tag-git page"><a href="./tag/git-page.html">git page</a></li>
-	    <li class="tag-onkeydown"><a href="./tag/onkeydown.html">onkeydown</a></li>
-	    <li class="tag-python装饰器"><a href="./tag/pythonzhuang-shi-qi.html">python装饰器</a></li>
-	    <li class="tag-js"><a href="./tag/js.html">js</a></li>
-	    <li class="tag-blog"><a href="./tag/blog.html">blog</a></li>
-	    <li class="tag-html"><a href="./tag/html.html">html</a></li>
-	    <li class="tag-sql"><a href="./tag/sql.html">sql</a></li>
-	    <li class="tag-jinjia2"><a href="./tag/jinjia2.html">jinjia2</a></li>
-	    <li class="tag-.gitignore"><a href="./tag/gitignore.html">.gitignore</a></li>
-</ul>
-
-
-<nav class="widget">
-  <h4>Social</h4>
-  <ul class="blank">
-    <li><a href="https://github.com/boyaziqi">github</a></li>
-  </ul>
-</nav>
-
-</div> </div><!-- /.row -->
-
-
-</section>
-
-       </div><!-- /.row -->
-    </div><!-- /.container -->
-
-
-       <div class="container.nopad bg">
-
-
-        <footer id="credits" class="row">
-          <div class="seven columns">
-            <div class="row">
-              <ul class="socbtns">
-
-                <li><div class="btn primary"><a href="https://github.com/boyaziqi" target="_blank">Github</a></div></li>
+                
+                
+                
 
 
 
-                <li><div class="btn danger"><a href="https://plus.google.com/u/0/" target="_blank">Google+</a></div></li>
 
-                <li><div class="btn facebook"><a href="http://weibo.com/boyziqi/home?wvr=5" target="_blank">新浪微博</a></div></li>
 
-                <li><div class="btn twitter"><a href="https://www.linkedin.com/feed/" target="_blank">linkedin</a></div></li>
-              </ul>
+
+                <hr />
+                <aside>
+                    <nav>
+                        <ul class="articles-timeline">
+                            <li class="previous-article">« <a href="./python-yi-chang-wen-ti-hui-zong.html"
+                                    title="Previous: Python 异常问题汇总">Python 异常问题汇总</a></li>
+                            <li class="next-article"><a href="./shi-yong-fabricyuan-cheng-bu-shu-dai-ma.html"
+                                    title="Next: 使用fabric远程部署代码">使用fabric远程部署代码</a> »</li>
+                        </ul>
+                    </nav>
+                </aside>
             </div>
-          </div>
-        </footer>
+            <section id="article-sidebar" class="span2">
+                <h4>Published</h4>
+                <time itemprop="dateCreated" datetime="2016-05-01T00:00:00+08:00"> 5
+                    1, 2016</time>
+                <!--<h4>Last Updated</h4>
+<time datetime="2017-04-10T11:17:00+08:00"> 4 10, 2017</time>
 
+-->
+                <h4>Category</h4>
+                <a class="category-link"
+                    href="./categories.html#js-ref">js</a>
+                <h4>Tags</h4>
+                <ul class="list-of-tags tags-in-article">
+                    <li><a href="./tags.html#form-ref">form
+                            <span>1</span>
+</a></li>
+                    <li><a href="./tags.html#html5-ref">HTML5
+                            <span>1</span>
+</a></li>
+                    <li><a href="./tags.html#js-ref">js
+                            <span>2</span>
+</a></li>
+                </ul>
+<h4>Stay in Touch</h4>
+<div id="sidebar-social-link">
+    <a href="mailto:catsaction@126.com" title="My Email Address" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mail" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#328cff"/><path d="m250 186c-46 0-69 35-69 74 0 44 29 72 68 72 43 0 73-32 73-75 0-44-34-71-72-71zm-1-37c30 0 57 13 77 33 0-22 35-22 35 1v150c-1 10 10 16 16 9 25-25 54-128-14-187-64-56-149-47-195-15-48 33-79 107-49 175 33 76 126 99 182 76 28-12 41 26 12 39-45 19-168 17-225-82-38-68-36-185 67-248 78-46 182-33 244 32 66 69 62 197-2 246-28 23-71 1-71-32v-11c-20 20-47 32-77 32-57 0-108-51-108-108 0-58 51-110 108-110" fill="#fff"/></svg>
+    </a>
+    <a href="https://github.com/boyaziqi" title="catsaction Github Repository" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+    <a href="https://www.linkedin.com/feed/" title="My LinkedIn" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="LinkedIn" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%" fill="#0077b5"/><circle cx="142" cy="138" r="37"/><path stroke="#fff" stroke-width="66" d="M244 194v198M142 194v198"/><path d="M276 282c0-20 13-40 36-40 24 0 33 18 33 45v105h66V279c0-61-32-89-76-89-34 0-51 19-59 32"/></svg>
+    </a>
+</div>
+<h4>Friendship Links</h4>
+<ul class="list-of-tags tags-in-article">
+    <li>
+    <a href="https://leetcode-cn.com/" title="力扣中国站点" target="_blank" rel="nofollow noopener noreferrer">
+      LeetCode
+    </a>
+    </li>
+    <li>
+    <a href="https://coolshell.cn/about" title="陈皓酷壳" target="_blank" rel="nofollow noopener noreferrer">
+      CoolShell
+    </a>
+    </li>
+    <li>
+    <a href="https://yikun.github.io/" title="姜毅坤博客" target="_blank" rel="nofollow noopener noreferrer">
+      Yikun
+    </a>
+    </li>
+    <li>
+    <a href="https://www.nowcoder.com/" title="牛客网" target="_blank" rel="nofollow noopener noreferrer">
+      牛客网
+    </a>
+    </li>
+  </ul>
+                
+
+
+
+
+
+                
+
+
+
+
+
+            </section>
+        </div>
+</article>
+                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+    <div>
+        <span class="site-name">CatsAction's blog</span> - It's a wonderful world
     </div>
 
 
-  <script src="./theme/js/libs/jquery-1.9.1.min.js"></script>
-  <script src="./theme/js/libs/gumby.min.js"></script>
-  <script src="./theme/js/plugins.js"></script>
-</body>
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>        <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
 </html>

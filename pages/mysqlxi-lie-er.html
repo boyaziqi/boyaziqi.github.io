@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="CatsAction" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+
+<meta property="og:title" content="MySQL系列二  - 事务和锁 "/>
+<meta property="og:url" content="../pages/mysqlxi-lie-er.html" />
+<meta property="og:description" content="事务特点 Atomicity（原子性）：一个事务必须被视为一个不可分割的最小工作单元，整个事务中的所有操作要么全部提交成功，要么全部失败回滚，对于一个事务来说，不可能只执行其中的一部分操作。 Consistency（一致性）：数据库总是从一个一致性状态转换到另一个一致状态。 Isolation（隔离性）：通常来说，一个事务所做的修改在最终提交以前，对其他事务是不可见的。注意这里的“通常来说”。 Durability（持久性）：一旦事务提交，则其所做的修改就会永久保存到数据库中。此时即使系统崩溃，修改的数据也不会丢失。 事务隔离级别 未提交读(Read Uncommitted)：允许脏读，也就是可能读取到其他会话中未提交事务修改的数据。 提交读(Read Committed)：只能读取到已经提交的数据。Oracle等多数数据库默认都是该级别 (不重复读)。 可重复读(Repeated Read)：可重复读。在同一个事务内的查询都是事务开始时刻一致的，InnoDB默认级别。在SQL标准中，该隔离级别消除了不可重复读，但是还存在幻象读。 串行读(Serializable)：完全串行化的读，每次读都需要获得表级共享锁，读写相互都会阻塞 …" />
+<meta property="og:site_name" content="CatsAction&#39;s blog" />
+<meta property="og:article:author" content="CatsAction" />
+<meta property="og:article:published_time" content="2018-11-08T00:00:00+08:00" />
+<meta name="twitter:title" content="MySQL系列二  - 事务和锁 ">
+<meta name="twitter:description" content="事务特点 Atomicity（原子性）：一个事务必须被视为一个不可分割的最小工作单元，整个事务中的所有操作要么全部提交成功，要么全部失败回滚，对于一个事务来说，不可能只执行其中的一部分操作。 Consistency（一致性）：数据库总是从一个一致性状态转换到另一个一致状态。 Isolation（隔离性）：通常来说，一个事务所做的修改在最终提交以前，对其他事务是不可见的。注意这里的“通常来说”。 Durability（持久性）：一旦事务提交，则其所做的修改就会永久保存到数据库中。此时即使系统崩溃，修改的数据也不会丢失。 事务隔离级别 未提交读(Read Uncommitted)：允许脏读，也就是可能读取到其他会话中未提交事务修改的数据。 提交读(Read Committed)：只能读取到已经提交的数据。Oracle等多数数据库默认都是该级别 (不重复读)。 可重复读(Repeated Read)：可重复读。在同一个事务内的查询都是事务开始时刻一致的，InnoDB默认级别。在SQL标准中，该隔离级别消除了不可重复读，但是还存在幻象读。 串行读(Serializable)：完全串行化的读，每次读都需要获得表级共享锁，读写相互都会阻塞 …">
+
+        <title>MySQL系列二  - 事务和锁  · CatsAction&#39;s blog
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="../theme/image/logo.ico" />
+        <link rel="stylesheet" type="text/css" href="../theme/css/elegant.prod.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="../theme/css/custom.css" media="screen">
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="../"><span class=site-name>CatsAction's blog</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       ..
+                                    >Home</a>
+                                </li>
+                                <li  class="active"><a href="../pages/mysqlxi-lie-er.html">MySQL系列二</a></li>
+                                <li ><a href="../categories.html">Categories</a></li>
+                                <li ><a href="../tags.html">Tags</a></li>
+                                <li ><a href="../archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="../search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page-header span10 offset2">
+    <h1><a href="../pages/mysqlxi-lie-er.html"> MySQL系列二  <small> 事务和锁 </small>  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+
+            <h4>事务特点</h4>
+<ul>
+<li>Atomicity（原子性）：一个事务必须被视为一个不可分割的最小工作单元，整个事务中的所有操作要么全部提交成功，要么全部失败回滚，对于一个事务来说，不可能只执行其中的一部分操作。</li>
+<li>Consistency（一致性）：数据库总是从一个一致性状态转换到另一个一致状态。</li>
+<li>Isolation（隔离性）：通常来说，一个事务所做的修改在最终提交以前，对其他事务是不可见的。注意这里的“通常来说”。</li>
+<li>Durability（持久性）：一旦事务提交，则其所做的修改就会永久保存到数据库中。此时即使系统崩溃，修改的数据也不会丢失。</li>
+</ul>
+<h4>事务隔离级别</h4>
+<ul>
+<li>未提交读(Read Uncommitted)：允许脏读，也就是可能读取到其他会话中未提交事务修改的数据。</li>
+<li>提交读(Read Committed)：只能读取到已经提交的数据。Oracle等多数数据库默认都是该级别 (不重复读)。</li>
+<li>可重复读(Repeated Read)：可重复读。在同一个事务内的查询都是事务开始时刻一致的，InnoDB默认级别。在SQL标准中，该隔离级别消除了不可重复读，但是还存在幻象读。</li>
+<li>串行读(Serializable)：完全串行化的读，每次读都需要获得表级共享锁，读写相互都会阻塞。</li>
+</ul>
+<h4>MySQL数据库中一些专业术语</h4>
+<h6><em>页</em></h6>
+<p>一页16K.</p>
+<h6><em>聚集索引和非聚集索引</em></h6>
+<p>正文内容按照一个特定维度排序存储，这个特定的维度就是聚集索引。比如InnoDB存储引擎里的id主键。
+非聚集索引项顺序存储，但索引项对应的内容却是随机存储的；如自定义的普通索引。</p>
+<h4>锁的类型</h4>
+<ul>
+<li>共享锁，两个事务可以同时读。</li>
+<li>排他锁，只要一个事务获取到锁，另一个事务读和写都需等待锁释放。</li>
+</ul>
+<h4>锁的粒度</h4>
+<ul>
+<li>行锁，InnoDB默认粒度。</li>
+<li>页锁，行锁可以通过锁升级升级为行锁。</li>
+<li>表锁，MyISAM默认的粒度。InnoDB的意向锁（意向共享锁和意向排它锁）也是行锁。</li>
+</ul>
+<h4>锁的一些问题</h4>
+<h6><em>丢失更新</em></h6>
+<p>定义：事务T1读取了数据，并执行了一些操作，然后更新数据。事务T2也做相同的事，则T1和T2更新数据时可能会覆盖对方的更新，从而引起错误。<br>
+解决方法：将事务串行化，给事务加排它锁，等事务T1读取并更新数据库完成，事务T2在读取更新数据库。</p>
+<h6><em>脏读</em></h6>
+<p>所谓脏读，就是一个事务可以读到另一个事务未提交的数据。当锁级别是READ UNCOMMIT（未提交读）时，就会产生脏读。将锁的隔离级别改成read COMMIT即可防止脏读。</p>
+<h6><em>幻读</em></h6>
+<p>所谓幻读，就是同一个事务，用同样的操作读取两次，得到的记录数不相同。<br>
+解决方法是范围锁RangeS RangeS_S模式，锁定检索范围为只读，这样就避免了幻读问题。</p>
+<h6><em>不可重复读</em></h6>
+<p>定义：在第一个事务两次读取同一数据之间，第二个事务对数据做了更新，使得第一个事务两次读到的数据不一致。不可重复读强调更新，幻读强调插入和删除。有时他们都统一叫幻读。 <br>
+解决方法：将第一个事务的两次读捆绑成一个整体的事务。将锁的隔离级别改成REPEATED READ。</p>
+<h4>死锁</h4>
+<p>死锁发生在并发的情况。一个事务申请资源时，需要获得锁，如果锁已经被其他事务获取（排它锁），这时这个事务就将阻塞等待锁的释放。如果这两个事务互相等待，就造成死锁。</p>
+            
+
+
+
+
+
+
+        </div>
+    </div>
+    </article>
+                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+    <div>
+        <span class="site-name">CatsAction's blog</span> - It's a wonderful world
+    </div>
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>            <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+    <script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>

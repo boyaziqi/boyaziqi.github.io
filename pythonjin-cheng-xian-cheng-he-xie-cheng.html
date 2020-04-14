@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="CatsAction" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="Python, 线程, 进程, Python, " />
+
+<meta property="og:title" content="Python进程、线程和协程"/>
+<meta property="og:url" content="./pythonjin-cheng-xian-cheng-he-xie-cheng.html" />
+<meta property="og:description" content="前述 本篇会先讲解进程、线程和协成概念，并分别对比进程和线程、线程和协程的区别。然后会讲解进程的通信方式。最后，我们回到Python，讲解Python对协程、线程、进程的支持。以及Python对线程同步和进程同步的支持。 进程和线程 进程是程序运行时的一个实例，对Linux或其他类Unix系统来说，通过ps命令查看到的就是一些进程信息。 进程是系统资源分配的最小单位。对于每一个进程，操作系统都会维护一个进程控制块的结构（PCB）。在PCB中，维护着对应进程的标识、状态、调度标识、所拥有的资源、父子关系、进程间通信相关信息以及一些定时器信息。 由于每个进程拥有独立的PCB，因此一个进程是不能直接获取到另一个进程数据信息。如果多个进程需要交互数据信息，只能通过IPC（进程间通信）。常见的IPC方式有管道pipe、消息队列、共享存储、信号量、信号、套接字。 线程是操作系统的调度和运行的最小单位，它属于某一个具体的进程，是进程的实际执行单元。 如果一个进程开启了多个线程，那么这些线程共享所在进程资源信息，如地址空间，文件描述符，全局的变量。同一个进程的线程，可以通过操作共享的数据实现通信 …" />
+<meta property="og:site_name" content="CatsAction&#39;s blog" />
+<meta property="og:article:author" content="CatsAction" />
+<meta property="og:article:published_time" content="2018-04-12T00:00:00+08:00" />
+<meta name="twitter:title" content="Python进程、线程和协程">
+<meta name="twitter:description" content="前述 本篇会先讲解进程、线程和协成概念，并分别对比进程和线程、线程和协程的区别。然后会讲解进程的通信方式。最后，我们回到Python，讲解Python对协程、线程、进程的支持。以及Python对线程同步和进程同步的支持。 进程和线程 进程是程序运行时的一个实例，对Linux或其他类Unix系统来说，通过ps命令查看到的就是一些进程信息。 进程是系统资源分配的最小单位。对于每一个进程，操作系统都会维护一个进程控制块的结构（PCB）。在PCB中，维护着对应进程的标识、状态、调度标识、所拥有的资源、父子关系、进程间通信相关信息以及一些定时器信息。 由于每个进程拥有独立的PCB，因此一个进程是不能直接获取到另一个进程数据信息。如果多个进程需要交互数据信息，只能通过IPC（进程间通信）。常见的IPC方式有管道pipe、消息队列、共享存储、信号量、信号、套接字。 线程是操作系统的调度和运行的最小单位，它属于某一个具体的进程，是进程的实际执行单元。 如果一个进程开启了多个线程，那么这些线程共享所在进程资源信息，如地址空间，文件描述符，全局的变量。同一个进程的线程，可以通过操作共享的数据实现通信 …">
+
+        <title>Python进程、线程和协程 ·
+CatsAction&#39;s blog
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="./theme/image/logo.ico" />
+        <link rel="stylesheet" type="text/css" href="./theme/css/elegant.prod.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/custom.css" media="screen">
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="./"><span class=site-name>CatsAction's blog</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       .
+                                    >Home</a>
+                                </li>
+                                <li ><a href="./categories.html">Categories</a></li>
+                                <li ><a href="./tags.html">Tags</a></li>
+                                <li ><a href="./archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="./search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+    <div class="row-fluid">
+        <header class="page-header span10 offset2">
+            <h1>
+                <a href="./pythonjin-cheng-xian-cheng-he-xie-cheng.html">
+                    Python进程、线程和协程
+                </a>
+            </h1>
+        </header>
+    </div>
+
+    <div class="row-fluid">
+            <div class="span8 offset2 article-content">
+                
+                <h2>前述</h2>
+<p>本篇会先讲解进程、线程和协成概念，并分别对比进程和线程、线程和协程的区别。然后会讲解进程的通信方式。最后，我们回到Python，讲解Python对协程、线程、进程的支持。以及Python对线程同步和进程同步的支持。</p>
+<h2>进程和线程</h2>
+<p>进程是程序运行时的一个实例，对Linux或其他类Unix系统来说，通过<code>ps</code>命令查看到的就是一些进程信息。</p>
+<p>进程是系统资源分配的最小单位。对于每一个进程，操作系统都会维护一个进程控制块的结构（PCB）。在PCB中，维护着对应进程的标识、状态、调度标识、所拥有的资源、父子关系、进程间通信相关信息以及一些定时器信息。</p>
+<p>由于每个进程拥有独立的PCB，因此一个进程是不能直接获取到另一个进程数据信息。如果多个进程需要交互数据信息，只能通过IPC（进程间通信）。常见的IPC方式有管道pipe、消息队列、共享存储、信号量、信号、套接字。</p>
+<p>线程是操作系统的调度和运行的最小单位，它属于某一个具体的进程，是进程的实际执行单元。</p>
+<p>如果一个进程开启了多个线程，那么这些线程共享所在进程资源信息，如地址空间，文件描述符，全局的变量。同一个进程的线程，可以通过操作共享的数据实现通信，但这样会导致数据的不一致。为了确保数据安全和避免不一致性，线程需要同步。常见的线程同步方式有互斥锁、条件变量、读写锁、信号量。</p>
+<p>基于上面进程和线程的特点描述，进程和线程有如下几个对比特点。</p>
+<ul>
+<li>
+<p>进程是资源集合，线程是上下文执行单元。线程比较轻，进程比较重。</p>
+</li>
+<li>
+<p>同一个进程的线程可以直接通信，但是多个进程之间通信只能通过IPC机制。</p>
+</li>
+<li>
+<p>对主线程的修改可能影响其他线程，但是对父进程的修改（删除例外）不会影响其他子进程。</p>
+</li>
+<li>
+<p>一个线程可以操作同一进程的其他线程，但是进程只能有限操作其子进程（这条特性待详细核定）。</p>
+</li>
+</ul>
+<p><em>参考资料：</em></p>
+<p><em><a href="https://www.cnblogs.com/33debug/p/6705391.html">Linux PCB属性</a></em></p>
+<p><em><a href="https://blog.csdn.net/summy_j/article/details/72722853">linux线程剖析</a></em></p>
+<h2>线程和协程</h2>
+<p>协程，顾名思义，就是一些协同运行的程序或者对象。线程是操作系统的概念，而协程是用户编程层面的概念。线程的调度由操作系统控制，而协程由用户自己实现的事件循环调度。<strong>协程强调的是异步，而线程（或者进程）强调的是并发</strong>。对于Python来说，协程只是一种语法糖，一种异步任务的包装，让程序员写同步代码的方式来写异步任务代码。</p>
+<h2>线程安全</h2>
+<p>线程安全指多线程环境下，通过一定的机制确保共享内存数据的安全，避免数据污染。常见的线程安全方式有：</p>
+<ul>
+<li>
+<p>局部变量：局部变量属于线程独有，其它线程不能访问，因此不会受其它线程影响。</p>
+</li>
+<li>
+<p>针对全局变量，每个线程各复制一份，线程只修改自己的一份。比如Java里的ThreadLocal机制。这种机制变量逻辑上属于某个线程，但实际存储在线程共享内存区。</p>
+</li>
+<li>
+<p>将全局变量设置为只读。只读变量不能修改，因此多个线程不存在互相影响，数据污染的问题。</p>
+</li>
+<li>
+<p>线程同步，常见的方式有互斥锁、条件变量、读写锁、信号量。线程同步的基本思想就是把不可预测的线程调度变成有序的执行，从而让数据的改变可以预测。</p>
+</li>
+<li>
+<p>CAS（check-and-set），也叫乐观锁。准确的说这种方式不能确保数据安全，只是假设数据不会被其它线程修改。线程执行的时候先检查，没被其它线程修改继续执行，被修改了就重头开始。</p>
+</li>
+</ul>
+<h2>进程间通信方式</h2>
+<p>1）管道pipe：管道是一种半双工的通信方式，数据只能单向流动，而且只能在具有亲缘关系的进程间使用。进程的亲缘关系通常是指父子进程关系。</p>
+<p>2）命名管道FIFO：有名管道也是半双工的通信方式，但是它允许无亲缘关系进程间的通信。</p>
+<p>3）消息队列MessageQueue：消息队列是由消息的链表，存放在内核中并由消息队列标识符标识。消息队列克服了信号传递信息少、管道只能承载无格式字节流以及缓冲区大小受限等缺点。</p>
+<p>4）共享存储SharedMemory：共享内存就是映射一段能被其他进程所访问的内存，这段共享内存由一个进程创建，但多个进程都可以访问。共享内存是最快的IPC方式，它是针对其他进程间通信方式运行效率低而专门设计的。它往往与其他通信机制，如信号量配合使用，来实现进程间的同步和通信。</p>
+<p>5）信号量Semaphore：信号量是一个计数器，可以用来控制多个进程对共享资源的访问。它常作为一种锁机制，防止某进程正在访问共享资源时，其他进程也访问该资源。因此，主要作为进程间以及同一进程内不同线程之间的同步手段。</p>
+<p>6）套接字Socket：套解口也是一种进程间通信机制，与其他通信机制不同的是，它可用于不同及其间的进程通信。</p>
+<p>7）信号 ( sinal ) ： 信号是一种比较复杂的通信方式，用于通知接收进程某个事件已经发生。</p>
+<p><em>参考资料：</em></p>
+<p><em><a href="https://www.cnblogs.com/LUO77/p/5816326.html">进程间通信方式</a></em></p>
+<h2>Python的协程</h2>
+<p>Python的协程是异步任务的包装，让程序员可以用写同步代码的方式写异步代码，而协程的调度需要事件循环的支持。Python标准库内置了事件循环库<code>asyncio</code>。</p>
+<p>在Python中，实现协成有两种方式：Python3.5之前的生成器协成，Python3.5及以后的<code>async</code>和<code>await</code>关键字。</p>
+<p>生成器协程</p>
+<div class="highlight"><pre><span></span><span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+<span class="k">def</span> <span class="nf">old_style_coroutine</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">)</span>
+    <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;world&quot;</span><span class="p">)</span>
+
+<span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">old_style_coroutine</span><span class="p">())</span>
+</pre></div>
+
+
+<p>基于<code>async</code>、<code>await</code>的原生协程</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">say_after</span><span class="p">(</span><span class="n">delay</span><span class="p">,</span> <span class="n">what</span><span class="p">):</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">what</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;started at {time.strftime(&#39;</span><span class="si">%X</span><span class="s2">&#39;)}&quot;</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">say_after</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;hello&#39;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">say_after</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;world&#39;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;finished at {time.strftime(&#39;</span><span class="si">%X</span><span class="s2">&#39;)}&quot;</span><span class="p">)</span>
+
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+
+
+<p>Python3.7及以后的版本中加入了run来运行协成，会自动获取事件。Python3.7之前的版本则需要手动获取事件，然后调用<code>run_until_complete</code>等函数执行协程。</p>
+<p><code>asyncio</code>运行协程时，协程对象被包装成一个<code>asyncio.Task</code>对象（waitable对象），<code>Task</code>对象管理协程的状态和结果，协程运行结束可以通过<code>Task</code>对象的<code>result</code>方法获取结果。</p>
+<p><em>协程的更多信息可以参考官方文档和下面的资料</em></p>
+<p><em><a href="https://www.jianshu.com/p/b5e347b3a17c">asyncio</a></em></p>
+<p><em><a href="https://zhuanlan.zhihu.com/p/27258289">async/await</a></em></p>
+<h2>Python的线程</h2>
+<p>Python线程有两种实现方式：通过threading模块直接启动，或者继承Thread类实现线程。</p>
+<p>通过treading模块直接启动</p>
+<div class="highlight"><pre><span></span><span class="c1"># 创建两个线程</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+
+<span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">delay</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{name}</span><span class="s2"> started at {time.strftime(&#39;</span><span class="si">%X</span><span class="s2">&#39;)}&quot;</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{name}</span><span class="s2"> finished at {time.strftime(&#39;</span><span class="si">%X</span><span class="s2">&#39;)}&quot;</span><span class="p">)</span>
+
+
+<span class="n">t1</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">task</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;t1&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">t2</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">task</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;t2&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+<span class="n">t1</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="n">t2</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+
+
+<p>下面是运行结果，可以看出同时启动，但是t2在t1前面结束，因为它只阻塞了疫苗。</p>
+<div class="highlight"><pre><span></span>t1 started at <span class="m">16</span>:56:43
+t2 started at <span class="m">16</span>:56:43
+t2 finished at <span class="m">16</span>:56:44
+t1 finished at <span class="m">16</span>:56:45
+</pre></div>
+
+
+<p>继承<code>Thread</code>类实现线程</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+
+<span class="k">class</span> <span class="nc">MyThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>  <span class="c1"># 重构run函数必须要写</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{self.name}</span><span class="s2"> started at {time.strftime(&#39;</span><span class="si">%X</span><span class="s2">&#39;)}&quot;</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{self.name}</span><span class="s2"> finished at {time.strftime(&#39;</span><span class="si">%X</span><span class="s2">&#39;)}&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">t1</span> <span class="o">=</span> <span class="n">MyThread</span><span class="p">(</span><span class="s2">&quot;t1&quot;</span><span class="p">)</span>
+    <span class="n">t2</span> <span class="o">=</span> <span class="n">MyThread</span><span class="p">(</span><span class="s2">&quot;t2&quot;</span><span class="p">)</span>
+
+    <span class="n">t1</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="n">t2</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+
+
+<p>下面是上面代码的运行结果</p>
+<div class="highlight"><pre><span></span>t1 started at <span class="m">17</span>:03:00
+t2 started at <span class="m">17</span>:03:00
+t1 finished at <span class="m">17</span>:03:01
+t2 finished at <span class="m">17</span>:03:01
+</pre></div>
+
+
+<p>我们看到开始结束时间都是一致的，这每个人的显示可能不一致，取决于你的机器和系统。如果单核，阻塞时间很长，那结束时间可能不一致。</p>
+<p><em>关于Python线程及它们的同步, 参考</em>
+<a href="https://www.cnblogs.com/whatisfantasy/p/6440585.html">搞定Python进程和线程</a></p>
+<p>我们知道线程同步可以通过互斥锁，条件变量，信号量。<code>threading</code>库对它们支持的对象分别为<code>Lock</code>、<code>Condition</code>、<code>Semaphore</code>。除了这些，<code>threading</code>库还支持其他同步对象，如<code>Even</code>, <code>Barrier</code>。</p>
+<h2>Python的进程</h2>
+<p>Python进程由三种实现方式：基于multiprocessing、继承Process类和进程池Pool。</p>
+<p>通过multiprocessing直接启动</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Process</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;hello&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;bob&#39;</span><span class="p">,))</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+</pre></div>
+
+
+<p>继承Process类</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SubProcess</span><span class="p">(</span><span class="n">Process</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="n">interval</span>
+        <span class="k">if</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;子进程(</span><span class="si">%s</span><span class="s2">)开始执行，父进程为(</span><span class="si">%s</span><span class="s2">) &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">(),</span> <span class="n">os</span><span class="o">.</span><span class="n">getppid</span><span class="p">()))</span>
+
+        <span class="n">t_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">)</span>
+        <span class="n">t_stop</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;子进程(</span><span class="si">%s</span><span class="s2"> )执行结束，耗时</span><span class="si">%0 .2f</span><span class="s2">秒&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">(),</span> <span class="n">t_stop</span> <span class="o">-</span> <span class="n">t_start</span><span class="p">))</span>
+</pre></div>
+
+
+<p>进程池Pool</p>
+<div class="highlight"><pre><span></span><span class="n">rom</span>  <span class="n">multiprocessing</span> <span class="kn">import</span> <span class="nn">Process</span><span class="o">,</span><span class="nn">Pool</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="k">def</span> <span class="nf">Foo</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">i</span><span class="o">+</span><span class="mi">100</span>
+
+<span class="k">def</span> <span class="nf">Bar</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;--&gt;exec done:&#39;</span><span class="p">,</span><span class="n">arg</span><span class="p">)</span>
+
+<span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>  <span class="c1">#允许进程池同时放入5个进程</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="c1">#func子进程执行完后，才会执行callback，否则callback不执行（而且callback是由父进程来执行了）</span>
+    <span class="n">pool</span><span class="o">.</span><span class="n">apply_async</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">Foo</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">i</span><span class="p">,),</span><span class="n">callback</span><span class="o">=</span><span class="n">Bar</span><span class="p">)</span>
+    <span class="c1">#pool.apply(func=Foo, args=(i,))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;end&#39;</span><span class="p">)</span>
+<span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span> <span class="c1">#主进程等待所有子进程执行完毕。必须在close()或terminate()之后</span>
+</pre></div>
+
+
+<p>Python的multiprocessing库提供了如下对象支持进程间通信：<code>Queue</code>、<code>Pipe</code>、<code>Manager</code>、共享内存（Value, Array）等，也支持如线程同步的<code>Lock</code>等同步对象。</p>
+<p><em>更多Python进程信息，可以参考资料：</em>
+<a href="https://blog.csdn.net/xw1680/article/details/104442017">Python进程和线程</a></p>
+<h2>后述</h2>
+<p>协程是Python3.4以后的一个概念，也是异步编程的一种趋势。网上很多关于协程和线程的对比的文章，什么协程更轻更快啥的，我觉得都只是看表象说理，没有体会协程的哲理。</p>
+<p>线程和协程的区别，面试的时候经常问。我总结的协程和线程区别，也许并不全面，如果你有很好的看法，欢迎在<a href="https://github.com/boyaziqi/CatsAction/issues/15">issue</a>留言。</p>
+<p><em>下面是一些资料：</em></p>
+<p><em><a href="https://blog.csdn.net/wangwenwen/article/details/8879375">Linux进程控制块</a></em></p>
+<p><em><a href="https://blog.csdn.net/lanxinglan/article/details/41663607">进程的调度策略</a></em></p>
+<p><em><a href="https://www.cnblogs.com/yinbiao/p/11190336.html">Linux线程同步方式</a></em></p>
+<p><a href="https://mp.weixin.qq.com/s/WDeewsvWUEBIuabvVVhweA">线程安全</a></p>
+
+
+                
+
+                
+                
+                
+
+
+
+
+
+
+                <hr />
+                <aside>
+                    <nav>
+                        <ul class="articles-timeline">
+                            <li class="previous-article">« <a href="./django-modelyuan-ma-jie-xi-er.html"
+                                    title="Previous: Django Model源码解析（二）">Django Model源码解析（二）</a></li>
+                            <li class="next-article"><a href="./djangoxiang-mu-bu-shu-shi-jian-yi.html"
+                                    title="Next: Django项目部署实践一 - 基于MySQL读写分离和Nginx反向代理">Django项目部署实践一 <small class="subtitle">基于MySQL读写分离和Nginx反向代理</small></a> »</li>
+                        </ul>
+                    </nav>
+                </aside>
+            </div>
+            <section id="article-sidebar" class="span2">
+                <h4>Published</h4>
+                <time itemprop="dateCreated" datetime="2018-04-12T00:00:00+08:00"> 4
+                    12, 2018</time>
+                <!---->
+                <h4>Category</h4>
+                <a class="category-link"
+                    href="./categories.html#python-ref">Python</a>
+                <h4>Tags</h4>
+                <ul class="list-of-tags tags-in-article">
+                    <li><a href="./tags.html#jin-cheng-ref">进程
+                            <span>1</span>
+</a></li>
+                    <li><a href="./tags.html#python-ref">Python
+                            <span>4</span>
+</a></li>
+                    <li><a href="./tags.html#xian-cheng-ref">线程
+                            <span>1</span>
+</a></li>
+                </ul>
+<h4>Stay in Touch</h4>
+<div id="sidebar-social-link">
+    <a href="mailto:catsaction@126.com" title="My Email Address" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mail" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#328cff"/><path d="m250 186c-46 0-69 35-69 74 0 44 29 72 68 72 43 0 73-32 73-75 0-44-34-71-72-71zm-1-37c30 0 57 13 77 33 0-22 35-22 35 1v150c-1 10 10 16 16 9 25-25 54-128-14-187-64-56-149-47-195-15-48 33-79 107-49 175 33 76 126 99 182 76 28-12 41 26 12 39-45 19-168 17-225-82-38-68-36-185 67-248 78-46 182-33 244 32 66 69 62 197-2 246-28 23-71 1-71-32v-11c-20 20-47 32-77 32-57 0-108-51-108-108 0-58 51-110 108-110" fill="#fff"/></svg>
+    </a>
+    <a href="https://github.com/boyaziqi" title="catsaction Github Repository" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+    <a href="https://www.linkedin.com/feed/" title="My LinkedIn" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="LinkedIn" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%" fill="#0077b5"/><circle cx="142" cy="138" r="37"/><path stroke="#fff" stroke-width="66" d="M244 194v198M142 194v198"/><path d="M276 282c0-20 13-40 36-40 24 0 33 18 33 45v105h66V279c0-61-32-89-76-89-34 0-51 19-59 32"/></svg>
+    </a>
+</div>
+<h4>Friendship Links</h4>
+<ul class="list-of-tags tags-in-article">
+    <li>
+    <a href="https://leetcode-cn.com/" title="力扣中国站点" target="_blank" rel="nofollow noopener noreferrer">
+      LeetCode
+    </a>
+    </li>
+    <li>
+    <a href="https://coolshell.cn/about" title="陈皓酷壳" target="_blank" rel="nofollow noopener noreferrer">
+      CoolShell
+    </a>
+    </li>
+    <li>
+    <a href="https://yikun.github.io/" title="姜毅坤博客" target="_blank" rel="nofollow noopener noreferrer">
+      Yikun
+    </a>
+    </li>
+    <li>
+    <a href="https://www.nowcoder.com/" title="牛客网" target="_blank" rel="nofollow noopener noreferrer">
+      牛客网
+    </a>
+    </li>
+  </ul>
+                
+
+
+
+
+
+                
+
+
+
+
+
+            </section>
+        </div>
+</article>
+                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+    <div>
+        <span class="site-name">CatsAction's blog</span> - It's a wonderful world
+    </div>
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>        <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>

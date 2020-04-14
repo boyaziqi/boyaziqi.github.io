@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>CatsAction's blog - Linux</title><link href="/" rel="alternate"></link><link href="/feeds/linux.atom.xml" rel="self"></link><id>/</id><updated>2015-10-29T00:15:15+08:00</updated><subtitle></subtitle><entry><title>zsh打开vi模式up向上箭头不能按子模式搜索解决方法</title><link href="/zshda-kai-vimo-shi-upxiang-shang-jian-tou-bu-neng-an-zi-mo-shi-sou-suo-jie-jue-fang-fa.html" rel="alternate"></link><published>2015-10-29T00:15:15+08:00</published><updated>2015-10-29T00:15:15+08:00</updated><author><name>CatsAction</name></author><id>tag:None,2015-10-29:/zshda-kai-vimo-shi-upxiang-shang-jian-tou-bu-neng-an-zi-mo-shi-sou-suo-jie-jue-fang-fa.html</id><content type="html">&lt;p&gt;由于我习惯在终端下用vim下写代码，因此最近把zsh的模式也改成了vi模式，这样就可以在终端
+里使用很多vi快捷键。但是却发现一个问题：&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;按方向键的上下键，zsh不能根据输入的字符匹配最近输入的历史命令&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;在网上搜索了下解决方法，如下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# 插件应该写成如下&lt;/span&gt;
+&lt;span class="nv"&gt;plugins&lt;/span&gt;&lt;span class="o"&gt;=(&lt;/span&gt;... vi-mode history-substring-search ...&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;# 而不应该写成如下&lt;/span&gt;
+&lt;span class="nv"&gt;plugins&lt;/span&gt;&lt;span class="o"&gt;=(&lt;/span&gt;... history-substring-search vi-mode ...&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;具体就是history-substring-search插件需要放在vi-mode插件前面，请参考&lt;a href="https://github.com/robbyrussell/oh-my-zsh/issues/2735"&gt;here&lt;/a&gt;&lt;/p&gt;</content><category term="Linux"></category><category term="zsh"></category><category term="oh-my-zsh"></category><category term="history-substring-search"></category></entry></feed>

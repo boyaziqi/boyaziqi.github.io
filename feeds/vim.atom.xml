@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>CatsAction's blog - vim</title><link href="/" rel="alternate"></link><link href="/feeds/vim.atom.xml" rel="self"></link><id>/</id><updated>2016-06-23T00:00:00+08:00</updated><subtitle></subtitle><entry><title>vim 选项iskeyword</title><link href="/vim-xuan-xiang-iskeyword.html" rel="alternate"></link><published>2016-06-23T00:00:00+08:00</published><updated>2016-06-23T00:00:00+08:00</updated><author><name>CatsAction</name></author><id>tag:None,2016-06-23:/vim-xuan-xiang-iskeyword.html</id><content type="html">&lt;p&gt;之前在用ctags来辅助跳转到 python 定义处时，我已经生成相应的tags文件，可是在类似self.method_name的语句按&lt;code&gt;&amp;lt;C-T&amp;gt;&lt;/code&gt;时却不能正常跳转。查看
+tags文件里也有对应的tag，网上搜索了好久也未找寻到解决方法。一个偶然的机会，发现iskeyword选项，它很好的解决了我的烦恼。&lt;/p&gt;
+&lt;p&gt;iskeyword 设置作为单词整体的字符，可能是升级到vim8.0的原因，"."字符被当做单词的一部分，所以&lt;code&gt;viw&lt;/code&gt;等操作时都会选中点，&lt;code&gt;&amp;lt;C-T&amp;gt;&lt;/code&gt;也不能正常识别，所以我做了如下修改&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;set&lt;/span&gt; iskeyword -&lt;span class="o"&gt;=&lt;/span&gt; .
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;这样就好了，可以使用&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;set iskeyword?&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;查看当前值&lt;/p&gt;</content><category term="vim"></category><category term="vim选项"></category></entry><entry><title>关于sublime text3使用中的一些记录</title><link href="/guan-yu-sublime-text3shi-yong-zhong-de-yi-xie-ji-lu.html" rel="alternate"></link><published>2015-03-20T15:22:00+08:00</published><updated>2015-03-20T15:22:00+08:00</updated><author><name>CatsAction</name></author><id>tag:None,2015-03-20:/guan-yu-sublime-text3shi-yong-zhong-de-yi-xie-ji-lu.html</id><content type="html">&lt;h4&gt;1. 最新安装 Package Control&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;现在sublime text首次使用 Package Control，会自动安装。不用再调用 console 执行命令&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;2. 安装主题&lt;/h4&gt;
+&lt;p&gt;可直接通过Cackage Control 安装
+- &lt;a href="https://packagecontrol.io/packages/Theme%20-%20Soda"&gt;Soda&lt;/a&gt;
+- &lt;a href="https://packagecontrol.io/packages/Theme%20-%20Flatland"&gt;Flatland&lt;/a&gt;&lt;/p&gt;
+&lt;h4&gt;3. 自定义设置&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;添加自定义设置 (Preference -&amp;gt; Settings)&lt;/li&gt;
+&lt;li&gt;语法自定义设置 (Preference -&amp;gt; Settings -&amp;gt; Syntax Specific)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;4. 安装代码自动补全扩展&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;我比较喜欢 &lt;code&gt;SublimeCodeIntel&lt;/code&gt;。主要是因为它比较轻量，而且支持多种语言，不需要在单独安装相关依赖库&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;可以参考&lt;a href="http://python.jobbole.com/81312/"&gt;将Sublime Text 3设置为Python全栈开发环境&lt;/a&gt;&lt;/p&gt;</content><category term="vim"></category><category term="sublime text3"></category></entry></feed>

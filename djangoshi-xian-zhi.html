@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="CatsAction" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="网络安全, Python, Http, Django, " />
+
+<meta property="og:title" content="Django实现之  - 网络安全机制 "/>
+<meta property="og:url" content="./djangoshi-xian-zhi.html" />
+<meta property="og:description" content="常见网络安全 跨站脚本攻击（XSS） Cross-Site Scripting（跨站脚本攻击）简称 XSS，是一种代码注入攻击。攻击者通过在目标网站上注入恶意脚本，使之在用户的浏览器上运行。利用这些恶意脚本，攻击者可获取用户的敏感信息如 Cookie、SessionID 等，进而危害数据安全。 &lt;input type=&#34;text&#34; value=&#34;&lt;%= getParameter(&#34;keyword&#34;) %&gt;&#34;&gt; &lt;button&gt;搜索&lt;/button&gt; &lt;div&gt; 您搜索的关键词是：&lt;%= getParameter(&#34;keyword&#34;) %&gt; &lt;/div&gt; 如上的代码，如果输入的url是http://xxx/search?keyword=&#34;&gt;&lt;script&gt;alert(&#39;XSS&#39;);&lt;/script&gt;将执行js脚本，浏览器将抛出XSS对话框。详细介绍和前端一些解决思路，可以查看美团技术团队的文章前端安全系列（一）：如何防止XSS攻击 …" />
+<meta property="og:site_name" content="CatsAction&#39;s blog" />
+<meta property="og:article:author" content="CatsAction" />
+<meta property="og:article:published_time" content="2019-03-11T00:00:00+08:00" />
+<meta name="twitter:title" content="Django实现之  - 网络安全机制 ">
+<meta name="twitter:description" content="常见网络安全 跨站脚本攻击（XSS） Cross-Site Scripting（跨站脚本攻击）简称 XSS，是一种代码注入攻击。攻击者通过在目标网站上注入恶意脚本，使之在用户的浏览器上运行。利用这些恶意脚本，攻击者可获取用户的敏感信息如 Cookie、SessionID 等，进而危害数据安全。 &lt;input type=&#34;text&#34; value=&#34;&lt;%= getParameter(&#34;keyword&#34;) %&gt;&#34;&gt; &lt;button&gt;搜索&lt;/button&gt; &lt;div&gt; 您搜索的关键词是：&lt;%= getParameter(&#34;keyword&#34;) %&gt; &lt;/div&gt; 如上的代码，如果输入的url是http://xxx/search?keyword=&#34;&gt;&lt;script&gt;alert(&#39;XSS&#39;);&lt;/script&gt;将执行js脚本，浏览器将抛出XSS对话框。详细介绍和前端一些解决思路，可以查看美团技术团队的文章前端安全系列（一）：如何防止XSS攻击 …">
+
+        <title>Django实现之  - 网络安全机制  ·
+CatsAction&#39;s blog
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="./theme/image/logo.ico" />
+        <link rel="stylesheet" type="text/css" href="./theme/css/elegant.prod.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/custom.css" media="screen">
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="./"><span class=site-name>CatsAction's blog</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       .
+                                    >Home</a>
+                                </li>
+                                <li ><a href="./categories.html">Categories</a></li>
+                                <li ><a href="./tags.html">Tags</a></li>
+                                <li ><a href="./archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="./search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+    <div class="row-fluid">
+        <header class="page-header span10 offset2">
+            <h1>
+                <a href="./djangoshi-xian-zhi.html">
+                    Django实现之
+                    <small class="subtitle">
+                        网络安全机制
+                    </small>
+                </a>
+            </h1>
+        </header>
+    </div>
+
+    <div class="row-fluid">
+            <div class="span8 offset2 article-content">
+                
+                <h4>常见网络安全</h4>
+<h6>跨站脚本攻击（XSS）</h6>
+<p>Cross-Site Scripting（跨站脚本攻击）简称 XSS，是一种代码注入攻击。攻击者通过在目标网站上注入恶意脚本，使之在用户的浏览器上运行。利用这些恶意脚本，攻击者可获取用户的敏感信息如 Cookie、SessionID 等，进而危害数据安全。</p>
+<div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;&lt;%= getParameter(&quot;</span><span class="na">keyword</span><span class="err">&quot;)</span> <span class="err">%</span><span class="p">&gt;</span>&quot;&gt;
+<span class="p">&lt;</span><span class="nt">button</span><span class="p">&gt;</span>搜索<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+  您搜索的关键词是：<span class="err">&lt;</span>%= getParameter(&quot;keyword&quot;) %&gt;
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</pre></div>
+
+
+<p>如上的代码，如果输入的url是<code>http://xxx/search?keyword="&gt;&lt;script&gt;alert('XSS');&lt;/script&gt;</code>将执行js脚本，浏览器将抛出<strong>XSS</strong>对话框。详细介绍和前端一些解决思路，可以查看美团技术团队的文章<a href="https://www.cnblogs.com/meituantech/p/9718677.html">前端安全系列（一）：如何防止XSS攻击？</a></p>
+<h6>跨站请求伪造（CSRF）</h6>
+<p>CSRF（Cross-site request forgery）跨站请求伪造：攻击者诱导受害者进入第三方网站，在第三方网站中，向被攻击网站发送跨站请求。利用受害者在被攻击网站已经获取的注册凭证，绕过后台的用户验证，达到冒充用户对被攻击的网站执行某项操作的目的。</p>
+<p>一个典型的CSRF攻击有着如下的流程：</p>
+<ul>
+<li>受害者登录a.com，并保留了登录凭证（Cookie）。</li>
+<li>攻击者引诱受害者访问了b.com。</li>
+<li>b.com 向 a.com 发送了一个请求：a.com/act=xx。浏览器会默认携带- a.com的Cookie。</li>
+<li>a.com接收到请求后，对请求进行验证，并确认是受害者的凭证，误以为是受害者自己发送的请求。</li>
+<li>a.com以受害者的名义执行了act=xx。</li>
+<li>攻击完成，攻击者在受害者不知情的情况下，冒充受害者，让a.com执行了自己定义的操作</li>
+</ul>
+<p>关注CSRF的详细介绍，参考美团技术团队文章<a href="https://www.cnblogs.com/meituantech/p/9777222.html">前端安全系列之二：如何防止CSRF攻击？</a></p>
+<p>对于CSRF的预防，可以禁止跨域访问，或者追加一个Token（AES/CBC/PKCS5Padding 模式加密用户id，时间戳和一个随机字符串生成）</p>
+<h6>SQL注入</h6>
+<p>SQL注入是攻击者利用网站漏铜，输入特殊的SQL字符从而，从而执行数据库达到获取敏感信息或破坏数据库的目的。具体的SQL注入，可参考<a href="https://www.oschina.net/translate/sql-injection-walkthrought">SQL注入演练</a></p>
+<h6>点击劫持</h6>
+<p>点击劫持是指在一个Web页面下隐藏了一个透明的iframe（opacity：0），用外层假页面诱导用户点击，实际上是在隐藏的frame上触发了点击事件进行一些用户不知情的操作。详情请看<a href="https://www.freebuf.com/articles/web/67843.html">浅析解析劫持攻击</a></p>
+<h4>Django解决方案</h4>
+<h6>XSS</h6>
+<p>Django模板提供了自动对用户输入的转义。</p>
+<h6>XSRF</h6>
+<p>Django利用附加随机Token解决，Django模板引擎可以通过csrf_token打卡。</p>
+<h6>HTTPS支持</h6>
+<p>设置<code>SECURE_SSL_REDIRECT¶</code>等于<code>True</code>打卡对HTTPS的支持。。</p>
+<p>详情查看<a href="https://docs.djangoproject.com/en/3.0/topics/security/">Django 安全</a></p>
+
+
+                 
+ 
+                
+                
+                
+
+
+
+
+
+
+                <hr />
+                <aside>
+                    <nav>
+                        <ul class="articles-timeline">
+                            <li class="previous-article">« <a href="./hou-duan-fu-wu-xing-neng-diao-you.html"
+                                    title="Previous: 后端服务性能调优 - 因素，测试及思路">后端服务性能调优 <small class="subtitle">因素，测试及思路</small></a></li>
+                        </ul>
+                    </nav>
+                </aside>
+            </div>
+            <section id="article-sidebar" class="span2">
+                <h4>Published</h4>
+                <time itemprop="dateCreated" datetime="2019-03-11T00:00:00+08:00"> 3
+                    11, 2019</time>
+                <!---->
+                <h4>Category</h4>
+                <a class="category-link"
+                    href="./categories.html#django-ref">Django</a>
+                <h4>Tags</h4>
+                <ul class="list-of-tags tags-in-article">
+                    <li><a href="./tags.html#http-ref">Http
+                            <span>2</span>
+</a></li>
+                    <li><a href="./tags.html#python-ref">Python
+                            <span>1</span>
+</a></li>
+                    <li><a href="./tags.html#wang-luo-an-quan-ref">网络安全
+                            <span>1</span>
+</a></li>
+                </ul>
+<h4>Stay in Touch</h4>
+<div id="sidebar-social-link">
+    <a href="mailto:catsaction@126.com" title="My Email Address" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mail" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#328cff"/><path d="m250 186c-46 0-69 35-69 74 0 44 29 72 68 72 43 0 73-32 73-75 0-44-34-71-72-71zm-1-37c30 0 57 13 77 33 0-22 35-22 35 1v150c-1 10 10 16 16 9 25-25 54-128-14-187-64-56-149-47-195-15-48 33-79 107-49 175 33 76 126 99 182 76 28-12 41 26 12 39-45 19-168 17-225-82-38-68-36-185 67-248 78-46 182-33 244 32 66 69 62 197-2 246-28 23-71 1-71-32v-11c-20 20-47 32-77 32-57 0-108-51-108-108 0-58 51-110 108-110" fill="#fff"/></svg>
+    </a>
+    <a href="https://github.com/boyaziqi" title="catsaction Github Repository" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+    <a href="https://www.linkedin.com/feed/" title="My LinkedIn" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="LinkedIn" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%" fill="#0077b5"/><circle cx="142" cy="138" r="37"/><path stroke="#fff" stroke-width="66" d="M244 194v198M142 194v198"/><path d="M276 282c0-20 13-40 36-40 24 0 33 18 33 45v105h66V279c0-61-32-89-76-89-34 0-51 19-59 32"/></svg>
+    </a>
+</div>
+<h4>Friendship Links</h4>
+<ul class="list-of-tags tags-in-article">
+    <li>
+    <a href="https://leetcode-cn.com/" title="力扣中国站点" target="_blank" rel="nofollow noopener noreferrer">
+      LeetCode
+    </a>
+    </li>
+    <li>
+    <a href="https://coolshell.cn/about" title="陈皓酷壳" target="_blank" rel="nofollow noopener noreferrer">
+      CoolShell
+    </a>
+    </li>
+    <li>
+    <a href="https://yikun.github.io/" title="姜毅坤博客" target="_blank" rel="nofollow noopener noreferrer">
+      Yikun
+    </a>
+    </li>
+    <li>
+    <a href="https://www.nowcoder.com/" title="牛客网" target="_blank" rel="nofollow noopener noreferrer">
+      牛客网
+    </a>
+    </li>
+  </ul>
+                
+
+
+
+
+
+                
+
+
+
+
+
+            </section>
+        </div>
+</article>
+                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+    <div>
+        <span class="site-name">CatsAction's blog</span> - It's a wonderful world
+    </div>
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>        <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>

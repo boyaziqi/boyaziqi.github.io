@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="CatsAction" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content=", python, " />
+
+<meta property="og:title" content="python 新式类和旧式类的一些理解"/>
+<meta property="og:url" content="./python-xin-shi-lei-he-jiu-shi-lei-de-yi-xie-li-jie.html" />
+<meta property="og:description" content="下面是两个类,一个新式类，一个旧式类 class OldClass(): pass class NewClass(object): pass old_instance = OldClass() new_instance = NewClass() 下面是我在ipython运行测试的结果 In [15]: class OldClass(): ...: pass ...: In [16]: class NewClass(): ...: pass ...: In [17]: old_instance = OldClass() In [18]: new_instance = NewClass() In [19]: type(old_instance) Out[19]: instance In [23]: type(new_instance) Out[23]: __main__.NewClass In [24 …" />
+<meta property="og:site_name" content="CatsAction&#39;s blog" />
+<meta property="og:article:author" content="CatsAction" />
+<meta property="og:article:published_time" content="2016-10-18T10:37:00+08:00" />
+<meta name="twitter:title" content="python 新式类和旧式类的一些理解">
+<meta name="twitter:description" content="下面是两个类,一个新式类，一个旧式类 class OldClass(): pass class NewClass(object): pass old_instance = OldClass() new_instance = NewClass() 下面是我在ipython运行测试的结果 In [15]: class OldClass(): ...: pass ...: In [16]: class NewClass(): ...: pass ...: In [17]: old_instance = OldClass() In [18]: new_instance = NewClass() In [19]: type(old_instance) Out[19]: instance In [23]: type(new_instance) Out[23]: __main__.NewClass In [24 …">
+
+        <title>python 新式类和旧式类的一些理解 ·
+CatsAction&#39;s blog
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="./theme/image/logo.ico" />
+        <link rel="stylesheet" type="text/css" href="./theme/css/elegant.prod.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/custom.css" media="screen">
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="./"><span class=site-name>CatsAction's blog</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       .
+                                    >Home</a>
+                                </li>
+                                <li ><a href="./categories.html">Categories</a></li>
+                                <li ><a href="./tags.html">Tags</a></li>
+                                <li ><a href="./archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="./search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+    <div class="row-fluid">
+        <header class="page-header span10 offset2">
+            <h1>
+                <a href="./python-xin-shi-lei-he-jiu-shi-lei-de-yi-xie-li-jie.html">
+                    python 新式类和旧式类的一些理解
+                </a>
+            </h1>
+        </header>
+    </div>
+
+    <div class="row-fluid">
+            <div class="span8 offset2 article-content">
+                
+                <blockquote>
+<p>下面是两个类,一个新式类，一个旧式类</p>
+</blockquote>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">OldClass</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">NewClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">old_instance</span> <span class="o">=</span> <span class="n">OldClass</span><span class="p">()</span>
+<span class="n">new_instance</span> <span class="o">=</span> <span class="n">NewClass</span><span class="p">()</span>
+</pre></div>
+
+
+<blockquote>
+<p>下面是我在ipython运行测试的结果</p>
+</blockquote>
+<div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">15</span><span class="p">]:</span> <span class="k">class</span> <span class="nc">OldClass</span><span class="p">():</span>
+    <span class="o">...</span><span class="p">:</span>     <span class="k">pass</span>
+    <span class="o">...</span><span class="p">:</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">16</span><span class="p">]:</span> <span class="k">class</span> <span class="nc">NewClass</span><span class="p">():</span>
+    <span class="o">...</span><span class="p">:</span>     <span class="k">pass</span>
+    <span class="o">...</span><span class="p">:</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">17</span><span class="p">]:</span> <span class="n">old_instance</span> <span class="o">=</span> <span class="n">OldClass</span><span class="p">()</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">18</span><span class="p">]:</span> <span class="n">new_instance</span> <span class="o">=</span> <span class="n">NewClass</span><span class="p">()</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">19</span><span class="p">]:</span> <span class="nb">type</span><span class="p">(</span><span class="n">old_instance</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">19</span><span class="p">]:</span> <span class="n">instance</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">23</span><span class="p">]:</span> <span class="nb">type</span><span class="p">(</span><span class="n">new_instance</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">23</span><span class="p">]:</span> <span class="n">__main__</span><span class="o">.</span><span class="n">NewClass</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">24</span><span class="p">]:</span> <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">old_instance</span><span class="p">))</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s1">&#39;instance&#39;</span><span class="o">&gt;</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">25</span><span class="p">]:</span> <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">new_instance</span><span class="p">))</span>
+<span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">NewClass</span><span class="s1">&#39;&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">26</span><span class="p">]:</span> <span class="nb">type</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">26</span><span class="p">]:</span> <span class="nb">int</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">27</span><span class="p">]:</span> <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s1">&#39;int&#39;</span><span class="o">&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">31</span><span class="p">]:</span> <span class="nb">type</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">31</span><span class="p">]:</span> <span class="kc">True</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">32</span><span class="p">]:</span> <span class="nb">type</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">32</span><span class="p">]:</span> <span class="kc">True</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">33</span><span class="p">]:</span> <span class="nb">type</span><span class="p">(</span><span class="n">old_instance</span><span class="p">)</span> <span class="ow">is</span> <span class="n">OldClass</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">33</span><span class="p">]:</span> <span class="kc">False</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">34</span><span class="p">]:</span> <span class="nb">type</span><span class="p">(</span><span class="n">new_instance</span><span class="p">)</span> <span class="ow">is</span> <span class="n">NewClass</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">34</span><span class="p">]:</span> <span class="kc">True</span>
+</pre></div>
+
+
+<ul>
+<li>通过上面，我们看到，旧式类，一切实例的类型均是<code>instance</code>。它和内置类型表现形式不一致，这样不能很好的体现实例和类之间的关系。
+而新式类则使类和内置类型表现形式一致。为了判断一个实例是否属于一个类，旧式类最可靠的方式时<code>instance()</code>内置方法，新式类可以
+通过<code>type</code>判断，和内置类型一致。</li>
+</ul>
+<blockquote>
+<p>下面是类本身的特性</p>
+</blockquote>
+<div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">37</span><span class="p">]:</span> <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s1">&#39;int&#39;</span><span class="o">&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">38</span><span class="p">]:</span> <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">OldClass</span><span class="p">))</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s1">&#39;classobj&#39;</span><span class="o">&gt;</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">39</span><span class="p">]:</span> <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">NewClass</span><span class="p">))</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s1">&#39;type&#39;</span><span class="o">&gt;</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">40</span><span class="p">]:</span> <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s1">&#39;type&#39;</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>新式类的的类型是<code>type</code>，这和内置类型一致。旧式类则不是。普通类是元类的实例，对于新式类，默认的元类是<code>type</code>。</p>
+<hr>
+<p><em>注:最新的python版本将内置类型也统一成类的形式，<code>print(type(int)</code>将打印<code>&lt;class 'type'&gt;</code>。以后我觉得更精准的称呼应该是内置类和自定义类</em></p>
+
+
+                
+
+                
+                
+                
+
+
+
+
+
+
+                <hr />
+                <aside>
+                    <nav>
+                        <ul class="articles-timeline">
+                            <li class="previous-article">« <a href="./kua-yu-fang-wen-zong-jie.html"
+                                    title="Previous: 跨域访问总结">跨域访问总结</a></li>
+                            <li class="next-article"><a href="./tornadolu-you-zhuang-shi-qi.html"
+                                    title="Next: tornado路由装饰器">tornado路由装饰器</a> »</li>
+                        </ul>
+                    </nav>
+                </aside>
+            </div>
+            <section id="article-sidebar" class="span2">
+                <h4>Published</h4>
+                <time itemprop="dateCreated" datetime="2016-10-18T10:37:00+08:00">10
+                    18, 2016</time>
+                <!---->
+                <h4>Category</h4>
+                <a class="category-link"
+                    href="./categories.html#python-ref">python</a>
+<h4>Stay in Touch</h4>
+<div id="sidebar-social-link">
+    <a href="mailto:catsaction@126.com" title="My Email Address" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mail" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#328cff"/><path d="m250 186c-46 0-69 35-69 74 0 44 29 72 68 72 43 0 73-32 73-75 0-44-34-71-72-71zm-1-37c30 0 57 13 77 33 0-22 35-22 35 1v150c-1 10 10 16 16 9 25-25 54-128-14-187-64-56-149-47-195-15-48 33-79 107-49 175 33 76 126 99 182 76 28-12 41 26 12 39-45 19-168 17-225-82-38-68-36-185 67-248 78-46 182-33 244 32 66 69 62 197-2 246-28 23-71 1-71-32v-11c-20 20-47 32-77 32-57 0-108-51-108-108 0-58 51-110 108-110" fill="#fff"/></svg>
+    </a>
+    <a href="https://github.com/boyaziqi" title="catsaction Github Repository" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+    <a href="https://www.linkedin.com/feed/" title="My LinkedIn" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="LinkedIn" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%" fill="#0077b5"/><circle cx="142" cy="138" r="37"/><path stroke="#fff" stroke-width="66" d="M244 194v198M142 194v198"/><path d="M276 282c0-20 13-40 36-40 24 0 33 18 33 45v105h66V279c0-61-32-89-76-89-34 0-51 19-59 32"/></svg>
+    </a>
+</div>
+<h4>Friendship Links</h4>
+<ul class="list-of-tags tags-in-article">
+    <li>
+    <a href="https://leetcode-cn.com/" title="力扣中国站点" target="_blank" rel="nofollow noopener noreferrer">
+      LeetCode
+    </a>
+    </li>
+    <li>
+    <a href="https://coolshell.cn/about" title="陈皓酷壳" target="_blank" rel="nofollow noopener noreferrer">
+      CoolShell
+    </a>
+    </li>
+    <li>
+    <a href="https://yikun.github.io/" title="姜毅坤博客" target="_blank" rel="nofollow noopener noreferrer">
+      Yikun
+    </a>
+    </li>
+    <li>
+    <a href="https://www.nowcoder.com/" title="牛客网" target="_blank" rel="nofollow noopener noreferrer">
+      牛客网
+    </a>
+    </li>
+  </ul>
+                
+
+
+
+
+
+                
+
+
+
+
+
+            </section>
+        </div>
+</article>
+                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+    <div>
+        <span class="site-name">CatsAction's blog</span> - It's a wonderful world
+    </div>
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>        <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="CatsAction" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="Redis, Redis, " />
+
+<meta property="og:title" content="Redis系列之 - Sentinel模式"/>
+<meta property="og:url" content="./redisxi-lie-zhi.html" />
+<meta property="og:description" content="前述 本篇先讲解Redis主从同步原理及流程，然后讲解Sentinel工作机制。最后，基于Docker部署Redis主从和验证Sentinel模式。相关实现已经放到我的GitHub博客源，Docker搭建Redis主从和Sentinel Redis主从同步原理 1，增量同步 主从服务器同步的是执行的指令流。当主服务器收到指令时，会将指令写到buffer（buffer大小固定，可配置更改），然后异步将执行指令同步到从服务器。 当buffer空间不足时，新收到指令会导致旧数据覆盖，这时会触发快照同步。 2，快照同步 Redis主服务会生成快照文件dump.rdb，当从服务首次连接到主服务器上或主服务重启时，主服务将dump.rdb文件传送给从服务器，从服务清空旧数据，然后利用dump.rdb文件 恢复最新的数据，恢复完成后，再和主服务器行增量同步保持数据一致。 3，主从同步流程 （1）从服务根据配置的ip和port连接到主服务，如果主服务设置了口令需要提供相应口令。 （2）从服务和主服务成功匹配后，先进行一次快照同步。在主服务生成快照并同步到从服务之前，新访问主服务的命令会被放到主服务的buffer。 （3）快照同步完成后，主从服务进行增量同步。从服务会维护一个数据offset，并与主服务保持同步。 （4）主从服务会按一定频率给对方发送heartbeat，用于检测对方是不是正常在线 …" />
+<meta property="og:site_name" content="CatsAction&#39;s blog" />
+<meta property="og:article:author" content="CatsAction" />
+<meta property="og:article:published_time" content="2020-01-09T00:00:00+08:00" />
+<meta name="twitter:title" content="Redis系列之 - Sentinel模式">
+<meta name="twitter:description" content="前述 本篇先讲解Redis主从同步原理及流程，然后讲解Sentinel工作机制。最后，基于Docker部署Redis主从和验证Sentinel模式。相关实现已经放到我的GitHub博客源，Docker搭建Redis主从和Sentinel Redis主从同步原理 1，增量同步 主从服务器同步的是执行的指令流。当主服务器收到指令时，会将指令写到buffer（buffer大小固定，可配置更改），然后异步将执行指令同步到从服务器。 当buffer空间不足时，新收到指令会导致旧数据覆盖，这时会触发快照同步。 2，快照同步 Redis主服务会生成快照文件dump.rdb，当从服务首次连接到主服务器上或主服务重启时，主服务将dump.rdb文件传送给从服务器，从服务清空旧数据，然后利用dump.rdb文件 恢复最新的数据，恢复完成后，再和主服务器行增量同步保持数据一致。 3，主从同步流程 （1）从服务根据配置的ip和port连接到主服务，如果主服务设置了口令需要提供相应口令。 （2）从服务和主服务成功匹配后，先进行一次快照同步。在主服务生成快照并同步到从服务之前，新访问主服务的命令会被放到主服务的buffer。 （3）快照同步完成后，主从服务进行增量同步。从服务会维护一个数据offset，并与主服务保持同步。 （4）主从服务会按一定频率给对方发送heartbeat，用于检测对方是不是正常在线 …">
+
+        <title>Redis系列之 - Sentinel模式 ·
+CatsAction&#39;s blog
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="./theme/image/logo.ico" />
+        <link rel="stylesheet" type="text/css" href="./theme/css/elegant.prod.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/custom.css" media="screen">
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="./"><span class=site-name>CatsAction's blog</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       .
+                                    >Home</a>
+                                </li>
+                                <li ><a href="./categories.html">Categories</a></li>
+                                <li ><a href="./tags.html">Tags</a></li>
+                                <li ><a href="./archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="./search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+    <div class="row-fluid">
+        <header class="page-header span10 offset2">
+            <h1>
+                <a href="./redisxi-lie-zhi.html">
+                    Redis系列之
+                    <small class="subtitle">
+                        Sentinel模式
+                    </small>
+                </a>
+            </h1>
+        </header>
+    </div>
+
+    <div class="row-fluid">
+            <div class="span8 offset2 article-content">
+                
+                <h2>前述</h2>
+<p>本篇先讲解Redis主从同步原理及流程，然后讲解Sentinel工作机制。最后，基于Docker部署Redis主从和验证Sentinel模式。相关实现已经放到我的GitHub博客源，<a href="https://github.com/boyaziqi/CatsAction/tree/master/examples/redis-replication">Docker搭建Redis主从和Sentinel</a></p>
+<h2>Redis主从同步原理</h2>
+<h6>1，增量同步</h6>
+<p>主从服务器同步的是执行的指令流。当主服务器收到指令时，会将指令写到buffer（buffer大小固定，可配置更改），然后异步将执行指令同步到从服务器。
+当buffer空间不足时，新收到指令会导致旧数据覆盖，这时会触发快照同步。</p>
+<h6>2，快照同步</h6>
+<p>Redis主服务会生成快照文件dump.rdb，当从服务首次连接到主服务器上或主服务重启时，主服务将dump.rdb文件传送给从服务器，从服务清空旧数据，然后利用dump.rdb文件
+恢复最新的数据，恢复完成后，再和主服务器行增量同步保持数据一致。</p>
+<h6>3，主从同步流程</h6>
+<p>（1）从服务根据配置的ip和port连接到主服务，如果主服务设置了口令需要提供相应口令。</p>
+<p>（2）从服务和主服务成功匹配后，先进行一次快照同步。在主服务生成快照并同步到从服务之前，新访问主服务的命令会被放到主服务的buffer。</p>
+<p>（3）快照同步完成后，主从服务进行增量同步。从服务会维护一个数据offset，并与主服务保持同步。</p>
+<p>（4）主从服务会按一定频率给对方发送heartbeat，用于检测对方是不是正常在线。如果网络断开然后恢复，会自动重连，并通过offset判断是否需要快照同步。</p>
+<p>（5）从服务不处理过期key。当某个key过期时，主服务会模拟一个DEL指令发送给从服务器。</p>
+<p><center>
+<img alt="dockers_vm" src="./images/redis_master_replication.jpg">
+</center></p>
+<h2>Sentinel模式简介</h2>
+<p>Redis主从服务采取读写分离，主服务负责写，从服务负责读。当主服务宕机时，Redis主从并不会从新选择主服务，这将导致整个主从服务无法正常工作。官方推荐的
+主从同步高可用方案是Sentinel，它会监控和复制服务状态，当主服务宕机后，会根据选举算法从后端从服务选择新的主服务。Sentinel本身也有单点瓶颈的问题，因此也需要集群。</p>
+<p><center>
+<img alt="dockers_vm" src="./images/redis_sentinel.jpg">
+</center></p>
+<h2>工作机制</h2>
+<p>Sentinel会运行三个定时任务（监控，通知，故障迁移）。当Redis主服务宕机后，会根据一定的机制选择一个领导Sentinel来执行故障迁移。主服务选择出来并配置成功后，领导Sentinel
+通过<code>slaveof ip port</code>让其他从服务同步新的主服务。原来的主服务如果重新加入，则会成为新主服务的从服务。</p>
+<h6>如何确认一个服务已经故障</h6>
+<p>当一个Sentinel ping不通一个服务节点时，并不会立即认为该服务节点故障（主观下线）。只有当所有Sentinel协商一致，才认为该服务节点故障（客观下线）。</p>
+<h6>领导选举机制</h6>
+<ul>
+<li>每个做出主观下线的Sentinel将向其它Sentinel发送命令，要求将自己设为领导Sentinel。</li>
+<li>收到命令的Sentinel如果没有同意过其它Sentinel的领导请求命令，那就同意，否则拒绝。</li>
+<li>如果该Sentinel发现自己票数超过Sentinel集合的一半且达到quorum，该Sentinel将成为领导Sentinel。</li>
+<li>如果此过程有多个Sentinel成为领导Sentinel，那么将等待一段时间重新进行选举。</li>
+</ul>
+<h6>从服务节点选择机制</h6>
+<ul>
+<li>选择slave-priority（slave优先级）最高的slave节点，如果有返回，没有继续。</li>
+<li>选择复制偏移量最大的slave节点（复制最完整），如果有返回，没有继续。</li>
+<li>选择runId最小的slave节点。</li>
+</ul>
+<h2>测试</h2>
+<p>为了方便验证和部署Redis主从，我基于Docker-compose构建了验证环境，实现查看文章开头的信息。docker-compose.yml文件内容如下。
+其中RedisA作为主服务节点，RedisB和RedisC作为从服务节点。</p>
+<div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span> <span class="s">&#39;3&#39;</span>
+<span class="nt">services</span><span class="p">:</span>
+    <span class="nt">redisA</span><span class="p">:</span>
+        <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">redis</span>
+        <span class="nt">restart</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">always</span>
+        <span class="nt">ports</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="s">&quot;6376:6379&quot;</span>
+        <span class="nt">volumes</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./config/redis1/:/usr/local/etc/redis/</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./logs/redis1/:/var/log/redis/</span>
+        <span class="nt">command</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">redis-server /usr/local/etc/redis/redis.conf</span>
+    <span class="nt">redisB</span><span class="p">:</span>
+        <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">redis</span>
+        <span class="nt">restart</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">always</span>
+        <span class="nt">ports</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="s">&quot;6377:6379&quot;</span>
+        <span class="nt">volumes</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./config/redis2/:/usr/local/etc/redis/</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./logs/redis2/:/var/log/redis/</span>
+        <span class="nt">command</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">redis-server /usr/local/etc/redis/redis.conf</span>
+    <span class="nt">redisC</span><span class="p">:</span>
+        <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">redis</span>
+        <span class="nt">restart</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">always</span>
+        <span class="nt">ports</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="s">&quot;6378:6379&quot;</span>
+        <span class="nt">volumes</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./config/redis3/:/usr/local/etc/redis/</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./logs/redis3/:/var/log/redis/</span>
+        <span class="nt">command</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">redis-server /usr/local/etc/redis/redis.conf</span>
+    <span class="nt">sentinelA</span><span class="p">:</span>
+        <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">redis</span>
+        <span class="nt">restart</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">always</span>
+        <span class="nt">ports</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="s">&quot;6381:6379&quot;</span>
+        <span class="nt">volumes</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./config/sentinel/:/usr/local/etc/redis/</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./logs/sentinel1/:/var/log/redis/</span>
+        <span class="nt">command</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">redis-sentinel /usr/local/etc/redis/sentinel.conf</span>
+    <span class="nt">sentinelB</span><span class="p">:</span>
+        <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">redis</span>
+        <span class="nt">restart</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">always</span>
+        <span class="nt">ports</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="s">&quot;6382:6379&quot;</span>
+        <span class="nt">volumes</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./config/sentinel/:/usr/local/etc/redis/</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./logs/sentinel2/:/var/log/redis/</span>
+        <span class="nt">command</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">redis-sentinel /usr/local/etc/redis/sentinel.conf</span>
+    <span class="nt">sentinelC</span><span class="p">:</span>
+        <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">redis</span>
+        <span class="nt">restart</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">always</span>
+        <span class="nt">ports</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="s">&quot;6383:6379&quot;</span>
+        <span class="nt">volumes</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./config/sentinel/:/usr/local/etc/redis/</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./logs/sentinel3/:/var/log/redis/</span>
+        <span class="nt">command</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">redis-sentinel /usr/local/etc/redis/sentinel.conf</span>
+</pre></div>
+
+
+<p>修改RedisB的配置文件<code>./config/redis2/redis.conf</code>，加入如下配置指定主服务节点地址。RedisC配置相同。</p>
+<div class="highlight"><pre><span></span>slaveof redis-replication_redisA_1 <span class="m">6379</span>
+</pre></div>
+
+
+<p>增加上面的配置后，在终端docker-compose.yml文件所在目录执行<code>docker-compose up</code>启动容器，这样一主两从的Redis主从服务就搭建好了。 可以在主服务节点set一个key验证从服务节点是否正常复制。</p>
+<p>我们在终端执行命令<code>docker ps</code>查看容器运行情况，我机器上显示如下，每个人的CONTAINER ID不一样。</p>
+<div class="highlight"><pre><span></span>CONTAINER ID        IMAGE                  COMMAND                  CREATED              STATUS              PORTS                      NAMES
+ce0c4d42c6a0        redis                  <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   About a minute ago   Up About a minute   <span class="m">0</span>.0.0.0:6376-&gt;6379/tcp     redis-replication_redisA_1
+d21706b6ee24        redis                  <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   About a minute ago   Up About a minute   <span class="m">0</span>.0.0.0:6378-&gt;6379/tcp     redis-replication_redisC_1
+b515bb2db9b5        redis                  <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   About a minute ago   Up About a minute   <span class="m">0</span>.0.0.0:6377-&gt;6379/tcp     redis-replication_redisB_1
+bb546bd4834c        redis                  <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   About a minute ago   Up About a minute   <span class="m">0</span>.0.0.0:6382-&gt;6379/tcp     redis-replication_sentinelB_1
+297d8af73a96        redis                  <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   About a minute ago   Up About a minute   <span class="m">0</span>.0.0.0:6383-&gt;6379/tcp     redis-replication_sentinelC_1
+86883db74e7d        redis                  <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   About a minute ago   Up About a minute   <span class="m">0</span>.0.0.0:6381-&gt;6379/tcp     redis-replication_sentinelA_1
+</pre></div>
+
+
+<p>在Sentinel配置文件<code>.config/sentinel/sentinel.conf</code>加入下面配置。</p>
+<div class="highlight"><pre><span></span>protected-mode no
+sentinel monitor redis-replication_redisA_1 <span class="m">192</span>.168.11.128 <span class="m">6379</span> <span class="m">2</span>
+</pre></div>
+
+
+<p>重新启动容器，这时Sentinel服务会自动更新配置文件，增加一些必要配置信息，并且将主机名和端口用一个hash字符串表示。</p>
+<p>执行下面命令停止主服务节点。</p>
+<div class="highlight"><pre><span></span>docker stop redis-replication_redisA_1
+</pre></div>
+
+
+<p>执行了上面的命令后，我们验证，RedisB已经成为新的主服务节点。如果尝试在RedisC写入，则会提示下面错误。</p>
+<div class="highlight"><pre><span></span><span class="o">(</span>error<span class="o">)</span> READONLY You can<span class="err">&#39;</span>t write against a <span class="nb">read</span> only replica.
+</pre></div>
+
+
+<p>执行下面的命令重启RedisA，可以看到现在它成为RedisB的从服务器。</p>
+<div class="highlight"><pre><span></span>docker restart redis-replication_redisA_1
+</pre></div>
+
+
+<p>ps: 如果客户端与旧主服务器分隔在一起，写入的数据在恢复后由于旧主会复制新主的数据会造成数据丢失。</p>
+<h2>后述</h2>
+<p>主从复制有了，也用Sentinel模式来保证高可用了。但是对于客户端来说，访问的时候如何调度呢？后面会探索Redis负载均衡调度的主要解决方案（针对集群或主从复制），然后抽空写一篇文章。</p>
+
+
+                
+
+                
+                
+                
+
+
+
+
+
+
+                <hr />
+                <aside>
+                    <nav>
+                        <ul class="articles-timeline">
+                            <li class="previous-article">« <a href="./redisxi-lie-si.html"
+                                    title="Previous: Redis系列四 - 锁、信号量、事务">Redis系列四 <small class="subtitle">锁、信号量、事务</small></a></li>
+                        </ul>
+                    </nav>
+                </aside>
+            </div>
+            <section id="article-sidebar" class="span2">
+                <h4>Published</h4>
+                <time itemprop="dateCreated" datetime="2020-01-09T00:00:00+08:00"> 1
+                    9, 2020</time>
+                <!---->
+                <h4>Category</h4>
+                <a class="category-link"
+                    href="./categories.html#redis-ref">Redis</a>
+                <h4>Tags</h4>
+                <ul class="list-of-tags tags-in-article">
+                    <li><a href="./tags.html#redis-ref">Redis
+                            <span>11</span>
+</a></li>
+                </ul>
+<h4>Stay in Touch</h4>
+<div id="sidebar-social-link">
+    <a href="mailto:catsaction@126.com" title="My Email Address" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mail" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#328cff"/><path d="m250 186c-46 0-69 35-69 74 0 44 29 72 68 72 43 0 73-32 73-75 0-44-34-71-72-71zm-1-37c30 0 57 13 77 33 0-22 35-22 35 1v150c-1 10 10 16 16 9 25-25 54-128-14-187-64-56-149-47-195-15-48 33-79 107-49 175 33 76 126 99 182 76 28-12 41 26 12 39-45 19-168 17-225-82-38-68-36-185 67-248 78-46 182-33 244 32 66 69 62 197-2 246-28 23-71 1-71-32v-11c-20 20-47 32-77 32-57 0-108-51-108-108 0-58 51-110 108-110" fill="#fff"/></svg>
+    </a>
+    <a href="https://github.com/boyaziqi" title="catsaction Github Repository" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+    <a href="https://www.linkedin.com/feed/" title="My LinkedIn" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="LinkedIn" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%" fill="#0077b5"/><circle cx="142" cy="138" r="37"/><path stroke="#fff" stroke-width="66" d="M244 194v198M142 194v198"/><path d="M276 282c0-20 13-40 36-40 24 0 33 18 33 45v105h66V279c0-61-32-89-76-89-34 0-51 19-59 32"/></svg>
+    </a>
+</div>
+<h4>Friendship Links</h4>
+<ul class="list-of-tags tags-in-article">
+    <li>
+    <a href="https://leetcode-cn.com/" title="力扣中国站点" target="_blank" rel="nofollow noopener noreferrer">
+      LeetCode
+    </a>
+    </li>
+    <li>
+    <a href="https://coolshell.cn/about" title="陈皓酷壳" target="_blank" rel="nofollow noopener noreferrer">
+      CoolShell
+    </a>
+    </li>
+    <li>
+    <a href="https://yikun.github.io/" title="姜毅坤博客" target="_blank" rel="nofollow noopener noreferrer">
+      Yikun
+    </a>
+    </li>
+    <li>
+    <a href="https://www.nowcoder.com/" title="牛客网" target="_blank" rel="nofollow noopener noreferrer">
+      牛客网
+    </a>
+    </li>
+  </ul>
+                
+
+
+
+
+
+                
+
+
+
+
+
+            </section>
+        </div>
+</article>
+                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+    <div>
+        <span class="site-name">CatsAction's blog</span> - It's a wonderful world
+    </div>
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>        <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>

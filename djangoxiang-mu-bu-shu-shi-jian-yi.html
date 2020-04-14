@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="CatsAction" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="Redis, Python, Redis, " />
+
+<meta property="og:title" content="Django项目部署实践一 - 基于MySQL读写分离和Nginx反向代理"/>
+<meta property="og:url" content="./djangoxiang-mu-bu-shu-shi-jian-yi.html" />
+<meta property="og:description" content="从本篇开始，我会花三篇左右的文章去写写Django项目部署的演变及过程中的一些思考。在这个过程中，遇到了很多问题，我也会把相关问题和解决方法记录下来，以求更加完善Django架构解决方案。当然，架构没有最好，只有更适合。某些实现记录，我们也没这样做，这里写下只是为了做一下探索。探索中，难免遇到很多新理论和技术方案，我后面也会抽时间写相应的文章记录下来。 最基本的Django部署方案 Django作为Python最流行的Web框架，有很成熟的解决方案。作为MVT框架，它和数据库有很好的集成，类置ORM。下面是最基本的部署方案。 最基本的部署方案中，Nginx通过WSGI和Django通信，Django直接访问数据库。 缺点 高并发情况下有Django应用和数据库都会成为性能瓶颈； 数据库只有一台，没有备份。如果服务器出问题，容易导致数据丢失； 整个服务单点，出现故障就导致无法提供正常的访问。 MySQL主从和负载均衡调度方案 基于基本部署方案并发性能低，无高可用。所以可以考虑Nginx负责均衡和MySQL主从读写分离。方案如下图。 上面的图MySQL只是一个基本的主从，当然实际情况可能还需要集群来解决数据不一致性问题。不过我们先一步步来，以最基本的两台数据库，一主一从，读写分离，展示下Django负载均衡调度的配置方案。下面的示例中展示忽略缓存，后面再讨论。 Django负载均衡配置 1, 创建两个Django …" />
+<meta property="og:site_name" content="CatsAction&#39;s blog" />
+<meta property="og:article:author" content="CatsAction" />
+<meta property="og:article:published_time" content="2018-04-15T00:00:00+08:00" />
+<meta name="twitter:title" content="Django项目部署实践一 - 基于MySQL读写分离和Nginx反向代理">
+<meta name="twitter:description" content="从本篇开始，我会花三篇左右的文章去写写Django项目部署的演变及过程中的一些思考。在这个过程中，遇到了很多问题，我也会把相关问题和解决方法记录下来，以求更加完善Django架构解决方案。当然，架构没有最好，只有更适合。某些实现记录，我们也没这样做，这里写下只是为了做一下探索。探索中，难免遇到很多新理论和技术方案，我后面也会抽时间写相应的文章记录下来。 最基本的Django部署方案 Django作为Python最流行的Web框架，有很成熟的解决方案。作为MVT框架，它和数据库有很好的集成，类置ORM。下面是最基本的部署方案。 最基本的部署方案中，Nginx通过WSGI和Django通信，Django直接访问数据库。 缺点 高并发情况下有Django应用和数据库都会成为性能瓶颈； 数据库只有一台，没有备份。如果服务器出问题，容易导致数据丢失； 整个服务单点，出现故障就导致无法提供正常的访问。 MySQL主从和负载均衡调度方案 基于基本部署方案并发性能低，无高可用。所以可以考虑Nginx负责均衡和MySQL主从读写分离。方案如下图。 上面的图MySQL只是一个基本的主从，当然实际情况可能还需要集群来解决数据不一致性问题。不过我们先一步步来，以最基本的两台数据库，一主一从，读写分离，展示下Django负载均衡调度的配置方案。下面的示例中展示忽略缓存，后面再讨论。 Django负载均衡配置 1, 创建两个Django …">
+
+        <title>Django项目部署实践一 - 基于MySQL读写分离和Nginx反向代理 ·
+CatsAction&#39;s blog
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="./theme/image/logo.ico" />
+        <link rel="stylesheet" type="text/css" href="./theme/css/elegant.prod.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/custom.css" media="screen">
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="./"><span class=site-name>CatsAction's blog</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       .
+                                    >Home</a>
+                                </li>
+                                <li ><a href="./categories.html">Categories</a></li>
+                                <li ><a href="./tags.html">Tags</a></li>
+                                <li ><a href="./archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="./search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+    <div class="row-fluid">
+        <header class="page-header span10 offset2">
+            <h1>
+                <a href="./djangoxiang-mu-bu-shu-shi-jian-yi.html">
+                    Django项目部署实践一
+                    <small class="subtitle">
+                        基于MySQL读写分离和Nginx反向代理
+                    </small>
+                </a>
+            </h1>
+        </header>
+    </div>
+
+    <div class="row-fluid">
+            <div class="span8 offset2 article-content">
+                
+                <p>从本篇开始，我会花三篇左右的文章去写写Django项目部署的演变及过程中的一些思考。在这个过程中，遇到了很多问题，我也会把相关问题和解决方法记录下来，以求更加完善Django架构解决方案。当然，架构没有最好，只有更适合。某些实现记录，我们也没这样做，这里写下只是为了做一下探索。探索中，难免遇到很多新理论和技术方案，我后面也会抽时间写相应的文章记录下来。</p>
+<h2>最基本的Django部署方案</h2>
+<p>Django作为Python最流行的Web框架，有很成熟的解决方案。作为MVT框架，它和数据库有很好的集成，类置ORM。下面是最基本的部署方案。</p>
+<p><center>
+<img alt="django基本部署方案" src="./images/django_deploy_semple.gif">
+</center></p>
+<p>最基本的部署方案中，Nginx通过WSGI和Django通信，Django直接访问数据库。</p>
+<h5>缺点</h5>
+<ol>
+<li>高并发情况下有Django应用和数据库都会成为性能瓶颈；</li>
+<li>数据库只有一台，没有备份。如果服务器出问题，容易导致数据丢失；</li>
+<li>整个服务单点，出现故障就导致无法提供正常的访问。
+<br></li>
+</ol>
+<h2>MySQL主从和负载均衡调度方案</h2>
+<p>基于基本部署方案并发性能低，无高可用。所以可以考虑Nginx负责均衡和MySQL主从读写分离。方案如下图。
+<center>
+<img alt="django负载均衡方案" src="./images/django_junheng.gif">
+</center></p>
+<p>上面的图MySQL只是一个基本的主从，当然实际情况可能还需要集群来解决数据不一致性问题。不过我们先一步步来，以最基本的两台数据库，一主一从，读写分离，展示下Django负载均衡调度的配置方案。下面的示例中展示忽略缓存，后面再讨论。</p>
+<h2>Django负载均衡配置</h2>
+<p>1, 创建两个Django APP示例</p>
+<p>为了展示负载均衡调度成功，我们创建两个Django应用，他们的/home路由对应下面的index view。第二个Django APP index view可以返回"this is the second home"，以便和第一个区别。</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
+
+
+<span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="s2">&quot;this is the first home&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>目前只是验证，所以Django APP直接<code>python manage.py runserver</code>启动。<br>
+假设两个Django APP的地址分别为192.168.10.10：8000和192.168.10.11</p>
+<p>2, 配置Nginx负载均衡调度</p>
+<div class="highlight"><pre><span></span><span class="k">upstream</span> <span class="s">django-server</span> <span class="p">{</span>
+    <span class="c1">#least_conn;</span>
+    <span class="kn">server</span> <span class="n">192.168.10.10</span><span class="p">:</span><span class="mi">8000</span> <span class="s">weight=2</span><span class="p">;</span>
+    <span class="kn">server</span> <span class="n">192.168.10.11</span><span class="p">:</span><span class="mi">8000</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">server</span> <span class="p">{</span>
+    <span class="kn">listen</span>       <span class="mi">80</span><span class="p">;</span>
+    <span class="kn">server_name</span>  <span class="s">localhost</span><span class="p">;</span>
+    <span class="kn">location</span> <span class="s">/</span> <span class="p">{</span>
+        <span class="kn">proxy_pass</span> <span class="s">http://django-server</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Nginx内置支持的负载均衡有round-robin（轮询，默认，可以指定权重），least-connected（最少链接数），ip-hash。为了验证结果，我们这里使用默认的round-robin, 两天服务器的访问权重是2:1。</p>
+<p>3, 配置MySQL主从</p>
+<p>假设MySQL主服务器ip为192.168.10.20，从服务器ip为192.168.10.21</p>
+<p>MySQL主服务器配置文件增加下面配置</p>
+<div class="highlight"><pre><span></span><span class="p">[</span><span class="n">mysqld</span><span class="p">]</span>
+<span class="n">server</span><span class="o">-</span><span class="n">id</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">log</span><span class="o">-</span><span class="n">bin</span><span class="o">=</span><span class="n">mysql</span><span class="o">-</span><span class="n">bin</span>
+</pre></div>
+
+
+<p>MySQL从服务器配置文件增加下面配置</p>
+<div class="highlight"><pre><span></span><span class="p">[</span><span class="n">mysqld</span><span class="p">]</span>
+<span class="n">server</span><span class="o">-</span><span class="n">id</span><span class="o">=</span><span class="mi">2</span>
+<span class="n">relay_log</span><span class="o">=</span><span class="n">edu</span><span class="o">-</span><span class="n">mysql</span><span class="o">-</span><span class="n">relay</span><span class="o">-</span><span class="n">bin</span>
+</pre></div>
+
+
+<p>其他配置项目不再列出，注意以下几点
+- 主从配置项在[mysqld]，而不是[mysql_safe]
+- server-id必须唯一
+- 确保数据目录auto.cnf文件server-uuid也唯一，通常server-uuid会自动生成，但是有时拷贝数据会复制到，所以需要注意下。</p>
+<p>在MySQL主服务器上新建主从复制专用用户</p>
+<div class="highlight"><pre><span></span><span class="err">CREATE USER &#39;slave&#39;@&#39;%&#39; IDENTIFIED BY &#39;123456&#39;;</span>
+<span class="err">GRANT REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO &#39;slave&#39;@&#39;%&#39;;</span>
+</pre></div>
+
+
+<p>PS： MySQL8必须先创建用户才能授权，MySQL5.7以前版本可以直接grant创建用户并授权。后面会整理一篇MySQL8的文章。</p>
+<p>在从服务器执行下面的命令</p>
+<div class="highlight"><pre><span></span><span class="k">change</span> <span class="n">master</span> <span class="k">to</span> <span class="n">master_host</span><span class="o">=</span><span class="s1">&#39;192.168.10.20&#39;</span><span class="p">,</span> <span class="n">master_user</span><span class="o">=</span><span class="s1">&#39;slave&#39;</span><span class="p">,</span> <span class="n">master_password</span><span class="o">=</span><span class="s1">&#39;123456&#39;</span><span class="p">,</span> <span class="n">master_port</span><span class="o">=</span><span class="mi">3306</span><span class="p">,</span> <span class="n">master_log_file</span><span class="o">=</span><span class="s1">&#39;mysql-bin.000001&#39;</span><span class="p">,</span> <span class="n">master_log_pos</span><span class="o">=</span> <span class="mi">2830</span><span class="p">,</span> <span class="n">master_connect_retry</span><span class="o">=</span><span class="mi">30</span><span class="p">;</span>
+</pre></div>
+
+
+<p>master_host为主服务器ip，master_log_file和master_log_pos为主服务器<code>show master status</code>显示的File和Position值。</p>
+<p>在从服务器开启主从复制</p>
+<div class="highlight"><pre><span></span><span class="n">mysql</span><span class="o">&gt;</span><span class="n">start</span> <span class="n">slave</span><span class="p">;</span>
+</pre></div>
+
+
+<p>4, 配置Django支持读写分离</p>
+<p>更新配置文件，指定多个数据库信息</p>
+<div class="highlight"><pre><span></span><span class="err">DATABASES = {</span>
+<span class="err">    &#39;default&#39;: {</span>
+<span class="err">        &#39;NAME&#39;: &#39;write_db&#39;,</span>
+<span class="err">        &#39;ENGINE&#39;: &#39;django.db.backends.mysql&#39;,</span>
+<span class="err">        &#39;USER&#39;: &#39;root&#39;,</span>
+<span class="err">        &#39;PASSWORD&#39;: &#39;123456&#39;</span>
+<span class="err">    },</span>
+<span class="err">    &#39;users&#39;: {</span>
+<span class="err">        &#39;NAME&#39;: &#39;read_db&#39;,</span>
+<span class="err">        &#39;ENGINE&#39;: &#39;django.db.backends.mysql&#39;,</span>
+<span class="err">        &#39;USER&#39;: &#39;root&#39;,</span>
+<span class="err">        &#39;PASSWORD&#39;: &#39;123456&#39;</span>
+<span class="err">    }</span>
+<span class="err">}</span>
+</pre></div>
+
+
+<p>指定读写分离路由</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">WriteReadRoute</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">db_for_read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">hints</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">read_db</span>
+
+    <span class="k">def</span> <span class="nf">db_for_write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">hints</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">write_db</span>
+</pre></div>
+
+
+<p>更新配置文件指定路由</p>
+<div class="highlight"><pre><span></span><span class="n">DATABASE_ROUTERS</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;writeReadRoute&#39;</span><span class="p">]</span>
+</pre></div>
+
+
+<h2>读写分离的缺陷</h2>
+<p>1, 不能保证数据强一致性</p>
+<p>MySQL主从复制采取异步的方式。主服务器先生存bin-log日志，然后传输给从服务器生存中继日志。中继日志生成后，MySQL从服务器会单独生成一个线程，用来更新数据库。由于是异步，MySQL主从复制存在一个数据不一致的时间差。</p>
+<p>2, 写只在主服务器，读只在从服务器，不能充分利用多数据库的并发性能。</p>
+<p>3, 不稳定，容易造成数据丢失。</p>
+<p>4，可扩展性差。当需要增加主从服务器时，需要手动更新相关数据和配置。</p>
+<h2>结语</h2>
+<p>MySQL主从复制，读写分离搭建简单，对于小型应用，这样方案足够。但是当数据库增加时，管理及扩张及其不方便，而且数据也不能保证实时一致性。后面的文章会写写集群的解决方案。</p>
+
+
+                
+
+                
+                
+                
+
+
+
+
+
+
+                <hr />
+                <aside>
+                    <nav>
+                        <ul class="articles-timeline">
+                            <li class="previous-article">« <a href="./pythonjin-cheng-xian-cheng-he-xie-cheng.html"
+                                    title="Previous: Python进程、线程和协程">Python进程、线程和协程</a></li>
+                            <li class="next-article"><a href="./http2ji-chu-zhi-shi.html"
+                                    title="Next: HTTP2基础知识">HTTP2基础知识</a> »</li>
+                        </ul>
+                    </nav>
+                </aside>
+            </div>
+            <section id="article-sidebar" class="span2">
+                <h4>Published</h4>
+                <time itemprop="dateCreated" datetime="2018-04-15T00:00:00+08:00"> 4
+                    15, 2018</time>
+                <!---->
+                <h4>Category</h4>
+                <a class="category-link"
+                    href="./categories.html#redis-ref">Redis</a>
+                <h4>Tags</h4>
+                <ul class="list-of-tags tags-in-article">
+                    <li><a href="./tags.html#python-ref">Python
+                            <span>4</span>
+</a></li>
+                    <li><a href="./tags.html#redis-ref">Redis
+                            <span>11</span>
+</a></li>
+                </ul>
+<h4>Stay in Touch</h4>
+<div id="sidebar-social-link">
+    <a href="mailto:catsaction@126.com" title="My Email Address" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mail" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#328cff"/><path d="m250 186c-46 0-69 35-69 74 0 44 29 72 68 72 43 0 73-32 73-75 0-44-34-71-72-71zm-1-37c30 0 57 13 77 33 0-22 35-22 35 1v150c-1 10 10 16 16 9 25-25 54-128-14-187-64-56-149-47-195-15-48 33-79 107-49 175 33 76 126 99 182 76 28-12 41 26 12 39-45 19-168 17-225-82-38-68-36-185 67-248 78-46 182-33 244 32 66 69 62 197-2 246-28 23-71 1-71-32v-11c-20 20-47 32-77 32-57 0-108-51-108-108 0-58 51-110 108-110" fill="#fff"/></svg>
+    </a>
+    <a href="https://github.com/boyaziqi" title="catsaction Github Repository" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+    <a href="https://www.linkedin.com/feed/" title="My LinkedIn" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="LinkedIn" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%" fill="#0077b5"/><circle cx="142" cy="138" r="37"/><path stroke="#fff" stroke-width="66" d="M244 194v198M142 194v198"/><path d="M276 282c0-20 13-40 36-40 24 0 33 18 33 45v105h66V279c0-61-32-89-76-89-34 0-51 19-59 32"/></svg>
+    </a>
+</div>
+<h4>Friendship Links</h4>
+<ul class="list-of-tags tags-in-article">
+    <li>
+    <a href="https://leetcode-cn.com/" title="力扣中国站点" target="_blank" rel="nofollow noopener noreferrer">
+      LeetCode
+    </a>
+    </li>
+    <li>
+    <a href="https://coolshell.cn/about" title="陈皓酷壳" target="_blank" rel="nofollow noopener noreferrer">
+      CoolShell
+    </a>
+    </li>
+    <li>
+    <a href="https://yikun.github.io/" title="姜毅坤博客" target="_blank" rel="nofollow noopener noreferrer">
+      Yikun
+    </a>
+    </li>
+    <li>
+    <a href="https://www.nowcoder.com/" title="牛客网" target="_blank" rel="nofollow noopener noreferrer">
+      牛客网
+    </a>
+    </li>
+  </ul>
+                
+
+
+
+
+
+                
+
+
+
+
+
+            </section>
+        </div>
+</article>
+                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+    <div>
+        <span class="site-name">CatsAction's blog</span> - It's a wonderful world
+    </div>
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>        <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>

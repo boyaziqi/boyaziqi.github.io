@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="CatsAction" />
+
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
+
+<meta name="keywords" content="MQ, Go, RabbitMQ, " />
+
+<meta property="og:title" content="RabbitMQ系列第二篇 - 如何保证消息可靠性"/>
+<meta property="og:url" content="./rabbitmqxi-lie-di-er-pian.html" />
+<meta property="og:description" content="在RabbitMQ使用中，如果一个任务分发给一个Worker，而Worker执行到一半就退出了，这时如何保证消息不丢失呢？下面一起看看RabbitMQ保证消息可靠传输机制。 可靠传输机制 消息持久化 消息确认（Consumer Acknowledgements and Publisher Confirms） 集群和高可用模式 消息补偿机制（确认及重传） 消息持久化 RabbitMQ消息默认存储在内存，如果重启，或者宕机，那样消息就丢失了。消息持久化之后，消息会被写入硬盘，在服务恢复的时候再加载回来。 消息持久化需要同时持久化Exchange，Queue，Message。下面是Golang简单的例子。 func (ch *Channel) ExchangeDeclare(name, kind string, durable, autoDelete, internal, noWait bool, args Table) error func (ch *Channel) QueueDeclare(name string, durable …" />
+<meta property="og:site_name" content="CatsAction&#39;s blog" />
+<meta property="og:article:author" content="CatsAction" />
+<meta property="og:article:published_time" content="2019-01-09T00:00:00+08:00" />
+<meta name="twitter:title" content="RabbitMQ系列第二篇 - 如何保证消息可靠性">
+<meta name="twitter:description" content="在RabbitMQ使用中，如果一个任务分发给一个Worker，而Worker执行到一半就退出了，这时如何保证消息不丢失呢？下面一起看看RabbitMQ保证消息可靠传输机制。 可靠传输机制 消息持久化 消息确认（Consumer Acknowledgements and Publisher Confirms） 集群和高可用模式 消息补偿机制（确认及重传） 消息持久化 RabbitMQ消息默认存储在内存，如果重启，或者宕机，那样消息就丢失了。消息持久化之后，消息会被写入硬盘，在服务恢复的时候再加载回来。 消息持久化需要同时持久化Exchange，Queue，Message。下面是Golang简单的例子。 func (ch *Channel) ExchangeDeclare(name, kind string, durable, autoDelete, internal, noWait bool, args Table) error func (ch *Channel) QueueDeclare(name string, durable …">
+
+        <title>RabbitMQ系列第二篇 - 如何保证消息可靠性 ·
+CatsAction&#39;s blog
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="./theme/image/logo.ico" />
+        <link rel="stylesheet" type="text/css" href="./theme/css/elegant.prod.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="./theme/css/custom.css" media="screen">
+
+
+
+    </head>
+    <body>
+        <div id="content">
+            <div class="navbar navbar-static-top">
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </a>
+                        <a class="brand" href="./"><span class=site-name>CatsAction's blog</span></a>
+                        <div class="nav-collapse collapse">
+                            <ul class="nav pull-right top-menu">
+                                <li >
+                                    <a href=
+                                       .
+                                    >Home</a>
+                                </li>
+                                <li ><a href="./categories.html">Categories</a></li>
+                                <li ><a href="./tags.html">Tags</a></li>
+                                <li ><a href="./archives.html">Archives</a></li>
+                                <li><form class="navbar-search" action="./search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span1"></div>
+                    <div class="span10">
+<article itemscope>
+    <div class="row-fluid">
+        <header class="page-header span10 offset2">
+            <h1>
+                <a href="./rabbitmqxi-lie-di-er-pian.html">
+                    RabbitMQ系列第二篇
+                    <small class="subtitle">
+                        如何保证消息可靠性
+                    </small>
+                </a>
+            </h1>
+        </header>
+    </div>
+
+    <div class="row-fluid">
+            <div class="span8 offset2 article-content">
+                
+                <p><em>在RabbitMQ使用中，如果一个任务分发给一个Worker，而Worker执行到一半就退出了，这时如何保证消息不丢失呢？下面一起看看RabbitMQ保证消息可靠传输机制。</em></p>
+<h4>可靠传输机制</h4>
+<ul>
+<li>消息持久化</li>
+<li>消息确认（Consumer Acknowledgements and Publisher Confirms）</li>
+<li>集群和高可用模式</li>
+<li>消息补偿机制（确认及重传）</li>
+</ul>
+<h4>消息持久化</h4>
+<p>RabbitMQ消息默认存储在内存，如果重启，或者宕机，那样消息就丢失了。消息持久化之后，消息会被写入硬盘，在服务恢复的时候再加载回来。
+消息持久化需要同时持久化Exchange，Queue，Message。下面是Golang简单的例子。</p>
+<div class="highlight"><pre><span></span><span class="kd">func</span> <span class="p">(</span><span class="nx">ch</span> <span class="o">*</span><span class="nx">Channel</span><span class="p">)</span> <span class="nx">ExchangeDeclare</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">kind</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">durable</span><span class="p">,</span> <span class="nx">autoDelete</span><span class="p">,</span> <span class="nx">internal</span><span class="p">,</span> <span class="nx">noWait</span> <span class="kt">bool</span><span class="p">,</span> <span class="nx">args</span> <span class="nx">Table</span><span class="p">)</span> <span class="kt">error</span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">ch</span> <span class="o">*</span><span class="nx">Channel</span><span class="p">)</span> <span class="nx">QueueDeclare</span><span class="p">(</span><span class="nx">name</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">durable</span><span class="p">,</span> <span class="nx">autoDelete</span><span class="p">,</span> <span class="nx">exclusive</span><span class="p">,</span> <span class="nx">noWait</span> <span class="kt">bool</span><span class="p">,</span> <span class="nx">args</span> <span class="nx">Table</span><span class="p">)</span> <span class="p">(</span><span class="nx">Queue</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">ch</span> <span class="o">*</span><span class="nx">Channel</span><span class="p">)</span> <span class="nx">Publish</span><span class="p">(</span><span class="nx">exchange</span><span class="p">,</span> <span class="nx">key</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">mandatory</span><span class="p">,</span> <span class="nx">immediate</span> <span class="kt">bool</span><span class="p">,</span> <span class="nx">msg</span> <span class="nx">Publishing</span><span class="p">)</span> <span class="kt">error</span>
+<span class="kd">type</span> <span class="nx">Publishing</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="c1">// Application or exchange specific fields,</span>
+    <span class="c1">// the headers exchange will inspect this field.</span>
+    <span class="nx">Headers</span> <span class="nx">Table</span>
+
+    <span class="c1">// Properties</span>
+    <span class="nx">ContentType</span>     <span class="kt">string</span>    <span class="c1">// MIME content type</span>
+    <span class="nx">ContentEncoding</span> <span class="kt">string</span>    <span class="c1">// MIME content encoding</span>
+    <span class="nx">DeliveryMode</span>    <span class="kt">uint8</span>     <span class="c1">// Transient (0 or 1) or Persistent (2)</span>
+    <span class="nx">Priority</span>        <span class="kt">uint8</span>     <span class="c1">// 0 to 9</span>
+    <span class="nx">CorrelationId</span>   <span class="kt">string</span>    <span class="c1">// correlation identifier</span>
+    <span class="nx">ReplyTo</span>         <span class="kt">string</span>    <span class="c1">// address to to reply to (ex: RPC)</span>
+    <span class="nx">Expiration</span>      <span class="kt">string</span>    <span class="c1">// message expiration spec</span>
+    <span class="nx">MessageId</span>       <span class="kt">string</span>    <span class="c1">// message identifier</span>
+    <span class="nx">Timestamp</span>       <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span> <span class="c1">// message timestamp</span>
+    <span class="nx">Type</span>            <span class="kt">string</span>    <span class="c1">// message type name</span>
+    <span class="nx">UserId</span>          <span class="kt">string</span>    <span class="c1">// creating user id - ex: &quot;guest&quot;</span>
+    <span class="nx">AppId</span>           <span class="kt">string</span>    <span class="c1">// creating application id</span>
+
+    <span class="c1">// The application specific payload of the message</span>
+    <span class="nx">Body</span> <span class="p">[]</span><span class="kt">byte</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><code>ExchangeDeclare</code>和<code>QueueDeclare</code>的<code>durable</code>设为<code>true</code>，将创建的Exchange和Queue持久化。发送消息时，将<code>Publishing</code>
+的<code>DeliveryMode</code>模式设置为2，将对应的消息持久化。下面是Golang发送消息持久化的简单示例。</p>
+<div class="highlight"><pre><span></span><span class="nx">err</span> <span class="p">=</span> <span class="nx">ch</span><span class="p">.</span><span class="nx">Publish</span><span class="p">(</span>
+  <span class="s">&quot;&quot;</span><span class="p">,</span>           <span class="c1">// exchange</span>
+  <span class="nx">q</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span>       <span class="c1">// routing key</span>
+  <span class="kc">false</span><span class="p">,</span>        <span class="c1">// mandatory</span>
+  <span class="kc">false</span><span class="p">,</span>
+  <span class="nx">amqp</span><span class="p">.</span><span class="nx">Publishing</span> <span class="p">{</span>
+    <span class="nx">DeliveryMode</span><span class="p">:</span> <span class="nx">amqp</span><span class="p">.</span><span class="nx">Persistent</span><span class="p">,</span>
+    <span class="nx">ContentType</span><span class="p">:</span>  <span class="s">&quot;text/plain&quot;</span><span class="p">,</span>
+    <span class="nx">Body</span><span class="p">:</span>         <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">body</span><span class="p">),</span>
+<span class="p">})</span>
+<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+    <span class="nx">log</span><span class="p">.</span><span class="nx">Fatalf</span><span class="p">(</span><span class="s">&quot;%s: %s&quot;</span><span class="p">,</span> <span class="nx">msg</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h4>消息确认</h4>
+<p>消息持久化到硬盘需要一个过程，如果在小段时间中发生异常，消息扔将丢失。如果设置消息分发即删除，像开篇提到的场景，Worker异常退出的情况，消息也会丢失。
+RabbitMQ通过<strong>Consumer Acknowledgements and Publisher Confirms</strong>确保消息被成功分发和处理。<br/>
+默认情况下，RabbitMQ将自动确认，这样无法保证消息被Work处理成功。需要将自动确认设置为<code>false</code>，处理完相应消息时手动确认。下面是Go手动确认相关API。</p>
+<div class="highlight"><pre><span></span><span class="kd">func</span> <span class="p">(</span><span class="nx">ch</span> <span class="o">*</span><span class="nx">Channel</span><span class="p">)</span> <span class="nx">Consume</span><span class="p">(</span><span class="nx">queue</span><span class="p">,</span> <span class="nx">consumer</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">autoAck</span><span class="p">,</span> <span class="nx">exclusive</span><span class="p">,</span> <span class="nx">noLocal</span><span class="p">,</span> <span class="nx">noWait</span> <span class="kt">bool</span><span class="p">,</span> <span class="nx">args</span> <span class="nx">Table</span><span class="p">)</span> <span class="p">(</span><span class="o">&lt;-</span><span class="kd">chan</span> <span class="nx">Delivery</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+<span class="c1">// Delivery是Consumer收到消息的结构体定义</span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <span class="nx">Delivery</span><span class="p">)</span> <span class="nx">Ack</span><span class="p">(</span><span class="nx">multiple</span> <span class="kt">bool</span><span class="p">)</span> <span class="kt">error</span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <span class="nx">Delivery</span><span class="p">)</span> <span class="nx">Nack</span><span class="p">(</span><span class="nx">multiple</span><span class="p">,</span> <span class="nx">requeue</span> <span class="kt">bool</span><span class="p">)</span> <span class="kt">error</span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <span class="nx">Delivery</span><span class="p">)</span> <span class="nx">Reject</span><span class="p">(</span><span class="nx">requeue</span> <span class="kt">bool</span><span class="p">)</span> <span class="kt">error</span>
+</pre></div>
+
+
+<p>将<code>Consumer</code>的<code>autoAck</code>设置成<code>false</code>关闭自动确认。<code>Ack</code>手动给一个肯定的确认，<code>multiple</code>设置为<code>true</code>表示批量确认。<code>Nack和Reject</code>手动给一个否定的确认，
+<code>requeue</code>设置为<code>true</code>消息将被分发给其他Consumer。下面是一个Go手动确认的示例。</p>
+<div class="highlight"><pre><span></span><span class="nx">msgs</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">ch</span><span class="p">.</span><span class="nx">Consume</span><span class="p">(</span>
+  <span class="nx">q</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span> <span class="c1">// queue</span>
+  <span class="s">&quot;&quot;</span><span class="p">,</span>     <span class="c1">// consumer</span>
+  <span class="kc">false</span><span class="p">,</span>  <span class="c1">// auto-ack</span>
+  <span class="kc">false</span><span class="p">,</span>  <span class="c1">// exclusive</span>
+  <span class="kc">false</span><span class="p">,</span>  <span class="c1">// no-local</span>
+  <span class="kc">false</span><span class="p">,</span>  <span class="c1">// no-wait</span>
+  <span class="kc">nil</span><span class="p">,</span>    <span class="c1">// args</span>
+<span class="p">)</span>
+<span class="nx">failOnError</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="s">&quot;Failed to register a consumer&quot;</span><span class="p">)</span>
+
+<span class="nx">forever</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">bool</span><span class="p">)</span>
+
+<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="nx">d</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">msgs</span> <span class="p">{</span>
+    <span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;Received a message: %s&quot;</span><span class="p">,</span> <span class="nx">d</span><span class="p">.</span><span class="nx">Body</span><span class="p">)</span>
+    <span class="nx">dot_count</span> <span class="o">:=</span> <span class="nx">bytes</span><span class="p">.</span><span class="nx">Count</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">Body</span><span class="p">,</span> <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">))</span>
+    <span class="nx">t</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span><span class="p">(</span><span class="nx">dot_count</span><span class="p">)</span>
+    <span class="nx">time</span><span class="p">.</span><span class="nx">Sleep</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+    <span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;Done&quot;</span><span class="p">)</span>
+    <span class="nx">d</span><span class="p">.</span><span class="nx">Ack</span><span class="p">(</span><span class="kc">false</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}()</span>
+
+<span class="nx">log</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot; [*] Waiting for messages. To exit press CTRL+C&quot;</span><span class="p">)</span>
+<span class="o">&lt;-</span><span class="nx">forever</span>
+</pre></div>
+
+
+<p><code>Publisher Confirms</code>和<code>Consumer Acknowledgements</code>机制差不多，当消息被成功发送到Queue，如果需要持久化，成功持久化到硬盘，
+此时Broker将给Publisher确认。<br/>
+保证Publisher发送消息成功的方式还有事务（tx transaction）。事务是AMQP支持的标准。不过事务过重，影响了MQ吞吐量。</p>
+<h4>集群和高可用模式</h4>
+<p>后面的篇章将会基于Docker验证RabbitMQ的集群和高可用，也会讲解基本配置和常用的运维命令或工具，这里就先略过。</p>
+<h4>消息补偿机制</h4>
+<p>生产环境和实际网络实际情况是复杂的，不可能保证100%消息不丢失。因此Publisher需要确保在消息丢失下的重传机制。</p>
+
+
+                
+
+                
+                
+                
+
+
+
+
+
+
+                <hr />
+                <aside>
+                    <nav>
+                        <ul class="articles-timeline">
+                            <li class="previous-article">« <a href="./rabbitmqxi-lie-di-yi-pian.html"
+                                    title="Previous: RabbitMQ系列第一篇 - 基本概念和常见工作模式">RabbitMQ系列第一篇 <small class="subtitle">基本概念和常见工作模式</small></a></li>
+                            <li class="next-article"><a href="./rabbitmqxi-lie-di-san-pian.html"
+                                    title="Next: RabbitMQ系列第三篇 - 分布式部署">RabbitMQ系列第三篇 <small class="subtitle">分布式部署</small></a> »</li>
+                        </ul>
+                    </nav>
+                </aside>
+            </div>
+            <section id="article-sidebar" class="span2">
+                <h4>Published</h4>
+                <time itemprop="dateCreated" datetime="2019-01-09T00:00:00+08:00"> 1
+                    9, 2019</time>
+                <!---->
+                <h4>Category</h4>
+                <a class="category-link"
+                    href="./categories.html#rabbitmq-ref">RabbitMQ</a>
+                <h4>Tags</h4>
+                <ul class="list-of-tags tags-in-article">
+                    <li><a href="./tags.html#go-ref">Go
+                            <span>1</span>
+</a></li>
+                    <li><a href="./tags.html#mq-ref">MQ
+                            <span>3</span>
+</a></li>
+                </ul>
+<h4>Stay in Touch</h4>
+<div id="sidebar-social-link">
+    <a href="mailto:catsaction@126.com" title="My Email Address" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="Mail" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#328cff"/><path d="m250 186c-46 0-69 35-69 74 0 44 29 72 68 72 43 0 73-32 73-75 0-44-34-71-72-71zm-1-37c30 0 57 13 77 33 0-22 35-22 35 1v150c-1 10 10 16 16 9 25-25 54-128-14-187-64-56-149-47-195-15-48 33-79 107-49 175 33 76 126 99 182 76 28-12 41 26 12 39-45 19-168 17-225-82-38-68-36-185 67-248 78-46 182-33 244 32 66 69 62 197-2 246-28 23-71 1-71-32v-11c-20 20-47 32-77 32-57 0-108-51-108-108 0-58 51-110 108-110" fill="#fff"/></svg>
+    </a>
+    <a href="https://github.com/boyaziqi" title="catsaction Github Repository" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="GitHub" role="img" viewBox="0 0 512 512"><rect width="512" height="512" rx="15%" fill="#1B1817"/><path fill="#fff" d="M335 499c14 0 12 17 12 17H165s-2-17 12-17c13 0 16-6 16-12l-1-50c-71 16-86-28-86-28-12-30-28-37-28-37-24-16 1-16 1-16 26 2 40 26 40 26 22 39 59 28 74 22 2-17 9-28 16-35-57-6-116-28-116-126 0-28 10-51 26-69-3-6-11-32 3-67 0 0 21-7 70 26 42-12 86-12 128 0 49-33 70-26 70-26 14 35 6 61 3 67 16 18 26 41 26 69 0 98-60 120-117 126 10 8 18 24 18 48l-1 70c0 6 3 12 16 12z"/></svg>
+    </a>
+    <a href="https://www.linkedin.com/feed/" title="My LinkedIn" target="_blank" rel="nofollow noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-label="LinkedIn" role="img" viewBox="0 0 512 512" fill="#fff"><rect width="512" height="512" rx="15%" fill="#0077b5"/><circle cx="142" cy="138" r="37"/><path stroke="#fff" stroke-width="66" d="M244 194v198M142 194v198"/><path d="M276 282c0-20 13-40 36-40 24 0 33 18 33 45v105h66V279c0-61-32-89-76-89-34 0-51 19-59 32"/></svg>
+    </a>
+</div>
+<h4>Friendship Links</h4>
+<ul class="list-of-tags tags-in-article">
+    <li>
+    <a href="https://leetcode-cn.com/" title="力扣中国站点" target="_blank" rel="nofollow noopener noreferrer">
+      LeetCode
+    </a>
+    </li>
+    <li>
+    <a href="https://coolshell.cn/about" title="陈皓酷壳" target="_blank" rel="nofollow noopener noreferrer">
+      CoolShell
+    </a>
+    </li>
+    <li>
+    <a href="https://yikun.github.io/" title="姜毅坤博客" target="_blank" rel="nofollow noopener noreferrer">
+      Yikun
+    </a>
+    </li>
+    <li>
+    <a href="https://www.nowcoder.com/" title="牛客网" target="_blank" rel="nofollow noopener noreferrer">
+      牛客网
+    </a>
+    </li>
+  </ul>
+                
+
+
+
+
+
+                
+
+
+
+
+
+            </section>
+        </div>
+</article>
+                    </div>
+                    <div class="span1"></div>
+                </div>
+            </div>
+        </div>
+<footer>
+
+    <div>
+        <span class="site-name">CatsAction's blog</span> - It's a wonderful world
+    </div>
+
+
+
+    <div id="fpowered">
+        Powered by: <a href="http://getpelican.com/" title="Pelican Home Page" target="_blank" rel="nofollow noopener noreferrer">Pelican</a>
+        Theme: <a href="https://elegant.oncrashreboot.com/" title="Theme Elegant Home Page" target="_blank" rel="nofollow noopener noreferrer">Elegant</a>
+    </div>
+</footer>        <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script>
+    (function () {
+        if (window.location.hash.match(/^#comment-\d+$/)) {
+            $('#comment_thread').collapse('show');
+        }
+    })();
+    window.onhashchange=function(){
+        if (window.location.hash.match(/^#comment-\d+$/))
+            window.location.reload(true);
+    }
+    $('#comment_thread').on('shown', function () {
+        var link = document.getElementById('comment-accordion-toggle');
+        var old_innerHTML = link.innerHTML;
+        $(link).fadeOut(200, function() {
+            $(this).text('Click here to hide comments').fadeIn(200);
+        });
+        $('#comment_thread').on('hidden', function () {
+            $(link).fadeOut(200, function() {
+                $(this).text(old_innerHTML).fadeIn(200);
+            });
+        })
+    })
+</script>
+
+    </body>
+    <!-- Theme: Elegant built for Pelican
+        License : MIT -->
+</html>
